@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
 import Technologies from '../components/Technologies.astro';
+import Projects from '../components/Projects.astro';
 import { profile } from '../data/profile';
 
 const title = `${profile.name} — ${profile.role}`;
@@ -16,5 +17,6 @@ const description = `${profile.role} — ${profile.focus}. ${profile.tagline} Po
     <Hero />
     <About />
     <Technologies />
+    <Projects />
   </main>
 </BaseLayout>
