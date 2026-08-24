@@ -6,17 +6,17 @@ const year = new Date().getFullYear();
 
 <footer class="footer">
   <div class="container footer__inner">
-    <p class="footer__copy">© {year} {profile.name}</p>
-    <p class="footer__built">
+    <p>© {year} {profile.name}</p>
+    <p>
       Construído com <a href="https://astro.build" rel="noopener">Astro</a> ·
-      <a href={`${profile.links.github}/meu-perfil`} rel="noopener">código-fonte</a>
+      <a href="https://github.com/guilhermegpo/meu-perfil" rel="noopener">código-fonte</a>
     </p>
   </div>
 </footer>
 
 <style>
   .footer {
-    padding-block: var(--space-lg);
+    padding-block: var(--space-md);
     border-top: 1px solid var(--border);
   }
 
@@ -25,16 +25,8 @@ const year = new Date().getFullYear();
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-sm);
+    gap: var(--space-xs);
     font-size: var(--step--1);
     color: var(--text-faint);
-  }
-
-  .footer__copy {
-    margin: 0;
-  }
-
-  .footer__built {
-    margin: 0;
   }
 </style>
