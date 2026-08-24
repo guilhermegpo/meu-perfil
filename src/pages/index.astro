@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import Footer from '../components/Footer.astro';
 import { profile } from '../data/profile';
@@ -9,6 +10,7 @@ const description = `${profile.role} ${profile.focus} em ${profile.location}. ${
 ---
 
 <BaseLayout title={title} description={description}>
+  <Header />
   <main id="conteudo">
     <Hero />
   </main>
