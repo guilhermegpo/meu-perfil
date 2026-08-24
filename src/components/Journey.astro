@@ -1,0 +1,104 @@
+---
+import { journey } from '../data/journey';
+---
+
+<section class="section" id="trajetoria">
+  <div class="container">
+    <div class="section__header">
+      <span class="eyebrow">Trajetória</span>
+      <h2 class="section__title">Formação e experiência</h2>
+      <p class="section__lead">
+        Ainda não tenho experiência profissional em desenvolvimento de software.
+        O que existe está listado abaixo, sem inflar nada.
+      </p>
+    </div>
+
+    <ol class="timeline">
+      {
+        journey.map((entry) => (
+          <li class="timeline__item">
+            <div class="timeline__head">
+              <h3 class="timeline__title">{entry.title}</h3>
+              <span class="timeline__status" data-status={entry.status}>
+                {entry.status}
+              </span>
+            </div>
+            <p class="timeline__org">{entry.organization}</p>
+            <p class="timeline__description">{entry.description}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    display: grid;
+    gap: var(--space-lg);
+    margin: 0;
+    padding-left: var(--space-md);
+    border-left: 1px solid var(--border);
+    list-style: none;
+  }
+
+  .timeline__item {
+    position: relative;
+  }
+
+  .timeline__item::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--space-md) - 4px);
+    top: 0.55em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1.5px solid var(--border-strong);
+  }
+
+  .timeline__item:first-child::before {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .timeline__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .timeline__title {
+    font-size: var(--step-1);
+  }
+
+  .timeline__status {
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    background: var(--bg-subtle);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .timeline__status[data-status='atual'] {
+    background: var(--accent-subtle);
+    color: var(--accent);
+  }
+
+  .timeline__org {
+    margin-top: 0.15rem;
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--text-faint);
+  }
+
+  .timeline__description {
+    margin-top: var(--space-xs);
+    max-width: var(--measure);
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+</style>

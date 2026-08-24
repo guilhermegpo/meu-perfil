@@ -1,0 +1,154 @@
+---
+import { projects } from '../data/projects';
+---
+
+<section class="section" id="projetos">
+  <div class="container">
+    <div class="section__header">
+      <span class="eyebrow">Projetos</span>
+      <h2 class="section__title">O que estou construindo</h2>
+      <p class="section__lead">
+        Produtos próprios, versionados e documentados. Cada um existe para
+        resolver um problema real — não como exercício de vitrine.
+      </p>
+    </div>
+
+    <ul class="projects">
+      {
+        projects.map((project) => (
+          <li class="project">
+            <div class="project__head">
+              <h3 class="project__name">{project.name}</h3>
+              <span class="project__status" data-status={project.status}>
+                {project.status}
+              </span>
+            </div>
+
+            <p class="project__description">{project.description}</p>
+
+            <ul class="project__highlights">
+              {project.highlights.map((highlight) => (
+                <li>{highlight}</li>
+              ))}
+            </ul>
+
+            <ul class="project__stack">
+              {project.stack.map((tech) => (
+                <li>{tech}</li>
+              ))}
+            </ul>
+
+            {(project.repo || project.demo) && (
+              <p class="project__links">
+                {project.repo && (
+                  <a href={project.repo} rel="noopener">
+                    Repositório
+                  </a>
+                )}
+                {project.demo && (
+                  <a href={project.demo} rel="noopener">
+                    Ver ao vivo
+                  </a>
+                )}
+              </p>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .projects {
+    display: grid;
+    gap: var(--space-md);
+    margin: 0;
+  }
+
+  .project {
+    padding: var(--space-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+  }
+
+  .project__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .project__name {
+    font-size: var(--step-2);
+  }
+
+  .project__status {
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+  }
+
+  .project__status[data-status='publicado'] {
+    background: var(--accent-subtle);
+    color: var(--accent);
+  }
+
+  .project__description {
+    margin-top: var(--space-sm);
+    max-width: var(--measure);
+    color: var(--text-muted);
+  }
+
+  .project__highlights {
+    margin-top: var(--space-md);
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .project__highlights li {
+    position: relative;
+    padding-left: 1.25rem;
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .project__highlights li::before {
+    content: '';
+    position: absolute;
+    left: 0.25rem;
+    top: 0.66em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .project__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-md);
+  }
+
+  .project__stack li {
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .project__links {
+    display: flex;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+    font-size: var(--step--1);
+    font-weight: 550;
+  }
+</style>
