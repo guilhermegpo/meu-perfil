@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import { profile } from '../data/profile';
+
+const title = `${profile.name} — ${profile.role}`;
+const description = `${profile.role} — ${profile.focus}. ${profile.tagline} Portfólio, projetos e formas de contato.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <main id="conteudo">
+    <Hero />
+  </main>
+</BaseLayout>

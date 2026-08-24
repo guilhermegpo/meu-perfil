@@ -1,0 +1,94 @@
+---
+// Alterna entre tema claro e escuro e guarda a escolha no navegador.
+// Sem escolha salva, o site segue a preferência do sistema operacional.
+---
+
+<button
+  id="theme-toggle"
+  class="theme-toggle"
+  type="button"
+  aria-label="Alternar entre tema claro e escuro"
+>
+  <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="4.2" />
+    <path d="M12 2.4v2.4M12 19.2v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.4 12h2.4M19.2 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" />
+  </svg>
+  <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M20.5 14.5A8.6 8.6 0 0 1 9.5 3.5a8.6 8.6 0 1 0 11 11Z" />
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  }
+
+  .theme-toggle:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  .theme-toggle__icon {
+    grid-area: 1 / 1;
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* No claro mostra a lua (ação: escurecer); no escuro mostra o sol. */
+  .theme-toggle__icon--sun {
+    display: none;
+  }
+
+  :global(:root[data-theme='dark']) .theme-toggle__icon--sun {
+    display: block;
+  }
+
+  :global(:root[data-theme='dark']) .theme-toggle__icon--moon {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .theme-toggle__icon--sun {
+      display: block;
+    }
+
+    :global(:root:not([data-theme='light'])) .theme-toggle__icon--moon {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+
+  function currentTheme(): 'dark' | 'light' {
+    const explicit = document.documentElement.getAttribute('data-theme');
+    if (explicit === 'dark' || explicit === 'light') return explicit;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  toggle?.addEventListener('click', () => {
+    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* Sem persistência: a escolha vale só para esta visita. */
+    }
+  });
+</script>
