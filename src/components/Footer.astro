@@ -1,0 +1,40 @@
+---
+import { profile } from '../data/profile';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <p class="footer__copy">© {year} {profile.name}</p>
+    <p class="footer__built">
+      Construído com <a href="https://astro.build" rel="noopener">Astro</a> ·
+      <a href={`${profile.links.github}/meu-perfil`} rel="noopener">código-fonte</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: var(--space-lg);
+    border-top: 1px solid var(--border);
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .footer__copy {
+    margin: 0;
+  }
+
+  .footer__built {
+    margin: 0;
+  }
+</style>

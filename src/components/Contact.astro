@@ -1,0 +1,91 @@
+---
+import { profile } from '../data/profile';
+
+const channels = [
+  {
+    label: 'LinkedIn',
+    handle: 'guilhermeoliveira-gpo',
+    href: profile.links.linkedin,
+    note: 'Melhor canal para oportunidades e conversas profissionais.',
+  },
+  {
+    label: 'GitHub',
+    handle: '@guilhermegpo',
+    href: profile.links.github,
+    note: 'Código, histórico de commits e documentação dos projetos.',
+  },
+];
+---
+
+<section class="section" id="contato">
+  <div class="container">
+    <div class="section__header">
+      <span class="eyebrow">Contato</span>
+      <h2 class="section__title">Vamos conversar</h2>
+      <p class="section__lead">
+        Estou aberto a oportunidades de estágio e posições júnior em
+        desenvolvimento Full Stack, Mobile ou Backend.
+      </p>
+    </div>
+
+    <ul class="channels">
+      {
+        channels.map((channel) => (
+          <li class="channel">
+            <a class="channel__link" href={channel.href} rel="noopener">
+              <span class="channel__label">{channel.label}</span>
+              <span class="channel__handle">{channel.handle}</span>
+            </a>
+            <p class="channel__note">{channel.note}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .channels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: var(--space-md);
+    margin: 0;
+  }
+
+  .channel {
+    padding: var(--space-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    transition: border-color 0.18s ease;
+  }
+
+  .channel:hover {
+    border-color: var(--border-strong);
+  }
+
+  .channel__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    text-decoration: none;
+  }
+
+  .channel__label {
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .channel__handle {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--accent);
+  }
+
+  .channel__note {
+    margin-top: var(--space-xs);
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+</style>
