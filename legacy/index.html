@@ -1,0 +1,182 @@
+<!--
+  VERSAO HISTORICA - SANITIZADA
+  Primeira versao desta pagina, publicada em abril de 2026.
+  Preservada apenas como registro da evolucao do projeto; nao faz parte do site publicado.
+  Dados pessoais sensiveis foram removidos antes da preservacao.
+-->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Mim — versão histórica (sanitizada)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+
+        body{
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, #0f0f0f, #1a1a2e);
+            color: white;
+        }
+
+        nav{
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 15px;
+            background-color: #ffffff10;
+        }
+
+        nav a {
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            text-align: center;
+            animation: aparecer 1s ease;
+        }
+
+        h2{
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        p{
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        ul{
+            list-style: none;
+            padding: 0;
+        }
+
+        ul>li{
+            margin: 5px;
+        }
+
+        ul li::before {
+            content: "▸ ";
+            margin-right: 2px;
+            color: #4dabf7;
+        }
+
+        a{
+            text-decoration: none;
+            color: #4dabf7;
+        }
+
+        a:hover{
+            text-decoration: underline;
+        }
+
+        .container{
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        section{
+            padding: 10px;
+            border: 2px solid white;
+            border-radius: 20px;
+            margin: 20px;
+            background-color: #ffffff10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            transition: border-color 0.3s;
+        }
+
+        section:hover {
+            border-color: #4dabf7;
+        }
+
+        img{
+            display: block;
+            margin: 0 auto;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #4dabf7;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes aparecer {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+            }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            section {
+                margin: 10px;
+                padding: 8px;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <nav>
+        <a href="#sobre">Sobre Mim</a>
+        <a href="#hobbies">Hobbies</a>
+        <a href="#contato">Contato</a>
+    </nav>
+
+    <div class="container">
+        <img src="perfil.jpg" alt="Foto de perfil de Guilherme">
+        <h1>Guilherme Pereira de Oliveira</h1>
+
+        <section id="sobre">
+            <h2>Sobre Mim</h2>
+            <p>
+                Sou um estudante do ensino superior, estou cursando Analise e Desenvolvimento de Sistemas.<br>
+                Possuo um curso tecnico de T.I da Microlins, gosto bastante de programar, por mais que eu ainda esteja apredendo. Estou atualmente servindo a <strong>FAB</strong> <em>(Forca Aerea Brasileira)</em>.
+            </p>
+        </section>
+
+        <section id="hobbies">
+            <h2>Meus hobbies</h2>
+            <ul>
+                <li>Academia</li>
+                <li>Videogames</li>
+                <li>Programar</li>
+                <li>Dirigir</li>
+                <li>Duolingo</li>
+            </ul>
+        </section>
+
+        <section id="contato">
+            <h2>Contato</h2>
+            <p><a href="https://www.linkedin.com/in/guilhermeoliveira-gpo/" rel="noopener">LinkedIn</a></p>
+        </section>
+    </div>
+</body>
+</html>
