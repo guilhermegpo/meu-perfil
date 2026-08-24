@@ -11,8 +11,11 @@ Portfólio profissional de Guilherme Pereira de Oliveira.
 
 ## O que é
 
-Site estático de uma página, gerado em build. Apresenta trajetória, tecnologias
-e projetos, com foco em performance, acessibilidade e SEO.
+Site estático gerado em build. Apresenta trajetória profissional, stack e
+projetos — estes últimos como cases, com página própria para cada um.
+
+Lighthouse 100/100/100/100 em desktop e mobile, com acessibilidade verificada
+por script no CI.
 
 ## Decisões técnicas
 
@@ -20,16 +23,34 @@ Cada escolha aqui foi feita por um motivo, e o motivo está registrado.
 
 ### Astro em vez de React ou HTML puro
 
-O site tem seis seções de conteúdo majoritariamente estático. Uma SPA carregaria
-um framework inteiro no navegador para renderizar texto que nunca muda — e
-pagaria isso em SEO, já que o conteúdo só existiria depois do JavaScript rodar.
+O site é conteúdo majoritariamente estático. Uma SPA carregaria um framework
+inteiro no navegador para renderizar texto que nunca muda — e pagaria isso em
+SEO, já que o conteúdo só existiria depois do JavaScript rodar.
 
-HTML puro resolveria a performance, mas duplicaria markup e misturaria dados com
-apresentação.
+HTML puro resolveria a performance, mas duplicaria markup e misturaria dados
+com apresentação.
 
-Astro gera HTML em build e não envia JavaScript de framework ao cliente. O único
-JavaScript que chega ao navegador são os poucos bytes do alternador de tema.
-Componentes e dados ficam separados sem custo em runtime.
+Astro gera HTML em build e não envia JavaScript de framework ao cliente. O que
+chega ao navegador são três blocos pequenos: alternador de tema, menu de telas
+pequenas e revelação de conteúdo ao rolar.
+
+### Cases com página própria, não modal
+
+A maioria dos portfólios abre o detalhe do projeto em modal. Modal não tem URL
+para mandar a um recrutador, não é indexado por buscador e quebra o botão
+voltar.
+
+Cada case é uma rota real gerada em build — `/projetos/{slug}` — com título,
+descrição e dados estruturados próprios.
+
+### Fontes servidas do próprio domínio
+
+A folha do Google Fonts era o único recurso bloqueando a primeira renderização.
+Medido pelo Lighthouse em rede móvel lenta, custava cerca de 1,9 s.
+
+`npm run fonts` baixa os arquivos WOFF2 para `src/assets/fonts/`, mantendo só
+os subconjuntos latin e latin-ext. O resultado: primeiro desenho caiu de 2,7 s
+para 1,2 s, e a página não faz nenhuma requisição a terceiros.
 
 ### Dados versionados em vez da API do GitHub
 
@@ -39,19 +60,23 @@ Para um punhado de projetos que mudam pouco, isso adicionaria dependência de
 rede, limite de requisições e um modo de falha visível ao visitante — sem ganho
 real. Os dados moram em `src/data/`, tipados e versionados junto ao código.
 
-### Tema com três estados
+### Sem percentual de habilidade
 
-Claro explícito, escuro explícito e "seguir o sistema". A preferência escolhida
-é gravada em `localStorage` e aplicada antes da primeira pintura, por um script
-inline síncrono — caso contrário haveria um flash de tema claro em quem escolheu
-escuro.
+`React 90%` é um número que ninguém consegue justificar e que qualquer
+entrevistador desmonta em duas perguntas. A stack marca apenas se a tecnologia
+foi usada em projeto entregue ou está em uso de aprendizado — as duas
+afirmações são verificáveis.
 
 ### Acessibilidade verificada, não presumida
 
-Todos os 28 pares de cor do sistema (texto sobre fundo, cartão e superfície
-sutil, nos dois temas) foram medidos contra o critério WCAG AA de 4.5:1. O pior
-caso é 4.56:1. Há também link de pular para o conteúdo, foco visível, HTML
-semântico e respeito a `prefers-reduced-motion`.
+`npm run verify` lê os tokens de cor direto do `global.css` e mede cada par de
+texto sobre fundo contra o critério WCAG AA. Ler do CSS em vez de manter uma
+cópia dos valores é o ponto: a verificação não pode divergir do que o site
+realmente usa.
+
+O mesmo script confere os metadados de SEO de cada página gerada e valida que
+todo link interno aponta para um arquivo que existe em `dist/`. Roda no CI a
+cada pull request.
 
 ## Stack
 
@@ -60,23 +85,31 @@ semântico e respeito a `prefers-reduced-motion`.
 | Gerador de site | Astro |
 | Linguagem | TypeScript |
 | Estilos | CSS com custom properties, sem framework |
-| Imagem social | Gerada por script com `sharp` |
-| CI | GitHub Actions — checagem de tipos e build |
+| Imagens | Pipeline do Astro — AVIF e WebP com srcset |
+| Tipografia | Inter e Space Grotesk, servidas localmente |
+| CI | GitHub Actions — tipos, build e verificação |
 | Hospedagem | GitHub Pages |
 
 ## Estrutura
 
 ```text
 src/
-├── components/   Seções da página, cada uma com seu CSS com escopo
-├── data/         Conteúdo tipado — perfil, tecnologias, projetos, trajetória
+├── components/   Seções e cartões, cada um com seu CSS com escopo
+├── data/         Conteúdo tipado — perfil, experiência, projetos, stack, formação
 ├── layouts/      Documento base: metadados, SEO, dados estruturados
-├── lib/          Utilitários (normalização do base path)
-├── pages/        Rotas
-└── styles/       Tokens de design e estilos globais
+├── lib/          Base path e detecção do currículo em build
+├── pages/        Home e as rotas de case em /projetos/
+└── styles/       Tokens de design e fontes
 
-public/           Assets servidos como estão
-scripts/          Geração da imagem de compartilhamento social
+public/
+├── curriculo/    Onde o PDF do currículo é colocado
+└── ...           Favicon, imagem social, robots
+
+scripts/
+├── fetch-fonts.mjs      Baixa as fontes do Google para o repositório
+├── generate-images.mjs  Cartão social e ícone de atalho
+└── verify.mjs           Contraste, metadados e links
+
 legacy/           Primeira versão do site, preservada e sanitizada
 ```
 
@@ -88,15 +121,26 @@ npm run dev      # servidor de desenvolvimento
 npm run build    # gera dist/
 npm run preview  # serve o build
 npm run check    # checagem de tipos
+npm run verify   # contraste, metadados e links (roda após o build)
 ```
 
 Requer Node.js 22 ou superior.
 
-Para regerar a imagem de compartilhamento social após alterar nome ou cargo:
+Tarefas ocasionais:
 
 ```bash
-node scripts/generate-og-image.mjs
+npm run fonts    # rebaixa as fontes (após trocar família ou peso)
+npm run images   # regenera cartão social e ícone (após trocar nome ou foto)
 ```
+
+## Currículo
+
+O PDF não é versionado. Coloque-o em `public/curriculo/` com o nome definido em
+`resumeFile` (`src/data/profile.ts`).
+
+O botão "Baixar currículo" aparece sozinho no hero e no contato quando o arquivo
+existir — a checagem acontece em tempo de build, em `src/lib/resume.ts`. Sem o
+arquivo, o botão não é renderizado e o site nunca mostra link quebrado.
 
 ## Fluxo de trabalho
 
@@ -109,8 +153,8 @@ Commits seguem [Conventional Commits](https://www.conventionalcommits.org/).
 ## Privacidade
 
 Este repositório é público e não contém dados pessoais sensíveis. Não há data de
-nascimento, endereço, telefone nem e-mail pessoal — no código, no conteúdo ou
-nos metadados dos commits. O contato acontece por canais profissionais públicos.
+nascimento, endereço nem telefone — no código, no conteúdo ou nos metadados dos
+commits. O e-mail exibido é profissional e foi criado para uso público.
 
 A primeira versão do site continha alguns desses dados. Ela foi preservada em
 [`legacy/`](legacy/) apenas após sanitização; o que foi removido e por quê está
