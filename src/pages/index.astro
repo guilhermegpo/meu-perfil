@@ -1,28 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import About from '../components/About.astro';
-import Technologies from '../components/Technologies.astro';
-import Projects from '../components/Projects.astro';
-import Journey from '../components/Journey.astro';
-import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 import { profile } from '../data/profile';
 
-const title = `${profile.name} — ${profile.role}`;
-const description = `${profile.role} — ${profile.focus}. ${profile.tagline} Portfólio, projetos e formas de contato.`;
+const title = `${profile.displayName} — ${profile.role} | ${profile.focus}`;
+const description = `${profile.role} ${profile.focus} em ${profile.location}. ${profile.headline}`;
 ---
 
 <BaseLayout title={title} description={description}>
-  <Header />
   <main id="conteudo">
     <Hero />
-    <About />
-    <Technologies />
-    <Projects />
-    <Journey />
-    <Contact />
   </main>
   <Footer />
 </BaseLayout>
