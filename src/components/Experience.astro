@@ -1,0 +1,232 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { experience } from '../data/experience';
+import { asset } from '../lib/url';
+---
+
+<section class="section" id="experiencia">
+  <div class="container">
+    <SectionHeading
+      eyebrow="Experiência"
+      title="Trajetória profissional"
+      lead="Duas experiências: uma em desenvolvimento de software, outra em rotina fiscal. A segunda não é preenchimento — foi onde aprendi a lidar com prazo rígido e informação que não pode estar errada."
+    />
+
+    <ol class="timeline">
+      {
+        experience.map((entry, index) => (
+          <li class="entry" data-reveal data-reveal-delay={index * 90}>
+            <div class="entry__meta">
+              <p class="entry__period">{entry.period}</p>
+              <p class="entry__location">{entry.location}</p>
+            </div>
+
+            <div class="entry__body">
+              <h3 class="entry__org">{entry.organization}</h3>
+
+              <p class="entry__role">
+                {entry.role}
+                {entry.focus && (
+                  <>
+                    <span class="entry__sep" aria-hidden="true">
+                      ·
+                    </span>
+                    <span class="entry__focus">{entry.focus}</span>
+                  </>
+                )}
+              </p>
+
+              <p class="entry__summary">{entry.summary}</p>
+
+              <ul class="entry__list">
+                {entry.achievements.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+
+              {entry.stack && (
+                <ul class="entry__stack">
+                  {entry.stack.map((tech) => (
+                    <li>{tech}</li>
+                  ))}
+                </ul>
+              )}
+
+              {entry.caseStudy && (
+                <p class="entry__link">
+                  <a href={asset(`projetos/${entry.caseStudy}/`)}>Ver o case completo</a>
+                </p>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    display: grid;
+    margin: 0;
+  }
+
+  .entry {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: var(--space-md);
+    /* Espaço entre entradas como padding, não gap: assim a linha do tempo
+       corre contínua em vez de virar segmentos soltos. */
+    padding-bottom: var(--space-lg);
+  }
+
+  .entry:last-child {
+    padding-bottom: 0;
+  }
+
+  .entry:last-child .entry__meta {
+    border-right-color: transparent;
+  }
+
+  .entry__meta {
+    position: relative;
+    padding-right: var(--space-md);
+    border-right: 1px solid var(--border);
+  }
+
+  /* Marcador na linha do tempo, alinhado com a primeira linha do título. */
+  .entry__meta::after {
+    content: '';
+    position: absolute;
+    top: 0.45rem;
+    right: -4.5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--border-strong);
+  }
+
+  .entry:first-child .entry__meta::after {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .entry__period {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .entry__location {
+    margin-top: 0.15rem;
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .entry__org {
+    font-size: var(--step-2);
+  }
+
+  .entry__role {
+    margin-top: 0.2rem;
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .entry__sep {
+    margin-inline: 0.4rem;
+  }
+
+  .entry__focus {
+    font-weight: 550;
+    color: var(--accent);
+  }
+
+  .entry__summary {
+    margin-top: var(--space-xs);
+    max-width: var(--measure);
+    color: var(--text-muted);
+  }
+
+  .entry__list {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: var(--space-sm);
+  }
+
+  .entry__list li {
+    position: relative;
+    padding-left: 1.15rem;
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .entry__list li::before {
+    content: '';
+    position: absolute;
+    left: 0.15rem;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .entry__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: var(--space-sm);
+  }
+
+  .entry__stack li {
+    padding: 0.15rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .entry__link {
+    margin-top: var(--space-sm);
+    font-size: var(--step--1);
+    font-weight: 550;
+  }
+
+  @media (max-width: 48rem) {
+    .entry {
+      grid-template-columns: 1fr;
+      gap: var(--space-xs);
+      padding-left: var(--space-sm);
+      padding-bottom: var(--space-lg);
+      border-left: 1px solid var(--border);
+    }
+
+    .entry:last-child {
+      padding-bottom: 0;
+      border-left-color: transparent;
+    }
+
+    .entry__meta {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      padding-right: 0;
+      border-right: 0;
+    }
+
+    .entry__meta::after {
+      top: 0.5rem;
+      right: auto;
+      left: calc(-1 * var(--space-sm) - 4.5px);
+    }
+
+    .entry__location::before {
+      content: '·';
+      margin-right: 0.6rem;
+    }
+  }
+</style>
