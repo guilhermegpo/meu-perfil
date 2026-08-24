@@ -1,0 +1,90 @@
+---
+import { technologies } from '../data/technologies';
+---
+
+<section class="section" id="tecnologias">
+  <div class="container">
+    <div class="section__header">
+      <span class="eyebrow">Tecnologias</span>
+      <h2 class="section__title">Com o que eu construo</h2>
+      <p class="section__lead">
+        Apenas o que uso ou estou usando em projetos reais. O rótulo
+        <em>em aprendizado</em> está aqui de propósito: é mais útil numa conversa
+        técnica do que uma lista que sugere domínio uniforme sobre tudo.
+      </p>
+    </div>
+
+    <div class="stack">
+      {
+        technologies.map((category) => (
+          <div class="stack__group">
+            <h3 class="stack__title">{category.title}</h3>
+            <ul class="stack__items">
+              {category.items.map((item) => (
+                <li class="chip" data-level={item.level}>
+                  <span class="chip__name">{item.name}</span>
+                  {item.level === 'em aprendizado' && (
+                    <span class="chip__level" aria-label="em aprendizado">
+                      em aprendizado
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-lg) var(--space-md);
+  }
+
+  .stack__title {
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--border);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .stack__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin: 0;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    font-size: var(--step--1);
+  }
+
+  .chip[data-level='em uso'] {
+    border-color: var(--border-strong);
+  }
+
+  .chip__name {
+    font-weight: 500;
+  }
+
+  .chip__level {
+    font-family: var(--font-mono);
+    font-size: 0.72em;
+    color: var(--text-faint);
+  }
+</style>

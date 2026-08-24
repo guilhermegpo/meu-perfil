@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://guilhermegpo.github.io/meu-perfil/sitemap-index.xml
