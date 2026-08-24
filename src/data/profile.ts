@@ -1,24 +1,38 @@
 /**
- * Fonte única de verdade para os dados pessoais exibidos no site.
+ * Fonte única de verdade para os dados exibidos no site.
  *
- * Regra do projeto: nada de dado sensível aqui. Sem data de nascimento,
- * sem endereço, sem telefone, sem e-mail pessoal. O contato acontece por
- * canais profissionais públicos.
+ * Regra do projeto: nada de dado sensível. Sem data de nascimento, sem
+ * endereço, sem telefone. O e-mail aqui é profissional e foi criado para
+ * uso público.
  */
 export const profile = {
+  /** Nome completo — usado em metadados e dados estruturados. */
   name: 'Guilherme Pereira de Oliveira',
-  shortName: 'Guilherme Oliveira',
+  /** Nome curto — usado no hero e na marca do cabeçalho. */
+  displayName: 'Guilherme Pereira',
   role: 'Desenvolvedor Full Stack',
   focus: 'Mobile & Backend',
   location: 'Brasília, DF — Brasil',
-  tagline:
-    'Construo produtos completos: do modelo de domínio ao aplicativo na mão do usuário.',
-  summary:
-    'Estudante de Análise e Desenvolvimento de Sistemas, com formação técnica em TI. Desenvolvo produtos próprios em Flutter e Node.js, documentando as decisões de arquitetura para que cada escolha possa ser explicada e defendida.',
-  photo: 'perfil.jpg',
-  photoAlt: 'Retrato de Guilherme Pereira de Oliveira',
+
+  /**
+   * Duas frases, ambas verificáveis. Nada de "apaixonado por tecnologia" nem
+   * de tempo de experiência inventado — um recrutador cobra isso na entrevista.
+   */
+  headline:
+    'Desenvolvi e implantei uma aplicação web interna no Instituto de Logística da Aeronáutica, do levantamento de requisitos à entrega. Formado em Análise e Desenvolvimento de Sistemas.',
+
+  email: 'guilhermegpo.dev@gmail.com',
+
   links: {
     linkedin: 'https://www.linkedin.com/in/guilhermeoliveira-gpo/',
     github: 'https://github.com/guilhermegpo',
   },
+
+  /**
+   * O botão de currículo só é renderizado se este arquivo existir em
+   * `public/curriculo/`. A checagem acontece em tempo de build — ver
+   * `src/lib/resume.ts`. Assim não há link quebrado enquanto o PDF não chega,
+   * e nenhuma flag para lembrar de virar depois.
+   */
+  resumeFile: 'Guilherme-Pereira-Desenvolvedor-Full-Stack-Junior.pdf',
 } as const;
