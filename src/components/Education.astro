@@ -1,0 +1,76 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { education } from '../data/education';
+---
+
+<section class="section" id="formacao">
+  <div class="container">
+    <SectionHeading eyebrow="Formação" title="Formação e idiomas" />
+
+    <ul class="list">
+      {
+        education.map((entry, index) => (
+          <li class="item" data-reveal data-reveal-delay={index * 70}>
+            <div class="item__head">
+              <h3 class="item__title">{entry.title}</h3>
+              <span class="item__status">{entry.status}</span>
+            </div>
+            {entry.institution && <p class="item__institution">{entry.institution}</p>}
+            {entry.note && <p class="item__note">{entry.note}</p>}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: var(--space-sm);
+    margin: 0;
+  }
+
+  .item {
+    padding: var(--space-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+  }
+
+  .item__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .item__title {
+    font-size: var(--step-1);
+  }
+
+  .item__status {
+    padding: 0.1rem 0.55rem;
+    border-radius: var(--radius-full);
+    background: var(--accent-subtle);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .item__institution {
+    margin-top: 0.15rem;
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--text-faint);
+  }
+
+  .item__note {
+    margin-top: var(--space-xs);
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+</style>
