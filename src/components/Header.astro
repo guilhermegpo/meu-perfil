@@ -268,15 +268,27 @@ const href = (id: string) => (onHome ? `#${id}` : `${home}#${id}`);
     panel.hidden = true;
   }
 
-  button?.addEventListener('click', () => {
+  function openMenu(moveFocus: boolean) {
+    if (!button || !panel) return;
+    button.setAttribute('aria-expanded', 'true');
+    button.setAttribute('aria-label', 'Fechar menu de navegação');
+    panel.hidden = false;
+
+    if (moveFocus) {
+      window.requestAnimationFrame(() => {
+        panel.querySelector<HTMLAnchorElement>('a')?.focus();
+      });
+    }
+  }
+
+  button?.addEventListener('click', (event) => {
     if (!panel) return;
     const open = button.getAttribute('aria-expanded') === 'true';
     if (open) {
       closeMenu();
     } else {
-      button.setAttribute('aria-expanded', 'true');
-      button.setAttribute('aria-label', 'Fechar menu de navegação');
-      panel.hidden = false;
+      // Clique por teclado tem detail 0; nesse caso o foco entra no menu.
+      openMenu(event.detail === 0);
     }
   });
 

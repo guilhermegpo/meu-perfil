@@ -5,13 +5,16 @@ import { asset } from '../lib/url';
 interface Props {
   project: Project;
   featured?: boolean;
+  order?: number;
 }
 
-const { project, featured = false } = Astro.props;
+const { project, featured = false, order } = Astro.props;
 const caseHref = asset(`projetos/${project.slug}/`);
 ---
 
 <article class:list={['card', featured && 'card--featured']}>
+  {order && <p class="card__index" aria-hidden="true">Case / {String(order).padStart(2, '0')}</p>}
+
   <header class="card__head">
     <p class="card__category">{project.category}</p>
     <p class="card__status" data-status={project.status}>
@@ -64,20 +67,46 @@ const caseHref = asset(`projetos/${project.slug}/`);
   .card {
     position: relative;
     min-width: 0;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     padding: var(--space-md);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
-    background: var(--bg-elevated);
-    transition: border-color 0.25s var(--ease), transform 0.25s var(--ease),
-      box-shadow 0.25s var(--ease);
+    background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent-subtle) 42%, transparent),
+        transparent 34%
+      ),
+      var(--bg-elevated);
+    transition: border-color var(--motion-normal) var(--ease-standard),
+      transform var(--motion-normal) var(--ease-emphasized),
+      box-shadow var(--motion-normal) var(--ease-standard);
   }
 
   .card:hover {
     border-color: var(--accent);
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4rem;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .card__index {
+    margin-bottom: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
   }
 
   /* Toda a área do card leva ao case; os links do rodapé ficam acima dele. */
