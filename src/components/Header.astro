@@ -17,6 +17,7 @@ const links = [
   { id: 'experiencia', label: 'Experiência' },
   { id: 'projetos', label: 'Projetos' },
   { id: 'stack', label: 'Stack' },
+  { id: 'engenharia', label: 'Engenharia' },
   { id: 'contato', label: 'Contato' },
 ];
 
@@ -99,6 +100,7 @@ const href = (id: string) => (onHome ? `#${id}` : `${home}#${id}`);
     display: inline-flex;
     align-items: center;
     gap: 0.625rem;
+    min-height: 2.75rem;
     text-decoration: none;
     color: var(--text);
   }

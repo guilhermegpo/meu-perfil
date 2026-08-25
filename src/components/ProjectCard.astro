@@ -17,9 +17,12 @@ const caseHref = asset(`projetos/${project.slug}/`);
 
   <header class="card__head">
     <p class="card__category">{project.category}</p>
-    <p class="card__status" data-status={project.status}>
-      <span class="card__dot" aria-hidden="true"></span>
-      {project.status}
+    <p class="card__flags">
+      {project.version && <span class="card__version">{project.version}</span>}
+      <span class="card__status" data-status={project.status}>
+        <span class="card__dot" aria-hidden="true"></span>
+        {project.status}
+      </span>
     </p>
   </header>
 
@@ -41,6 +44,16 @@ const caseHref = asset(`projetos/${project.slug}/`);
           <dd>{project.result}</dd>
         </div>
       </dl>
+    )
+  }
+
+  {
+    project.signals && (
+      <ul class="card__signals">
+        {project.signals.map((signal) => (
+          <li>{signal}</li>
+        ))}
+      </ul>
     )
   }
 
@@ -142,6 +155,23 @@ const caseHref = asset(`projetos/${project.slug}/`);
     color: var(--text-faint);
   }
 
+  .card__flags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .card__version {
+    padding: 0.1rem 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--border));
+    border-radius: var(--radius-full);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
   .card__status {
     display: inline-flex;
     align-items: center;
@@ -209,11 +239,37 @@ const caseHref = asset(`projetos/${project.slug}/`);
     color: var(--text-muted);
   }
 
+  /* Sinais técnicos: o que foi construído, não com o que foi construído.
+     Ficam acima da stack porque comunicam engenharia mais rápido. */
+  .card__signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    margin-top: var(--space-md);
+  }
+
+  .card__signals li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .card__signals li::before {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
   .card__stack {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
-    margin-top: var(--space-md);
+    margin-top: var(--space-sm);
   }
 
   .card__stack li {
@@ -241,6 +297,8 @@ const caseHref = asset(`projetos/${project.slug}/`);
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
+    /* Alvo de toque confortável sem caixa visível ao redor do link. */
+    min-height: 2.75rem;
     font-size: var(--step--1);
     font-weight: 550;
     text-decoration: none;
