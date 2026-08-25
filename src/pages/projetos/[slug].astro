@@ -1,0 +1,328 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { projects, type Project } from '../../data/projects';
+import { profile } from '../../data/profile';
+import { asset } from '../../lib/url';
+
+/**
+ * Um case por projeto, gerado em build.
+ *
+ * Poderia ser um modal na home, e é o que a maioria dos portfólios faz. Mas
+ * modal não tem URL para compartilhar com um recrutador, não é indexado por
+ * buscador e quebra o botão voltar. Página real resolve os três.
+ */
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+
+const title = `${project.name} — ${profile.displayName}`;
+const description = project.tagline;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: project.name,
+  abstract: project.tagline,
+  author: { '@type': 'Person', name: profile.name },
+  keywords: project.stack.join(', '),
+};
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <Header onHome={false} />
+
+  <main id="conteudo" class="case">
+    <div class="container">
+      <a class="back" href={`${asset('')}#projetos`}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m0 0 5-5m-5 5 5 5" /></svg>
+        Voltar aos projetos
+      </a>
+
+      <header class="case__head">
+        <div class="case__badges">
+          <span class="badge badge--category">{project.category}</span>
+          <span class="badge" data-status={project.status}>{project.status}</span>
+        </div>
+
+        <h1 class="case__title">{project.name}</h1>
+        <p class="case__tagline">{project.tagline}</p>
+
+        <ul class="case__stack">
+          {project.stack.map((tech) => <li>{tech}</li>)}
+        </ul>
+
+        {
+          project.links.length > 0 && (
+            <p class="case__links">
+              {project.links.map((link) => (
+                <a class="button button--outline" href={link.href} rel="noopener">
+                  {link.label}
+                </a>
+              ))}
+            </p>
+          )
+        }
+      </header>
+
+      {
+        project.disclosure && (
+          <aside class="notice" aria-label="Aviso sobre divulgação">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 8h.01M11 12h1v4h1" />
+            </svg>
+            <p>{project.disclosure}</p>
+          </aside>
+        )
+      }
+
+      <div class="case__body">
+        <section class="block">
+          <h2>Problema</h2>
+          <p>{project.problem}</p>
+        </section>
+
+        <section class="block">
+          <h2>Minha participação</h2>
+          <ul class="bullets">
+            {project.participation.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+
+        <section class="block">
+          <h2>Solução</h2>
+          <p>{project.solution}</p>
+        </section>
+
+        <section class="block">
+          <h2>Resultado</h2>
+          <p>{project.result}</p>
+        </section>
+
+        {
+          project.planned && (
+            <section class="block">
+              <h2>Ainda não implementado</h2>
+              <p class="block__note">
+                Listado aqui de propósito: enquanto não estiver funcionando, não é resultado.
+              </p>
+              <ul class="bullets bullets--planned">
+                {project.planned.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+      </div>
+
+      <p class="case__foot">
+        <a class="button button--primary" href={`${asset('')}#contato`}>Falar comigo</a>
+      </p>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .case {
+    padding-block: var(--space-lg) var(--space-xl);
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--step--1);
+    font-weight: 550;
+    text-decoration: none;
+  }
+
+  .back svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.25s var(--ease);
+  }
+
+  .back:hover svg {
+    transform: translateX(-3px);
+  }
+
+  .case__head {
+    margin-top: var(--space-md);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .case__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .badge {
+    padding: 0.15rem 0.65rem;
+    border-radius: var(--radius-full);
+    background: var(--bg-subtle);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .badge--category {
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .badge[data-status='implantado'] {
+    background: var(--accent-subtle);
+    color: var(--accent);
+  }
+
+  .case__title {
+    margin-top: var(--space-sm);
+    font-size: var(--step-4);
+  }
+
+  .case__tagline {
+    margin-top: var(--space-xs);
+    max-width: var(--measure);
+    font-size: var(--step-1);
+    color: var(--text-muted);
+  }
+
+  .case__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: var(--space-md);
+  }
+
+  .case__stack li {
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .case__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: var(--space-md);
+  }
+
+  .notice {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+    border-radius: var(--radius-md);
+    background: var(--accent-subtle);
+  }
+
+  .notice svg {
+    flex: 0 0 auto;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.2rem;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .notice p {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .case__body {
+    display: grid;
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
+  }
+
+  .block h2 {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .block p {
+    margin-top: var(--space-xs);
+    max-width: var(--measure);
+    color: var(--text-muted);
+  }
+
+  .block__note {
+    font-size: var(--step--1);
+    font-style: italic;
+  }
+
+  .bullets {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: var(--space-sm);
+  }
+
+  .bullets li {
+    position: relative;
+    padding-left: 1.25rem;
+    max-width: var(--measure);
+    color: var(--text-muted);
+  }
+
+  .bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0.2rem;
+    top: 0.66em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .bullets--planned li::before {
+    background: transparent;
+    border: 1.5px solid var(--text-faint);
+  }
+
+  .case__foot {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .back:hover svg {
+      transform: none;
+    }
+  }
+</style>

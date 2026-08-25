@@ -1,5 +1,7 @@
 ---
+import SectionHeading from './SectionHeading.astro';
 import { profile } from '../data/profile';
+import { resumeAvailable, resumeHref } from '../lib/resume';
 
 const channels = [
   {
@@ -7,6 +9,12 @@ const channels = [
     handle: 'guilhermeoliveira-gpo',
     href: profile.links.linkedin,
     note: 'Melhor canal para oportunidades e conversas profissionais.',
+  },
+  {
+    label: 'E-mail',
+    handle: profile.email,
+    href: `mailto:${profile.email}`,
+    note: 'Para propostas, dúvidas ou envio de descrição de vaga.',
   },
   {
     label: 'GitHub',
@@ -19,19 +27,16 @@ const channels = [
 
 <section class="section" id="contato">
   <div class="container">
-    <div class="section__header">
-      <span class="eyebrow">Contato</span>
-      <h2 class="section__title">Vamos conversar</h2>
-      <p class="section__lead">
-        Estou aberto a oportunidades de estágio e posições júnior em
-        desenvolvimento Full Stack, Mobile ou Backend.
-      </p>
-    </div>
+    <SectionHeading
+      eyebrow="Contato"
+      title="Vamos conversar"
+      lead="Aberto a oportunidades júnior e de estágio em desenvolvimento Full Stack, Front-end, Back-end ou Mobile."
+    />
 
     <ul class="channels">
       {
-        channels.map((channel) => (
-          <li class="channel">
+        channels.map((channel, index) => (
+          <li class="channel" data-reveal data-reveal-delay={index * 70}>
             <a class="channel__link" href={channel.href} rel="noopener">
               <span class="channel__label">{channel.label}</span>
               <span class="channel__handle">{channel.handle}</span>
@@ -41,27 +46,42 @@ const channels = [
         ))
       }
     </ul>
+
+    {
+      resumeAvailable && (
+        <p class="resume" data-reveal>
+          <a class="button button--primary" href={resumeHref} download>
+            Baixar currículo
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" />
+            </svg>
+          </a>
+        </p>
+      )
+    }
   </div>
 </section>
 
 <style>
   .channels {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
-    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-sm);
     margin: 0;
   }
 
   .channel {
+    position: relative;
     padding: var(--space-md);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
-    transition: border-color 0.18s ease;
+    transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
   }
 
   .channel:hover {
-    border-color: var(--border-strong);
+    border-color: var(--accent);
+    transform: translateY(-2px);
   }
 
   .channel__link {
@@ -71,7 +91,15 @@ const channels = [
     text-decoration: none;
   }
 
+  .channel__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
   .channel__label {
+    font-family: var(--font-display);
     font-size: var(--step-1);
     font-weight: 600;
     color: var(--text);
@@ -81,11 +109,32 @@ const channels = [
     font-family: var(--font-mono);
     font-size: var(--step--1);
     color: var(--accent);
+    overflow-wrap: anywhere;
   }
 
   .channel__note {
     margin-top: var(--space-xs);
     font-size: var(--step--1);
     color: var(--text-muted);
+  }
+
+  .resume {
+    margin-top: var(--space-md);
+  }
+
+  .resume svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .channel:hover {
+      transform: none;
+    }
   }
 </style>

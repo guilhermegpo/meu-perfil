@@ -1,26 +1,41 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
 import { profile } from '../data/profile';
+import { asset } from '../lib/url';
+
+interface Props {
+  /** Na home os links são âncoras; fora dela precisam voltar para a home. */
+  onHome?: boolean;
+}
+
+const { onHome = true } = Astro.props;
+const home = asset('');
 
 const links = [
-  { href: '#sobre', label: 'Sobre' },
-  { href: '#tecnologias', label: 'Tecnologias' },
-  { href: '#projetos', label: 'Projetos' },
-  { href: '#trajetoria', label: 'Trajetória' },
-  { href: '#contato', label: 'Contato' },
+  { id: 'inicio', label: 'Início' },
+  { id: 'sobre', label: 'Sobre' },
+  { id: 'experiencia', label: 'Experiência' },
+  { id: 'projetos', label: 'Projetos' },
+  { id: 'stack', label: 'Stack' },
+  { id: 'contato', label: 'Contato' },
 ];
+
+const href = (id: string) => (onHome ? `#${id}` : `${home}#${id}`);
 ---
 
 <header class="header">
   <div class="container header__inner">
-    <a class="header__brand" href="#topo">{profile.shortName}</a>
+    <a class="brand" href={onHome ? '#inicio' : home}>
+      <span class="brand__mark" aria-hidden="true">GP</span>
+      <span class="brand__name">{profile.displayName}</span>
+    </a>
 
-    <nav class="header__nav" aria-label="Navegação principal">
-      <ul class="header__list">
+    <nav class="nav" aria-label="Navegação principal" data-spy={onHome ? 'on' : 'off'}>
+      <ul class="nav__list">
         {
           links.map((link) => (
             <li>
-              <a class="header__link" href={link.href}>
+              <a class="nav__link" href={href(link.id)} data-nav={link.id}>
                 {link.label}
               </a>
             </li>
@@ -29,7 +44,36 @@ const links = [
       </ul>
     </nav>
 
-    <ThemeToggle />
+    <div class="header__actions">
+      <ThemeToggle />
+      <button
+        id="menu-button"
+        class="menu-button"
+        type="button"
+        aria-expanded="false"
+        aria-controls="menu-panel"
+        aria-label="Abrir menu de navegação"
+      >
+        <span class="menu-button__bar"></span>
+        <span class="menu-button__bar"></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="menu-panel" class="menu-panel" hidden>
+    <nav aria-label="Navegação em telas pequenas">
+      <ul class="menu-panel__list">
+        {
+          links.map((link) => (
+            <li>
+              <a class="menu-panel__link" href={href(link.id)}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
   </div>
 </header>
 
@@ -37,9 +81,9 @@ const links = [
   .header {
     position: sticky;
     top: 0;
-    z-index: 50;
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: saturate(180%) blur(12px);
+    z-index: 100;
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: saturate(180%) blur(14px);
     border-bottom: 1px solid var(--border);
   }
 
@@ -47,40 +91,247 @@ const links = [
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-md);
+    gap: var(--space-sm);
     min-height: 4rem;
   }
 
-  .header__brand {
-    font-weight: 650;
-    font-size: var(--step-0);
-    letter-spacing: -0.02em;
-    color: var(--text);
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
     text-decoration: none;
+    color: var(--text);
   }
 
-  .header__list {
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: var(--accent-contrast);
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .brand__name {
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .nav__list {
     display: flex;
-    gap: var(--space-md);
+    gap: var(--space-xs);
     margin: 0;
   }
 
-  .header__link {
+  .nav__link {
+    position: relative;
+    display: block;
+    padding: 0.4rem 0.7rem;
+    border-radius: var(--radius-sm);
     font-size: var(--step--1);
     font-weight: 500;
     color: var(--text-muted);
     text-decoration: none;
+    transition: color 0.2s var(--ease), background 0.2s var(--ease);
   }
 
-  .header__link:hover {
+  .nav__link:hover {
+    color: var(--text);
+    background: var(--bg-subtle);
+  }
+
+  /* Indicação da seção atual: sublinhado curto sob o rótulo ativo. */
+  .nav__link::after {
+    content: '';
+    position: absolute;
+    left: 0.7rem;
+    right: 0.7rem;
+    bottom: 0.1rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s var(--ease);
+  }
+
+  .nav__link[aria-current='true'] {
     color: var(--text);
   }
 
-  /* No celular a navegação por âncora vira ruído: o conteúdo é uma página
-     única e curta, então basta rolar. Marca e tema permanecem. */
-  @media (max-width: 46rem) {
-    .header__nav {
+  .nav__link[aria-current='true']::after {
+    transform: scaleX(1);
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .menu-button {
+    display: none;
+    place-items: center;
+    gap: 5px;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    cursor: pointer;
+  }
+
+  .menu-button__bar {
+    display: block;
+    width: 1.05rem;
+    height: 1.6px;
+    border-radius: 2px;
+    background: var(--text);
+    transition: transform 0.25s var(--ease), opacity 0.2s var(--ease);
+  }
+
+  .menu-button[aria-expanded='true'] .menu-button__bar:first-child {
+    transform: translateY(3.3px) rotate(45deg);
+  }
+
+  .menu-button[aria-expanded='true'] .menu-button__bar:last-child {
+    transform: translateY(-3.3px) rotate(-45deg);
+  }
+
+  .menu-panel {
+    border-top: 1px solid var(--border);
+    background: var(--bg-elevated);
+  }
+
+  .menu-panel[hidden] {
+    display: none;
+  }
+
+  .menu-panel__list {
+    margin: 0;
+    padding: var(--space-xs) clamp(1.25rem, 4vw, 2.5rem) var(--space-sm);
+  }
+
+  .menu-panel__link {
+    display: block;
+    /* Alvo de toque confortável. */
+    padding: 0.85rem 0.25rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: var(--step-0);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .menu-panel__link:hover {
+    color: var(--accent);
+  }
+
+  .menu-panel__list li:last-child .menu-panel__link {
+    border-bottom: 0;
+  }
+
+  @media (max-width: 56rem) {
+    .nav {
+      display: none;
+    }
+
+    .menu-button {
+      display: grid;
+    }
+  }
+
+  @media (max-width: 24rem) {
+    .brand__name {
       display: none;
     }
   }
 </style>
+
+<script>
+  /* ---------------------------------------------------- menu em telas pequenas */
+  const button = document.getElementById('menu-button');
+  const panel = document.getElementById('menu-panel');
+
+  function closeMenu() {
+    if (!button || !panel) return;
+    button.setAttribute('aria-expanded', 'false');
+    button.setAttribute('aria-label', 'Abrir menu de navegação');
+    panel.hidden = true;
+  }
+
+  button?.addEventListener('click', () => {
+    if (!panel) return;
+    const open = button.getAttribute('aria-expanded') === 'true';
+    if (open) {
+      closeMenu();
+    } else {
+      button.setAttribute('aria-expanded', 'true');
+      button.setAttribute('aria-label', 'Fechar menu de navegação');
+      panel.hidden = false;
+    }
+  });
+
+  // Escolher um destino fecha o menu; Escape também, devolvendo o foco ao botão.
+  panel?.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) closeMenu();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    if (button?.getAttribute('aria-expanded') !== 'true') return;
+    closeMenu();
+    button.focus();
+  });
+
+  // Voltar à largura de desktop com o menu aberto deixaria o painel preso.
+  window.matchMedia('(min-width: 56.01rem)').addEventListener('change', (event) => {
+    if (event.matches) closeMenu();
+  });
+
+  /* ------------------------------------------------ indicação da seção atual */
+  const spy = document.querySelector('[data-spy="on"]');
+
+  if (spy) {
+    const links = new Map<string, HTMLAnchorElement>();
+    spy.querySelectorAll<HTMLAnchorElement>('[data-nav]').forEach((link) => {
+      links.set(link.dataset.nav!, link);
+    });
+
+    const sections = [...links.keys()]
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    let current = '';
+
+    const setCurrent = (id: string) => {
+      if (id === current) return;
+      current = id;
+      links.forEach((link, key) => {
+        if (key === id) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+    };
+
+    // Faixa estreita logo abaixo do cabeçalho: a seção que a cruza é a atual.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setCurrent(visible[0].target.id);
+      },
+      { rootMargin: '-72px 0px -70% 0px', threshold: 0 },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>

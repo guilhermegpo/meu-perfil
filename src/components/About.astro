@@ -1,36 +1,36 @@
 ---
-import { profile } from '../data/profile';
+import SectionHeading from './SectionHeading.astro';
 
-const principles = [
+const pillars = [
+  {
+    title: 'Entender antes de codar',
+    body: 'No ILA, o trabalho começou conversando com quem usaria o sistema e mapeando o fluxo que já existia. Requisito mal entendido custa mais caro que qualquer bug.',
+  },
   {
     title: 'Decisão documentada',
-    body: 'Escolhas de arquitetura relevantes viram ADRs — contexto, alternativas e consequências. Se não consigo explicar uma decisão, ela não entra no projeto.',
+    body: 'Escolhas de arquitetura relevantes viram registro escrito — contexto, alternativas e consequências. Se eu não consigo explicar uma decisão, ela não entra no projeto.',
   },
   {
-    title: 'Simples antes de esperto',
-    body: 'Prefiro código legível a abstração prematura. Camada só existe quando resolve um problema concreto, não para antecipar um que talvez nunca apareça.',
-  },
-  {
-    title: 'Privacidade por padrão',
-    body: 'Dado sensível não entra em repositório público. Projetos com dados de pessoas usam fixtures e seeds fictícios desde o primeiro commit.',
+    title: 'Entregar e sustentar',
+    body: 'Implantar não é o fim. Suporte ao usuário e documentação fazem parte da entrega, e são o que decide se o sistema continua vivo depois que você sai.',
   },
 ];
 ---
 
 <section class="section" id="sobre">
   <div class="container">
-    <div class="section__header">
-      <span class="eyebrow">Sobre</span>
-      <h2 class="section__title">Como eu trabalho</h2>
-      <p class="section__lead">{profile.summary}</p>
-    </div>
+    <SectionHeading
+      eyebrow="Sobre"
+      title="Como eu trabalho"
+      lead="Formado em Análise e Desenvolvimento de Sistemas, com experiência prática construindo uma solução que entrou em uso real. Meu interesse está em produtos completos — do modelo de dados à interface — com atenção especial a desenvolvimento web e mobile."
+    />
 
-    <ul class="principles">
+    <ul class="pillars">
       {
-        principles.map((item) => (
-          <li class="principle">
-            <h3 class="principle__title">{item.title}</h3>
-            <p class="principle__body">{item.body}</p>
+        pillars.map((pillar, index) => (
+          <li class="pillar" data-reveal data-reveal-delay={index * 80}>
+            <h3 class="pillar__title">{pillar.title}</h3>
+            <p class="pillar__body">{pillar.body}</p>
           </li>
         ))
       }
@@ -39,28 +39,39 @@ const principles = [
 </section>
 
 <style>
-  .principles {
+  .pillars {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-sm);
     margin: 0;
   }
 
-  .principle {
+  .pillar {
     padding: var(--space-md);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--bg-elevated);
+    transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
   }
 
-  .principle__title {
-    font-size: var(--step-0);
-    font-weight: 600;
+  .pillar:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
   }
 
-  .principle__body {
+  .pillar__title {
+    font-size: var(--step-1);
+  }
+
+  .pillar__body {
     margin-top: var(--space-xs);
     font-size: var(--step--1);
     color: var(--text-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pillar:hover {
+      transform: none;
+    }
   }
 </style>

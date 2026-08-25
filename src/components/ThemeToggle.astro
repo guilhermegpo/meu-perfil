@@ -1,74 +1,83 @@
 ---
-// Alterna entre tema claro e escuro e guarda a escolha no navegador.
+// Alterna entre claro e escuro e guarda a escolha no navegador.
 // Sem escolha salva, o site segue a preferência do sistema operacional.
 ---
 
 <button
   id="theme-toggle"
-  class="theme-toggle"
+  class="toggle"
   type="button"
   aria-label="Alternar entre tema claro e escuro"
 >
-  <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
-    <circle cx="12" cy="12" r="4.2" />
-    <path d="M12 2.4v2.4M12 19.2v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.4 12h2.4M19.2 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" />
+  <svg class="toggle__icon toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="4.2"></circle>
+    <path
+      d="M12 2.4v2.4M12 19.2v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.4 12h2.4M19.2 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"
+    ></path>
   </svg>
-  <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M20.5 14.5A8.6 8.6 0 0 1 9.5 3.5a8.6 8.6 0 1 0 11 11Z" />
+  <svg class="toggle__icon toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M20.5 14.5A8.6 8.6 0 0 1 9.5 3.5a8.6 8.6 0 1 0 11 11Z"></path>
   </svg>
 </button>
 
 <style>
-  .theme-toggle {
+  .toggle {
     display: grid;
     place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    /* 44px: alvo de toque confortável, igual ao dos botões. */
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     background: var(--bg-elevated);
     color: var(--text-muted);
     cursor: pointer;
-    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
   }
 
-  .theme-toggle:hover {
-    color: var(--text);
-    border-color: var(--border-strong);
+  .toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
   }
 
-  .theme-toggle__icon {
+  .toggle__icon {
     grid-area: 1 / 1;
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1.1rem;
+    height: 1.1rem;
     fill: none;
     stroke: currentColor;
     stroke-width: 1.7;
     stroke-linecap: round;
     stroke-linejoin: round;
+    transition: transform 0.3s var(--ease), opacity 0.2s var(--ease);
   }
 
   /* No claro mostra a lua (ação: escurecer); no escuro mostra o sol. */
-  .theme-toggle__icon--sun {
-    display: none;
+  .toggle__icon--sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
   }
 
-  :global(:root[data-theme='dark']) .theme-toggle__icon--sun {
-    display: block;
+  :global(:root[data-theme='dark']) .toggle__icon--sun {
+    opacity: 1;
+    transform: none;
   }
 
-  :global(:root[data-theme='dark']) .theme-toggle__icon--moon {
-    display: none;
+  :global(:root[data-theme='dark']) .toggle__icon--moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.6);
   }
 
   @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .theme-toggle__icon--sun {
-      display: block;
+    :global(:root:not([data-theme='light'])) .toggle__icon--sun {
+      opacity: 1;
+      transform: none;
     }
 
-    :global(:root:not([data-theme='light'])) .theme-toggle__icon--moon {
-      display: none;
+    :global(:root:not([data-theme='light'])) .toggle__icon--moon {
+      opacity: 0;
+      transform: rotate(90deg) scale(0.6);
     }
   }
 </style>

@@ -6,12 +6,33 @@ import { asset } from '../lib/url';
 interface Props {
   title: string;
   description: string;
+  /** Dados estruturados extras da página, além do Person do site. */
+  structuredData?: Record<string, unknown>;
 }
 
-const { title, description } = Astro.props;
+const { title, description, structuredData } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(asset('og-image.png'), Astro.site).href;
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: `${profile.role} — ${profile.focus}`,
+  description: profile.headline,
+  url: new URL(asset(''), Astro.site).href,
+  image: ogImage,
+  email: `mailto:${profile.email}`,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Brasília',
+    addressRegion: 'DF',
+    addressCountry: 'BR',
+  },
+  knowsAbout: ['React', 'TypeScript', 'PostgreSQL', 'Supabase', 'Flutter', 'Astro'],
+  sameAs: [profile.links.linkedin, profile.links.github],
+};
 ---
 
 <!doctype html>
@@ -25,64 +46,51 @@ const ogImage = new URL(asset('og-image.png'), Astro.site).href;
     <link rel="canonical" href={canonical} />
     <meta name="author" content={profile.name} />
     <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0f766e" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#071320" media="(prefers-color-scheme: dark)" />
 
-    <!-- Open Graph / redes sociais -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="profile" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content={profile.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${profile.name} — ${profile.role}`} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="icon" href={asset('favicon.svg')} type="image/svg+xml" />
-    <link rel="apple-touch-icon" href={asset(profile.photo)} />
+    <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
     <link rel="sitemap" href={asset('sitemap-index.xml')} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-    />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(person)} />
+    {
+      structuredData && (
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+      )
+    }
 
     <!--
-      Dados estruturados: ajudam buscadores a entender que a página descreve
-      uma pessoa, e não um artigo qualquer.
-    -->
-    <script
-      is:inline
-      type="application/ld+json"
-      set:html={JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Person',
-        name: profile.name,
-        jobTitle: `${profile.role} — ${profile.focus}`,
-        url: canonical,
-        image: new URL(asset(profile.photo), Astro.site).href,
-        address: { '@type': 'PostalAddress', addressLocality: 'Brasília', addressRegion: 'DF', addressCountry: 'BR' },
-        sameAs: [profile.links.linkedin, profile.links.github],
-      })}
-    />
-
-    <!--
-      Aplica o tema salvo antes da primeira pintura, para não haver flash de
-      tema claro em quem escolheu escuro. Precisa ser inline e síncrono.
+      Roda antes da primeira pintura, síncrono e inline, por dois motivos:
+      aplicar o tema salvo sem flash de tema errado, e só ligar o estado
+      inicial da animação de entrada quando há JavaScript — caso contrário o
+      conteúdo ficaria invisível para quem navega sem ele.
     -->
     <script is:inline>
       (function () {
+        var root = document.documentElement;
         try {
           var saved = localStorage.getItem('theme');
-          if (saved === 'dark' || saved === 'light') {
-            document.documentElement.setAttribute('data-theme', saved);
-          }
+          if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
         } catch (e) {
           /* localStorage indisponível: segue a preferência do sistema. */
         }
+        root.classList.add('js-reveal');
       })();
     </script>
   </head>
@@ -90,5 +98,31 @@ const ogImage = new URL(asset('og-image.png'), Astro.site).href;
   <body>
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <slot />
+
+    <script>
+      // Revela blocos conforme entram na viewport. Uma passagem só: depois de
+      // visível, o elemento sai do observador e nunca mais é animado.
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+      if (reduced.matches || !('IntersectionObserver' in window)) {
+        targets.forEach((el) => el.classList.add('is-visible'));
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              const el = entry.target as HTMLElement;
+              const delay = Number(el.dataset.revealDelay ?? 0);
+              window.setTimeout(() => el.classList.add('is-visible'), delay);
+              observer.unobserve(el);
+            }
+          },
+          { rootMargin: '0px 0px -12% 0px', threshold: 0.05 },
+        );
+
+        targets.forEach((el) => observer.observe(el));
+      }
+    </script>
   </body>
 </html>

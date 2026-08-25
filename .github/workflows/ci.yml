@@ -3,8 +3,10 @@ name: CI
 on:
   pull_request:
     branches: [main, develop]
-  push:
-    branches: [develop]
+
+# Pushes em main passam pelas mesmas verificações no workflow de deploy antes
+# da publicação. Manter o CI apenas em pull requests evita duas execuções para
+# o mesmo commit quando develop já está associado a um PR.
 
 permissions:
   contents: read
@@ -29,3 +31,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Verificar acessibilidade, metadados e links
+        run: npm run verify
