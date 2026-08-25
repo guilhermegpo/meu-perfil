@@ -10,7 +10,7 @@
  * GitHub em tempo de execução: o site é estático, e buscar em runtime
  * adicionaria dependência de rede e limite de requisições sem ganho real.
  */
-export type ProjectStatus = 'em produção' | 'em desenvolvimento' | 'publicado';
+export type ProjectStatus = 'implantado' | 'em desenvolvimento' | 'publicado';
 
 export interface ProjectLink {
   readonly label: string;
@@ -47,21 +47,21 @@ export const projects: readonly Project[] = [
     slug: 'sistema-ila-fab',
     name: 'Sistema de gestão de cursos — ILA/FAB',
     category: 'Aplicação web interna',
-    status: 'em produção',
+    status: 'implantado',
     tagline:
-      'Aplicação web interna para centralizar a gestão de cursos do Instituto de Logística da Aeronáutica.',
+      'Aplicação web interna desenvolvida e implantada para apoiar o planejamento, a coordenação e o gerenciamento de cursos.',
     problem:
-      'Processos e informações de gestão de cursos precisavam de maior centralização e organização. Registros ficavam dispersos, o que dificultava consulta, padronização e rastreabilidade.',
+      'O planejamento, a coordenação e o gerenciamento de cursos demandavam maior centralização das informações, padronização dos registros e suporte à consulta e à rastreabilidade.',
     participation: [
-      'Levantamento de requisitos e entendimento dos fluxos junto aos usuários',
-      'Mapeamento dos processos existentes antes de escrever código',
-      'Desenvolvimento da aplicação web',
-      'Modelagem do banco de dados relacional',
-      'Implantação em ambiente real e suporte aos usuários',
+      'Levantamento de requisitos junto aos usuários',
+      'Mapeamento dos fluxos relacionados aos cursos',
+      'Desenvolvimento com React, TypeScript e TanStack Router',
+      'Persistência e consulta de dados com Supabase e PostgreSQL',
+      'Implantação da aplicação e suporte aos usuários',
       'Documentação do sistema e dos processos',
     ],
     solution:
-      'Desenvolvimento e implantação de uma aplicação web interna que reúne os registros em um só lugar, com estrutura de dados padronizada e telas desenhadas a partir dos fluxos que os próprios usuários descreveram.',
+      'A aplicação foi definida a partir do levantamento de requisitos e do mapeamento de fluxos. A solução centraliza as informações e padroniza os registros em uma aplicação React e TypeScript, com TanStack Router, Supabase e PostgreSQL.',
     result:
       'Centralização das informações, padronização dos registros e melhoria na consulta e na rastreabilidade dos dados de cursos.',
     stack: ['React', 'TypeScript', 'TanStack Router', 'Supabase', 'PostgreSQL'],

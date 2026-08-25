@@ -28,15 +28,16 @@ export const experience: readonly ExperienceEntry[] = [
   {
     organization: 'Instituto de Logística da Aeronáutica — ILA/FAB',
     role: 'Soldado Temporário',
-    focus: 'Desenvolvimento de sistema interno',
-    period: 'ago/2023 — jun/2026',
+    focus: 'Desenvolvimento e implantação de aplicação interna',
+    period: '08/2023 — 06/2026',
     location: 'Guarulhos, SP',
     summary:
-      'Desenvolvi e implantei uma aplicação web interna para gestão de cursos, atuando em todas as etapas: levantamento de requisitos com os usuários, mapeamento dos fluxos existentes, desenvolvimento, modelagem do banco de dados, implantação e suporte.',
+      'Desenvolvi e implantei uma aplicação web interna para apoiar o planejamento, a coordenação e o gerenciamento de cursos, atuando no levantamento de requisitos, no mapeamento de fluxos, no desenvolvimento, na documentação e no suporte aos usuários.',
     achievements: [
       'Levantamento de requisitos e mapeamento de fluxos junto aos usuários da área',
-      'Desenvolvimento da aplicação web e modelagem do banco de dados relacional',
-      'Implantação em ambiente real e suporte aos usuários após a entrega',
+      'Desenvolvimento da aplicação web com React, TypeScript e TanStack Router',
+      'Uso de Supabase e PostgreSQL para persistência e consulta das informações',
+      'Implantação da aplicação e suporte aos usuários após a entrega',
       'Documentação do sistema e dos processos para continuidade da operação',
     ],
     stack: ['React', 'TypeScript', 'TanStack Router', 'Supabase', 'PostgreSQL'],
@@ -45,7 +46,7 @@ export const experience: readonly ExperienceEntry[] = [
   {
     organization: 'Torre Contabilidade LTDA',
     role: 'Auxiliar Fiscal',
-    period: 'fev/2022 — jul/2023',
+    period: '02/2022 — 07/2023',
     location: 'São Paulo, SP',
     summary:
       'Rotina fiscal com prazos legais rígidos e alto volume de informação. Experiência que formou a base de organização e rigor com dados que hoje aplico em desenvolvimento.',

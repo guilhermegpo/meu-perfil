@@ -19,7 +19,7 @@ export const profile = {
    * de tempo de experiência inventado — um recrutador cobra isso na entrevista.
    */
   headline:
-    'Desenvolvi e implantei uma aplicação web interna no Instituto de Logística da Aeronáutica, do levantamento de requisitos à entrega. Formado em Análise e Desenvolvimento de Sistemas.',
+    'Desenvolvi e implantei uma aplicação web interna no Instituto de Logística da Aeronáutica, do levantamento de requisitos à entrega. Formado em Análise e Desenvolvimento de Sistemas pela Universidade Cruzeiro do Sul.',
 
   email: 'guilhermegpo.dev@gmail.com',
 
