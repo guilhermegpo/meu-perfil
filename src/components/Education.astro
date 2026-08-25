@@ -16,6 +16,7 @@ import { education } from '../data/education';
               <span class="item__status">{entry.status}</span>
             </div>
             {entry.institution && <p class="item__institution">{entry.institution}</p>}
+            {entry.period && <p class="item__period">{entry.period}</p>}
             {entry.note && <p class="item__note">{entry.note}</p>}
           </li>
         ))
@@ -59,9 +60,11 @@ import { education } from '../data/education';
     font-size: var(--step--1);
     color: var(--accent);
     white-space: nowrap;
+    text-transform: capitalize;
   }
 
-  .item__institution {
+  .item__institution,
+  .item__period {
     margin-top: 0.15rem;
     font-size: var(--step--1);
     font-weight: 500;

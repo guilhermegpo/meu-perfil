@@ -7,13 +7,16 @@
 export interface EducationEntry {
   readonly title: string;
   readonly institution?: string;
+  readonly period?: string;
   readonly status: 'concluído' | 'em andamento';
   readonly note?: string;
 }
 
 export const education: readonly EducationEntry[] = [
   {
-    title: 'Análise e Desenvolvimento de Sistemas',
+    title: 'Análise e Desenvolvimento de Sistemas — ADS',
+    institution: 'Universidade Cruzeiro do Sul',
+    period: '02/2022 — 07/2026',
     status: 'concluído',
     note: 'Graduação em tecnologia, com base em lógica de programação, estruturas de dados, banco de dados e engenharia de software.',
   },
