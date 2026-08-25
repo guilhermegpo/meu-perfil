@@ -40,6 +40,14 @@ export interface Project {
   readonly disclosure?: string;
   /** Itens ainda não implementados. Só aparece em projeto em desenvolvimento. */
   readonly planned?: readonly string[];
+  /** Versão pública, quando o projeto já tem release. */
+  readonly version?: string;
+  /**
+   * Sinais técnicos verificáveis do projeto — número de testes, CI, decisões
+   * de arquitetura. Aparecem no card porque comunicam engenharia mais rápido
+   * do que a lista de tecnologias.
+   */
+  readonly signals?: readonly string[];
 }
 
 export const projects: readonly Project[] = [
@@ -90,6 +98,14 @@ export const projects: readonly Project[] = [
     result:
       'Scaffold executável, persistência SQLite, onboarding e invariantes centrais cobertos por testes automatizados e CI de pull requests.',
     stack: ['Flutter', 'Dart', 'Drift', 'SQLite', 'Riverpod'],
+    version: 'v0.1.0-alpha.1',
+    signals: [
+      '28 testes automatizados',
+      'CI Android',
+      'Drift / SQLite',
+      'RBAC de três papéis',
+      'Fundação offline-first',
+    ],
     links: [
       {
         label: 'Repositório',
