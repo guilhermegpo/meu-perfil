@@ -15,8 +15,13 @@ import { featuredProjects, otherProjects } from '../data/projects';
     <div class="featured">
       {
         featuredProjects.map((project, index) => (
-          <div data-reveal data-reveal-delay={index * 90}>
-            <ProjectCard project={project} featured />
+          <div
+            class="featured__item"
+            style={`--sticky-top: ${5.5 + index * 0.75}rem`}
+            data-reveal
+            data-reveal-delay={index * 90}
+          >
+            <ProjectCard project={project} featured order={index + 1} />
           </div>
         ))
       }
@@ -29,7 +34,7 @@ import { featuredProjects, otherProjects } from '../data/projects';
           <div class="grid">
             {otherProjects.map((project, index) => (
               <div data-reveal data-reveal-delay={index * 80}>
-                <ProjectCard project={project} />
+                <ProjectCard project={project} order={featuredProjects.length + index + 1} />
               </div>
             ))}
           </div>
@@ -43,6 +48,10 @@ import { featuredProjects, otherProjects } from '../data/projects';
   .featured {
     display: grid;
     gap: var(--space-md);
+  }
+
+  .featured__item {
+    isolation: isolate;
   }
 
   .featured > *,
@@ -67,5 +76,16 @@ import { featuredProjects, otherProjects } from '../data/projects';
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
     gap: var(--space-md);
+  }
+
+  @media (min-width: 64rem) {
+    .featured {
+      gap: var(--space-xl);
+    }
+
+    .featured__item {
+      position: sticky;
+      top: var(--sticky-top);
+    }
   }
 </style>

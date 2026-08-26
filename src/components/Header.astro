@@ -17,6 +17,7 @@ const links = [
   { id: 'experiencia', label: 'Experiência' },
   { id: 'projetos', label: 'Projetos' },
   { id: 'stack', label: 'Stack' },
+  { id: 'engenharia', label: 'Engenharia' },
   { id: 'contato', label: 'Contato' },
 ];
 
@@ -99,6 +100,7 @@ const href = (id: string) => (onHome ? `#${id}` : `${home}#${id}`);
     display: inline-flex;
     align-items: center;
     gap: 0.625rem;
+    min-height: 2.75rem;
     text-decoration: none;
     color: var(--text);
   }
@@ -268,15 +270,27 @@ const href = (id: string) => (onHome ? `#${id}` : `${home}#${id}`);
     panel.hidden = true;
   }
 
-  button?.addEventListener('click', () => {
+  function openMenu(moveFocus: boolean) {
+    if (!button || !panel) return;
+    button.setAttribute('aria-expanded', 'true');
+    button.setAttribute('aria-label', 'Fechar menu de navegação');
+    panel.hidden = false;
+
+    if (moveFocus) {
+      window.requestAnimationFrame(() => {
+        panel.querySelector<HTMLAnchorElement>('a')?.focus();
+      });
+    }
+  }
+
+  button?.addEventListener('click', (event) => {
     if (!panel) return;
     const open = button.getAttribute('aria-expanded') === 'true';
     if (open) {
       closeMenu();
     } else {
-      button.setAttribute('aria-expanded', 'true');
-      button.setAttribute('aria-label', 'Fechar menu de navegação');
-      panel.hidden = false;
+      // Clique por teclado tem detail 0; nesse caso o foco entra no menu.
+      openMenu(event.detail === 0);
     }
   });
 

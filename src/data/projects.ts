@@ -40,6 +40,14 @@ export interface Project {
   readonly disclosure?: string;
   /** Itens ainda não implementados. Só aparece em projeto em desenvolvimento. */
   readonly planned?: readonly string[];
+  /** Versão pública, quando o projeto já tem release. */
+  readonly version?: string;
+  /**
+   * Sinais técnicos verificáveis do projeto — número de testes, CI, decisões
+   * de arquitetura. Aparecem no card porque comunicam engenharia mais rápido
+   * do que a lista de tecnologias.
+   */
+  readonly signals?: readonly string[];
 }
 
 export const projects: readonly Project[] = [
@@ -81,22 +89,35 @@ export const projects: readonly Project[] = [
       'Quem acompanha várias responsabilidades ao mesmo tempo acaba distribuindo o controle entre papel, planilhas e mensagens. Falta um lugar único que funcione mesmo sem internet e que permita mais de uma pessoa organizando o mesmo conjunto de informações.',
     participation: [
       'Definição do modelo de domínio: Workspace, User, Membership, Role e Calling',
-      'Decisão pela arquitetura offline-first e registro em ADR',
-      'Desenho do controle de acesso por papéis, extensível a novos perfis',
-      'Estruturação dos módulos de chamado como unidades independentes',
+      'Implementação da persistência local com Drift e do estado assíncrono com Riverpod',
+      'Proteção da regra de manter ao menos um administrador por Workspace',
+      'Documentação de arquitetura, privacidade, segurança e decisões em ADRs',
     ],
     solution:
-      'Aplicativo Android em Flutter, com dados locais por padrão e sincronização opcional. O controle de acesso é declarado por papel e permissão, e cada tipo de chamado é um módulo próprio sobre infraestrutura compartilhada — em vez de um módulo único cheio de condicionais.',
+      'Fundação Android em Flutter com Workspace local offline, primeiro usuário administrador, seleção de perfil e estrutura para múltiplos chamados. Compartilhamento e módulos especializados permanecem no roadmap.',
     result:
-      'Fundação do repositório e decisões de arquitetura documentadas. O desenvolvimento das funcionalidades ainda não começou.',
-    stack: ['Flutter', 'Dart', 'SQLite', 'Arquitetura modular'],
-    links: [],
+      'Scaffold executável, persistência SQLite, onboarding e invariantes centrais cobertos por testes automatizados e CI de pull requests.',
+    stack: ['Flutter', 'Dart', 'Drift', 'SQLite', 'Riverpod'],
+    version: 'v0.1.0-alpha.1',
+    signals: [
+      '28 testes automatizados',
+      'CI Android',
+      'Drift / SQLite',
+      'RBAC de três papéis',
+      'Fundação offline-first',
+    ],
+    links: [
+      {
+        label: 'Repositório',
+        href: 'https://github.com/guilhermegpo/meu-chamado',
+      },
+    ],
     featured: true,
     planned: [
       'Módulos de chamado com regras de domínio próprias',
       'Sincronização opcional de workspace compartilhado',
       'Distribuição de versões por GitHub Releases',
-      'Pipeline de build e testes no GitHub Actions',
+      'Gestão de usuários e chamados pela interface',
     ],
   },
   {

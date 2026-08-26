@@ -1,6 +1,8 @@
 ---
 import SectionHeading from './SectionHeading.astro';
 import { stack } from '../data/stack';
+
+const railItems = [...new Set(stack.flatMap((category) => category.items.map((item) => item.name)))];
 ---
 
 <section class="section" id="stack">
@@ -10,6 +12,12 @@ import { stack } from '../data/stack';
       title="Com o que eu construo"
       lead="Sem barra de progresso e sem percentual. O rótulo diz apenas se a tecnologia já foi usada em projeto entregue ou se está em uso de aprendizado — as duas afirmações são verificáveis."
     />
+
+    <div class="rail" aria-hidden="true">
+      <div class="rail__track">
+        {[...railItems, ...railItems].map((item) => <span>{item}</span>)}
+      </div>
+    </div>
 
     <div class="stack">
       {
@@ -37,6 +45,46 @@ import { stack } from '../data/stack';
 </section>
 
 <style>
+  .rail {
+    overflow: hidden;
+    margin-bottom: var(--space-lg);
+    padding-block: 0.7rem;
+    border-block: 1px solid var(--border);
+    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  }
+
+  .rail__track {
+    display: flex;
+    width: max-content;
+    animation: rail-scroll 34s linear infinite;
+  }
+
+  .rail__track span {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding-right: 1rem;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+
+  .rail__track span::after {
+    content: '';
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  @keyframes rail-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
   .stack {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
@@ -123,5 +171,11 @@ import { stack } from '../data/stack';
   .legend__swatch--used {
     border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
     background: var(--accent-subtle);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rail__track {
+      animation: none;
+    }
   }
 </style>

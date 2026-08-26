@@ -39,6 +39,7 @@ export const experience: readonly ExperienceEntry[] = [
       'Uso de Supabase e PostgreSQL para persistência e consulta das informações',
       'Implantação da aplicação e suporte aos usuários após a entrega',
       'Documentação do sistema e dos processos para continuidade da operação',
+      'Padronização de registros e melhoria dos processos de consulta e rastreabilidade',
     ],
     stack: ['React', 'TypeScript', 'TanStack Router', 'Supabase', 'PostgreSQL'],
     caseStudy: 'sistema-ila-fab',
