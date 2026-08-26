@@ -1,0 +1,110 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { practices } from '../data/practices';
+---
+
+<section class="section" id="engenharia">
+  <div class="container">
+    <SectionHeading
+      eyebrow="Engenharia"
+      title="Como o código chega em produção"
+      lead="Interface é metade do trabalho. A outra metade é o que garante que a entrega continue funcionando depois — e cada item abaixo pode ser conferido nos repositórios públicos."
+    />
+
+    <ul class="practices">
+      {
+        practices.map((practice, index) => (
+          <li class="practice" data-reveal data-reveal-delay={index * 70}>
+            <h3 class="practice__title">{practice.title}</h3>
+            <p class="practice__body">{practice.body}</p>
+            <ul class="practice__items">
+              {practice.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* Quatro temas: 2x2 em telas largas. Com auto-fit o quarto card ficava
+     órfão numa linha de três, com metade da faixa vazia ao lado. */
+  .practices {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+    margin: 0;
+  }
+
+  @media (min-width: 46rem) {
+    .practices {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .practice {
+    min-width: 0;
+    padding: var(--space-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    transition: border-color var(--motion-normal) var(--ease-standard),
+      transform var(--motion-normal) var(--ease-emphasized);
+  }
+
+  .practice:hover {
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+    transform: translateY(-2px);
+  }
+
+  .practice__title {
+    font-size: var(--step-1);
+  }
+
+  .practice__body {
+    margin-top: var(--space-xs);
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .practice__items {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: var(--space-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border);
+  }
+
+  .practice__items li {
+    position: relative;
+    padding-left: 1.1rem;
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .practice__items li::before {
+    content: '';
+    position: absolute;
+    left: 0.1rem;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  @media (max-width: 38rem) {
+    .practice {
+      padding: var(--space-sm);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .practice:hover {
+      transform: none;
+    }
+  }
+</style>

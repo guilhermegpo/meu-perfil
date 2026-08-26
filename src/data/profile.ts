@@ -18,6 +18,9 @@ export const profile = {
    * Duas frases, ambas verificáveis. Nada de "apaixonado por tecnologia" nem
    * de tempo de experiência inventado — um recrutador cobra isso na entrevista.
    */
+  /** Linha de posicionamento do hero. Curta, sem promessa vazia. */
+  tagline: 'Construindo soluções reais com tecnologia e propósito.',
+
   headline:
     'Desenvolvi e implantei uma aplicação web interna no Instituto de Logística da Aeronáutica, do levantamento de requisitos à entrega. Formado em Análise e Desenvolvimento de Sistemas pela Universidade Cruzeiro do Sul.',
 
