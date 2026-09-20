@@ -1,0 +1,171 @@
+---
+import { metricsStrip, practices } from '../data/engineering';
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+---
+
+<section id="engenharia" class="section" aria-labelledby="engenharia-titulo">
+  <div class="container">
+    <SectionHeading
+      id="engenharia-titulo"
+      eyebrow="Engenharia"
+      title="Como eu construo software"
+      lead="Princípios que aparecem no código dos projetos. Quando uma prática existe só em parte deles, o texto diz onde."
+    />
+
+    <dl class="metrics glass" data-reveal>
+      {
+        metricsStrip.map((metric) => (
+          <div class="metric">
+            <dt class="metric__label">{metric.label}</dt>
+            <dd class="metric__value">{metric.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <ul class="practices">
+      {
+        practices.map((practice, index) => (
+          <li class="practice" data-reveal data-reveal-delay={String((index % 3) * 70)}>
+            <p class="practice__index">{String(index + 1).padStart(2, '0')}</p>
+            <h3 class="practice__title">{practice.title}</h3>
+            <p class="practice__summary">{practice.summary}</p>
+            <ul class="practice__evidence">
+              {
+                practice.evidence.map((line) => (
+                  <li>
+                    <Icon name="check" />
+                    <span>{line}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0 0 clamp(2rem, 5vw, 3.5rem);
+    padding: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  @media (min-width: 40rem) {
+    .metrics {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .metrics {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  .metric {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.25rem;
+    padding: 1.25rem 1.35rem;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .metric__value {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--step-4);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    background: linear-gradient(180deg, #ffffff, #aebbc9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .metric__label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .practices {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  @media (min-width: 40rem) {
+    .practices {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .practices {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .practice {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.35rem 1.4rem 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent), var(--surface);
+    transition:
+      border-color var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+
+  .practice:hover {
+    border-color: var(--line-strong);
+  }
+
+  .practice__index {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+
+  .practice__title {
+    font-size: var(--step-1);
+  }
+
+  .practice__summary {
+    font-size: 0.93rem;
+    color: var(--text-muted);
+  }
+
+  .practice__evidence {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.86rem;
+    color: var(--text);
+  }
+
+  .practice__evidence li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .practice__evidence :global(svg) {
+    flex: none;
+    margin-top: 0.2em;
+    color: var(--accent);
+  }
+</style>

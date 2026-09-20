@@ -1,140 +1,102 @@
 ---
-import SectionHeading from './SectionHeading.astro';
 import { profile } from '../data/profile';
 import { resumeAvailable, resumeHref } from '../lib/resume';
+import Icon from './Icon.astro';
 
-const channels = [
-  {
-    label: 'LinkedIn',
-    handle: 'guilhermeoliveira-gpo',
-    href: profile.links.linkedin,
-    note: 'Melhor canal para oportunidades e conversas profissionais.',
-  },
-  {
-    label: 'E-mail',
-    handle: profile.email,
-    href: `mailto:${profile.email}`,
-    note: 'Para propostas, dúvidas ou envio de descrição de vaga.',
-  },
-  {
-    label: 'GitHub',
-    handle: '@guilhermegpo',
-    href: profile.links.github,
-    note: 'Código, histórico de commits e documentação dos projetos.',
-  },
-];
+const mailto = `mailto:${profile.email}?subject=${encodeURIComponent('Contato pelo portfólio')}`;
 ---
 
-<section class="section" id="contato">
+<section id="contato" class="section" aria-labelledby="contato-titulo">
   <div class="container">
-    <SectionHeading
-      eyebrow="Contato"
-      title="Vamos construir algo que funcione de verdade"
-      lead="Aberto a oportunidades como desenvolvedor Full Stack, Mobile ou Backend. Se o que você viu aqui conversa com o que seu time precisa, o caminho mais rápido é o LinkedIn."
-    />
-
-    <ul class="channels">
-      {
-        channels.map((channel, index) => (
-          <li class="channel" data-reveal data-reveal-delay={index * 70}>
-            <a class="channel__link" href={channel.href} rel="noopener">
-              <span class="channel__label">{channel.label}</span>
-              <span class="channel__handle">{channel.handle}</span>
-            </a>
-            <p class="channel__note">{channel.note}</p>
-          </li>
-        ))
-      }
-    </ul>
-
-    {
-      resumeAvailable && (
-        <p class="resume" data-reveal>
-          <a class="button button--primary" href={resumeHref} download>
-            Baixar currículo
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" />
-            </svg>
-          </a>
+    <div class="cta glass" data-reveal>
+      <div class="cta__copy">
+        <p class="eyebrow">Contato</p>
+        <h2 id="contato-titulo" class="cta__title">Vamos construir algo?</h2>
+        <p class="cta__lead">
+          Estou aberto a oportunidades como desenvolvedor Full Stack. Se o problema é real, quero
+          entender o contexto antes de propor qualquer solução.
         </p>
-      )
-    }
+      </div>
+
+      <div class="cta__actions">
+        <a class="btn btn--primary" href={mailto}>
+          <Icon name="mail" /> {profile.email}
+        </a>
+        <a class="btn" href={profile.links.linkedin} rel="noopener">
+          <Icon name="linkedin" /> LinkedIn
+        </a>
+        <a class="btn" href={profile.links.github} rel="noopener">
+          <Icon name="github" /> GitHub
+        </a>
+        {
+          resumeAvailable && (
+            <a class="btn" href={resumeHref} download>
+              <Icon name="download" /> Currículo
+            </a>
+          )
+        }
+      </div>
+    </div>
   </div>
 </section>
 
 <style>
-  .channels {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    gap: var(--space-sm);
-    margin: 0;
-  }
-
-  .channel {
+  .cta {
     position: relative;
-    padding: var(--space-md);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--bg-elevated);
-    transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+    display: grid;
+    gap: var(--space-md);
+    padding: clamp(1.75rem, 5vw, 3.5rem);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-2);
   }
 
-  .channel:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-
-  .channel__link {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    text-decoration: none;
-  }
-
-  .channel__link::after {
+  .cta::before {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(40rem 20rem at 100% 0%, rgba(120, 189, 242, 0.14), transparent 60%);
   }
 
-  .channel__label {
-    font-family: var(--font-display);
-    font-size: var(--step-1);
-    font-weight: 600;
-    color: var(--text);
+  @media (min-width: 60rem) {
+    .cta {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      align-items: center;
+    }
   }
 
-  .channel__handle {
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    color: var(--accent);
-    overflow-wrap: anywhere;
+  .cta__copy,
+  .cta__actions {
+    position: relative;
   }
 
-  .channel__note {
+  .cta__title {
     margin-top: var(--space-xs);
-    font-size: var(--step--1);
+    font-size: var(--step-4);
+  }
+
+  .cta__lead {
+    max-width: 48ch;
+    margin-top: var(--space-sm);
     color: var(--text-muted);
   }
 
-  .resume {
-    margin-top: var(--space-md);
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
-  .resume svg {
-    width: 1.05rem;
-    height: 1.05rem;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .channel:hover {
-      transform: none;
+  @media (min-width: 60rem) {
+    .cta__actions {
+      flex-direction: column;
+      align-items: stretch;
     }
+  }
+
+  .cta__actions .btn {
+    justify-content: flex-start;
+    overflow-wrap: anywhere;
   }
 </style>

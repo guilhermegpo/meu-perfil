@@ -1,0 +1,48 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Icon from '../components/Icon.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { asset } from '../lib/url';
+---
+
+<BaseLayout
+  title="Página não encontrada — Guilherme Pereira de Oliveira"
+  description="A página procurada não existe neste portfólio. Volte ao início para ver os projetos e a trajetória profissional."
+>
+  <Header onHome={false} />
+  <main id="conteudo" class="missing">
+    <div class="container">
+      <p class="eyebrow">Erro 404</p>
+      <h1>Esta página não existe.</h1>
+      <p class="lead">O endereço pode ter mudado ou nunca ter existido.</p>
+      <a class="btn btn--primary" href={asset('')}>
+        <Icon name="arrow-left" /> Voltar ao início
+      </a>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .missing {
+    display: grid;
+    align-items: center;
+    min-height: 70svh;
+    padding-top: calc(var(--header-h) + var(--space-lg));
+  }
+
+  .missing .container {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-sm);
+  }
+
+  h1 {
+    font-size: var(--step-hero);
+  }
+
+  .lead {
+    color: var(--text-muted);
+  }
+</style>

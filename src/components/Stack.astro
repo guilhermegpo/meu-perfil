@@ -1,181 +1,140 @@
 ---
+import { evidence } from '../data/evidence';
+import { projects } from '../data/projects';
+import { projectCountLabel, stackGroups } from '../data/stack';
 import SectionHeading from './SectionHeading.astro';
-import { stack } from '../data/stack';
 
-const railItems = [...new Set(stack.flatMap((category) => category.items.map((item) => item.name)))];
+const total = evidence.metrics.projectsAnalyzed;
+const projectName = (id: string): string => projects.find((p) => p.slug === id)?.name ?? id;
 ---
 
-<section class="section" id="stack">
+<section id="stack" class="section" aria-labelledby="stack-titulo">
   <div class="container">
     <SectionHeading
+      id="stack-titulo"
       eyebrow="Stack"
-      title="Com o que eu construo"
-      lead="Sem barra de progresso e sem percentual. O rótulo diz apenas se a tecnologia já foi usada em projeto entregue ou se está em uso de aprendizado — as duas afirmações são verificáveis."
+      title="Tecnologias que usei de fato"
+      lead={`Cada item foi detectado nos ${total} repositórios analisados, e o número é a quantidade de projetos em que aparece. Sem percentuais de habilidade.`}
     />
 
-    <div class="rail" aria-hidden="true">
-      <div class="rail__track">
-        {[...railItems, ...railItems].map((item) => <span>{item}</span>)}
-      </div>
-    </div>
-
-    <div class="stack">
+    <div class="groups">
       {
-        stack.map((category, index) => (
-          <div class="group" data-reveal data-reveal-delay={index * 70}>
-            <h3 class="group__title">{category.title}</h3>
-            <ul class="group__items">
-              {category.items.map((item) => (
-                <li class="chip" data-usage={item.usage}>
-                  <span class="chip__name">{item.name}</span>
-                  {item.usage === 'em aprendizado' && <span class="chip__tag">aprendendo</span>}
+        stackGroups.map((group, index) => (
+          <section class="group glass" data-reveal data-reveal-delay={String(index * 60)}>
+            <h3 class="group__title">{group.title}</h3>
+            <ul class="group__list">
+              {group.items.map((tech) => (
+                <li class="tech">
+                  <span class="tech__name">{tech.name}</span>
+                  <span class="tech__count">{projectCountLabel(tech.count)}</span>
+                  <span class="tech__pips" aria-hidden="true">
+                    {Array.from({ length: total }, (_, i) => (
+                      <i class:list={{ on: i < tech.count }} />
+                    ))}
+                  </span>
+                  <span class="sr-only">: {tech.projects.map(projectName).join(', ')}</span>
                 </li>
               ))}
             </ul>
-          </div>
+          </section>
         ))
       }
     </div>
 
-    <p class="legend">
-      <span class="legend__item"><span class="legend__swatch legend__swatch--used"></span>usado em projeto entregue</span>
-      <span class="legend__item"><span class="legend__swatch"></span>em aprendizado</span>
+    <p class="source" data-reveal>
+      Levantamento de {evidence.generatedAt}, gerado por script a partir dos repositórios. Veja como
+      em <code>docs/CONTENT_SOURCE.md</code>.
     </p>
   </div>
 </section>
 
 <style>
-  .rail {
-    overflow: hidden;
-    margin-bottom: var(--space-lg);
-    padding-block: 0.7rem;
-    border-block: 1px solid var(--border);
-    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  .groups {
+    display: grid;
+    gap: var(--space-sm);
   }
 
-  .rail__track {
-    display: flex;
-    width: max-content;
-    animation: rail-scroll 34s linear infinite;
-  }
-
-  .rail__track span {
-    display: inline-flex;
-    align-items: center;
-    gap: 1rem;
-    padding-right: 1rem;
-    font-family: var(--font-display);
-    font-size: var(--step-1);
-    font-weight: 600;
-    color: var(--text-faint);
-    white-space: nowrap;
-  }
-
-  .rail__track span::after {
-    content: '';
-    width: 0.35rem;
-    height: 0.35rem;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-
-  @keyframes rail-scroll {
-    to {
-      transform: translateX(-50%);
+  @media (min-width: 40rem) {
+    .groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  .stack {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: var(--space-md);
+  @media (min-width: 64rem) {
+    .groups {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .group {
+    padding: 1.25rem 1.35rem 1.4rem;
+    border-radius: var(--radius);
   }
 
   .group__title {
     margin-bottom: var(--space-sm);
-    padding-bottom: var(--space-2xs);
-    border-bottom: 1px solid var(--border);
     font-family: var(--font-mono);
-    font-size: var(--step--1);
+    font-size: 0.78rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--text-faint);
-  }
-
-  .group__items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin: 0;
-  }
-
-  .chip {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.4rem;
-    padding: 0.3rem 0.7rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--bg-elevated);
-    font-size: var(--step--1);
-    transition: border-color 0.2s var(--ease);
-  }
-
-  .chip:hover {
-    border-color: var(--border-strong);
-  }
-
-  .chip[data-usage='em projetos'] {
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-    background: var(--accent-subtle);
-  }
-
-  .chip__name {
-    font-weight: 500;
-  }
-
-  .chip[data-usage='em projetos'] .chip__name {
     color: var(--accent);
   }
 
-  .chip__tag {
-    font-family: var(--font-mono);
-    font-size: 0.72em;
-    color: var(--text-faint);
+  .group__list {
+    display: grid;
   }
 
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-    margin-top: var(--space-md);
-    font-size: var(--step--1);
-    color: var(--text-faint);
-  }
-
-  .legend__item {
-    display: inline-flex;
+  .tech {
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.1rem 0.75rem;
+    padding-block: 0.6rem;
+    border-top: 1px solid var(--line);
   }
 
-  .legend__swatch {
-    width: 0.7rem;
-    height: 0.7rem;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    background: var(--bg-elevated);
+  .tech:first-child {
+    border-top: 0;
+    padding-top: 0;
   }
 
-  .legend__swatch--used {
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-    background: var(--accent-subtle);
+  .tech__name {
+    font-weight: 600;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .rail__track {
-      animation: none;
-    }
+  .tech__count {
+    grid-column: 1;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .tech__pips {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    display: inline-flex;
+    gap: 3px;
+  }
+
+  .tech__pips i {
+    width: 0.4rem;
+    height: 0.9rem;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .tech__pips i.on {
+    background: linear-gradient(180deg, var(--accent-strong), var(--accent-deep));
+  }
+
+  .source {
+    margin-top: var(--space-md);
+    font-size: 0.85rem;
+    color: var(--text-faint);
+  }
+
+  .source code {
+    font-family: var(--font-mono);
+    color: var(--text-muted);
   }
 </style>

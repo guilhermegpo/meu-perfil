@@ -3,29 +3,32 @@ interface Props {
   eyebrow: string;
   title: string;
   lead?: string;
+  /** Id do título, para `aria-labelledby` da seção. */
+  id: string;
 }
 
-const { eyebrow, title, lead } = Astro.props;
+const { eyebrow, title, lead, id } = Astro.props;
 ---
 
 <div class="heading" data-reveal>
   <p class="eyebrow">{eyebrow}</p>
-  <h2 class="heading__title">{title}</h2>
+  <h2 id={id} class="heading__title">{title}</h2>
   {lead && <p class="heading__lead">{lead}</p>}
 </div>
 
 <style>
   .heading {
-    margin-bottom: var(--space-lg);
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    max-width: 46rem;
   }
 
   .heading__title {
     margin-top: var(--space-xs);
-    font-size: var(--step-3);
+    font-size: var(--step-4);
   }
 
   .heading__lead {
-    margin-top: var(--space-xs);
+    margin-top: var(--space-sm);
     max-width: var(--measure);
     color: var(--text-muted);
   }

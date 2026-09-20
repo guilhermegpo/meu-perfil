@@ -1,418 +1,250 @@
 ---
-import { Picture } from 'astro:assets';
-import photo from '../assets/guilherme.png';
 import { profile } from '../data/profile';
 import { resumeAvailable, resumeHref } from '../lib/resume';
+import HeroScene from './HeroScene.astro';
+import Icon from './Icon.astro';
+
+const socials = [
+  { label: 'GitHub', href: profile.links.github, icon: 'github' as const },
+  { label: 'LinkedIn', href: profile.links.linkedin, icon: 'linkedin' as const },
+  { label: 'E-mail', href: `mailto:${profile.email}`, icon: 'mail' as const },
+];
 ---
 
-<section class="hero" id="inicio">
-  <div class="container hero__inner">
-    <div class="hero__content" data-reveal>
-      <p class="hero__availability">
-        <span aria-hidden="true"></span>
-        Aberto a oportunidades em tecnologia
+<section id="inicio" class="hero" aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      <p class="status glass" data-reveal>
+        <span class="status__dot" aria-hidden="true"></span>
+        {profile.status}
+        <span class="status__place">· {profile.location}</span>
       </p>
 
-      <p class="hero__location">{profile.location}</p>
-      <h1 class="hero__name">{profile.displayName}</h1>
+      <h1 id="hero-title" class="name" data-reveal data-reveal-delay="60">
+        <span class="name__first">{profile.firstName}</span>
+        <span class="name__rest">Pereira de Oliveira</span>
+      </h1>
 
-      <p class="hero__role">
-        {profile.role}
-        <span class="hero__focus">{profile.focus}</span>
+      <p class="role" data-reveal data-reveal-delay="120">
+        <span class="role__title">{profile.role}</span>
+        <span class="role__areas">
+          {profile.areas.map((area) => <span class="chip">{area}</span>)}
+        </span>
       </p>
 
-      <p class="hero__tagline">{profile.tagline}</p>
+      <p class="headline" data-reveal data-reveal-delay="180">{profile.headline}</p>
+      <p class="description" data-reveal data-reveal-delay="220">{profile.description}</p>
 
-      <p class="hero__headline">{profile.headline}</p>
-
-      <div class="hero__actions">
-        <div class="hero__primary-actions">
-          <a class="button button--primary" href="#projetos">Ver projetos</a>
-          {
-            resumeAvailable && (
-              <a class="button button--outline" href={resumeHref} download>
-                Baixar currículo
-                <svg viewBox="0 0 24 24" aria-hidden="true" class="hero__icon">
-                  <path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" />
-                </svg>
-              </a>
-            )
-          }
-        </div>
-
-        <nav class="hero__socials" aria-label="Perfis profissionais">
-          <a href={profile.links.github} rel="noopener">
-            GitHub <span aria-hidden="true">↗</span>
-          </a>
-          <a href={profile.links.linkedin} rel="noopener">
-            LinkedIn <span aria-hidden="true">↗</span>
-          </a>
-        </nav>
+      <div class="actions" data-reveal data-reveal-delay="280">
+        <a class="btn btn--primary" href="#projetos">
+          Ver projetos <Icon name="arrow" />
+        </a>
+        <a class="btn" href="#contato">Falar comigo</a>
+        {
+          resumeAvailable && (
+            <a class="btn" href={resumeHref} download>
+              <Icon name="download" /> Currículo
+            </a>
+          )
+        }
       </div>
+
+      <ul class="socials" aria-label="Redes e contato" data-reveal data-reveal-delay="320">
+        {
+          socials.map((social) => (
+            <li>
+              <a
+                class="socials__link"
+                href={social.href}
+                aria-label={social.label}
+                rel={social.href.startsWith('http') ? 'noopener' : undefined}
+              >
+                <Icon name={social.icon} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </div>
 
-    <div class="hero__visual" data-reveal data-reveal-delay="120">
-      <div class="hero__stage">
-        <div class="hero__grid" aria-hidden="true"></div>
-
-        <div class="hero__portrait">
-          <Picture
-            src={photo}
-            formats={['avif', 'webp']}
-            fallbackFormat="jpeg"
-            quality={78}
-            widths={[220, 320, 440, 560]}
-            sizes="(max-width: 48rem) 70vw, 22rem"
-            alt={`Retrato de ${profile.name}`}
-            loading="eager"
-            fetchpriority="high"
-            class="hero__photo"
-          />
-        </div>
-
-        <div class="hero__meta">
-          <p class="hero__badge">
-            <span>Projeto real</span>
-            Aplicação interna implantada
-          </p>
-          <p class="hero__caption" aria-hidden="true">Full Stack · Mobile · Backend</p>
-        </div>
-      </div>
+    <div class="hero__scene" data-reveal data-reveal-delay="140">
+      <HeroScene />
     </div>
   </div>
 </section>
 
 <style>
   .hero {
-    position: relative;
-    min-height: min(50rem, calc(100svh - 4rem));
-    display: grid;
-    align-items: center;
-    padding-block: clamp(4rem, 9vw, 7rem);
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -16rem;
-    left: 46%;
-    width: min(72rem, 135vw);
-    aspect-ratio: 1.6;
-    translate: -50% 0;
-    background: radial-gradient(
-      ellipse at center,
-      color-mix(in srgb, var(--accent) 15%, transparent),
-      transparent 66%
-    );
-    pointer-events: none;
-  }
-
-  .hero__inner {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(19rem, 0.8fr);
-    align-items: center;
-    gap: clamp(3rem, 7vw, 6rem);
-  }
-
-  .hero__content,
-  .hero__visual {
-    min-width: 0;
-  }
-
-  .hero__availability {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    padding: 0.35rem 0.75rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
-    border-radius: var(--radius-full);
-    background: color-mix(in srgb, var(--accent-subtle) 72%, transparent);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    color: var(--accent);
-  }
-
-  .hero__availability span {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: currentColor;
-    box-shadow: 0 0 0 0.25rem color-mix(in srgb, currentColor 14%, transparent);
-  }
-
-  .hero__location {
-    margin-top: var(--space-sm);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-  }
-
-  .hero__name {
-    margin-top: var(--space-xs);
-    max-width: 10ch;
-    font-size: clamp(3rem, 6.7vw, 5.6rem);
-    font-weight: 700;
-    line-height: 0.98;
-    letter-spacing: -0.055em;
-  }
-
-  .hero__role {
-    margin-top: var(--space-sm);
-    font-family: var(--font-display);
-    font-size: var(--step-2);
-    font-weight: 500;
-    color: var(--text-muted);
-  }
-
-  .hero__focus {
-    display: block;
-    color: var(--accent);
-  }
-
-  .hero__tagline {
-    margin-top: var(--space-md);
-    max-width: 22ch;
-    font-family: var(--font-display);
-    font-size: var(--step-1);
-    font-weight: 500;
-    line-height: 1.3;
-    color: var(--text);
-    text-wrap: balance;
-  }
-
-  .hero__headline {
-    margin-top: var(--space-sm);
-    max-width: 58ch;
-    color: var(--text-muted);
-  }
-
-  .hero__actions {
-    display: grid;
-    gap: var(--space-sm);
-    margin-top: var(--space-md);
-  }
-
-  .hero__primary-actions,
-  .hero__socials {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.625rem;
-  }
-
-  .hero__socials {
-    gap: var(--space-sm);
-  }
-
-  .hero__socials a {
-    display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    /* 44px de alvo de toque, sem inflar o peso visual do link. */
-    min-height: 2.75rem;
-    padding-inline: 0.1rem;
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    color: var(--text-muted);
-    text-decoration: none;
-  }
-
-  .hero__socials a:hover {
-    color: var(--accent);
-  }
-
-  .hero__socials span {
-    transition: transform var(--motion-fast) var(--ease-standard);
-  }
-
-  .hero__socials a:hover span {
-    transform: translate(2px, -2px);
-  }
-
-  .hero__icon {
-    width: 1.05rem;
-    height: 1.05rem;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .hero__stage {
-    position: relative;
-    width: min(100%, 25rem);
-    margin-inline: auto;
-    padding: clamp(1rem, 3vw, 1.5rem);
-    border: 1px solid var(--border);
-    border-radius: clamp(1.5rem, 4vw, 2.5rem);
-    background: color-mix(in srgb, var(--bg-elevated) 90%, transparent);
-    box-shadow: var(--shadow-lg);
-    isolation: isolate;
-  }
-
-  .hero__stage::before,
-  .hero__stage::after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--border));
-    border-radius: inherit;
-    pointer-events: none;
-  }
-
-  .hero__stage::before {
-    inset: -0.75rem 0.75rem 0.75rem -0.75rem;
-  }
-
-  .hero__stage::after {
-    inset: 0.75rem -0.75rem -0.75rem 0.75rem;
-    opacity: 0.45;
+    min-height: min(100svh, 62rem);
+    padding-top: calc(var(--header-h) + clamp(1.5rem, 5vw, 4rem));
+    padding-bottom: clamp(2.5rem, 6vw, 5rem);
   }
 
   .hero__grid {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    background-image: linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 2rem 2rem;
-    opacity: 0.38;
-    mask-image: linear-gradient(to bottom, black, transparent 80%);
-  }
-
-  .hero__portrait {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 4 / 5;
-    border-radius: clamp(1rem, 3vw, 1.75rem);
-    background: var(--accent-subtle);
-  }
-
-  .hero__portrait::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, white 18%, transparent);
-    border-radius: inherit;
-    pointer-events: none;
-  }
-
-  .hero__portrait picture {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  .hero__photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* A foto será trocada depois. object-position mantém o enquadramento no
-       terço superior, que funciona para qualquer retrato vertical. */
-    object-position: 50% 22%;
-  }
-
-  .hero__meta {
     display: grid;
-    gap: var(--space-xs);
-    margin-top: var(--space-sm);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
   }
 
-  .hero__badge {
+  @media (min-width: 64rem) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
+    }
+  }
+
+  .hero__copy {
     display: grid;
-    gap: 0.15rem;
-    padding: 0.65rem 0.8rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--border));
-    border-radius: var(--radius-sm);
-    background: color-mix(in srgb, var(--accent-subtle) 60%, transparent);
-    font-size: var(--step--1);
+    justify-items: start;
+    gap: var(--space-sm);
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+
+  .status__place {
     color: var(--text-muted);
   }
 
-  .hero__badge span {
+  .status__dot {
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--tone-live);
+  }
+
+  .status__dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--tone-live);
+    animation: ping 2.6s ease-out infinite;
+  }
+
+  @keyframes ping {
+    0% {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    80%,
+    100% {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
+
+  .name {
+    display: grid;
+    gap: 0.15em;
+    margin-top: var(--space-2xs);
+  }
+
+  .name__first {
+    font-size: var(--step-hero);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    background: linear-gradient(180deg, #ffffff 15%, #aebbc9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .name__rest {
+    font-size: clamp(1.35rem, 0.85rem + 2.6vw, 2.5rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    color: var(--text-muted);
+  }
+
+  .role {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+  }
+
+  .role__title {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
+    font-size: 0.9rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--accent);
   }
 
-  .hero__caption {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-align: center;
-    text-transform: uppercase;
-    color: var(--text-faint);
+  .role__areas {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
   }
 
-  @media (max-width: 52rem) {
-    .hero {
-      min-height: auto;
-      padding-block: var(--space-xl);
-    }
-
-    .hero__inner {
-      grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.65fr);
-      gap: var(--space-lg);
-    }
-
-    .hero__name {
-      font-size: clamp(2.8rem, 9vw, 4.5rem);
-    }
+  .headline {
+    max-width: 30ch;
+    margin-top: var(--space-2xs);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    color: var(--text);
   }
 
-  @media (max-width: 42rem) {
+  .description {
+    max-width: 54ch;
+    color: var(--text-muted);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: var(--space-xs);
+  }
+
+  .socials {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .socials__link {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    transition:
+      color var(--dur-fast) var(--ease),
+      border-color var(--dur-fast) var(--ease),
+      background-color var(--dur-fast) var(--ease);
+  }
+
+  .socials__link:hover {
+    color: var(--text);
+    border-color: var(--line-strong);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* No celular a cena vem depois do texto e não empurra os botões para baixo. */
+  @media (max-width: 63.99rem) {
     .hero {
-      padding-block: var(--space-lg);
+      min-height: 0;
     }
 
-    .hero__inner {
-      grid-template-columns: 1fr;
-      gap: var(--space-lg);
-    }
-
-    .hero__content {
-      order: 1;
-    }
-
-    .hero__visual {
+    .hero__scene {
       order: 2;
-      width: min(100%, 20rem);
-    }
-
-    .hero__stage {
-      margin-left: 0;
-    }
-
-    .hero__name {
-      max-width: none;
-    }
-  }
-
-  @media (max-width: 28rem) {
-    .hero__availability {
-      align-items: flex-start;
-    }
-
-    .hero__availability span {
-      flex: 0 0 auto;
-      margin-top: 0.45rem;
-    }
-
-    .hero__primary-actions .button {
-      width: 100%;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero__socials a:hover span {
-      transform: none;
     }
   }
 </style>

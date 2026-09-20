@@ -1,0 +1,522 @@
+---
+/**
+ * Composição 3D do hero, feita só com CSS: perspective, preserve-3d e
+ * translateZ. Nenhuma biblioteca de 3D é carregada.
+ *
+ * Camadas, do fundo para a frente (profundidade em px, `--z`):
+ *   piso em grade −90 · halo −30 · anéis 20 · monograma 60 · painéis 60–130
+ *
+ * `--d` é a força do parallax de cada camada: quanto mais perto do
+ * observador, mais ela se desloca com o cursor. O movimento é dado por duas
+ * variáveis (`--px`, `--py`), escritas por `scripts/motion.ts` em
+ * requestAnimationFrame. Tudo aqui usa apenas transform e opacity.
+ *
+ * A cena é decorativa (aria-hidden): nada dela é conteúdo.
+ */
+import { getImage } from 'astro:assets';
+import logo from '../assets/brand/gpo-logo.png';
+import { evidence, formatNumber } from '../data/evidence';
+import Logo from './Logo.astro';
+
+const mask = await getImage({ src: logo, width: 900, format: 'webp' });
+const tests = formatNumber(evidence.metrics.automatedTests);
+---
+
+<div class="host" data-scene-host aria-hidden="true" style={`--mark-url: url(${mask.src})`}>
+  <div class="scene" data-scene data-inview="true">
+    <div class="parallax">
+      <div class="stage">
+        <div class="layer layer--floor"><div class="floor"></div></div>
+        <div class="layer layer--halo"><div class="halo"></div></div>
+
+        <div class="layer layer--rings">
+          <div class="ring ring--a"></div>
+          <div class="ring ring--b"></div>
+        </div>
+
+        <div class="layer layer--mark">
+          <div class="facing">
+            <div class="mark">
+              <Logo width={520} eager class="mark__img" />
+              <div class="mark__sheen"></div>
+              <div class="mark__reflection"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer layer--schema">
+          <div class="panel glass">
+            <p class="panel__label">domínio</p>
+            <ul class="nodes">
+              <li><span></span>Workspace</li>
+              <li><span></span>Membership</li>
+              <li><span></span>Role</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="layer layer--phone">
+          <div class="phone glass">
+            <i class="phone__notch"></i>
+            <i class="phone__row phone__row--accent"></i>
+            <i class="phone__row"></i>
+            <i class="phone__row phone__row--short"></i>
+            <i class="phone__row"></i>
+          </div>
+        </div>
+
+        <div class="layer layer--tests">
+          <div class="panel glass">
+            <p class="panel__label">automatizados</p>
+            <p class="panel__value">{tests}</p>
+            <p class="panel__meta">testes · {evidence.metrics.testedProjects} projetos</p>
+            <div class="bars">
+              {Array.from({ length: 14 }, () => <i />)}
+            </div>
+          </div>
+        </div>
+
+        <div class="layer layer--policy">
+          <div class="panel glass">
+            <p class="panel__label">no banco</p>
+            <ul class="checks">
+              <li>RLS por tabela</li>
+              <li>Funções transacionais</li>
+              <li>Permissões por perfil</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .host {
+    position: relative;
+    width: 100%;
+    max-width: 38rem;
+    margin-inline: auto;
+    aspect-ratio: 1 / 0.92;
+    user-select: none;
+  }
+
+  .scene {
+    position: absolute;
+    inset: 0;
+    perspective: 1400px;
+    perspective-origin: 50% 42%;
+  }
+
+  .parallax {
+    position: absolute;
+    inset: 0;
+    transform: translate3d(0, calc(var(--sp, 0) * -26px), 0);
+  }
+
+  .stage {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform: rotateX(calc(9deg + var(--py, 0) * -5deg)) rotateY(calc(-11deg + var(--px, 0) * 8deg));
+    will-change: transform;
+  }
+
+  .layer {
+    position: absolute;
+    transform-style: preserve-3d;
+    transform: translate3d(
+      calc(var(--px, 0) * var(--d, 0) * 1px),
+      calc(var(--py, 0) * var(--d, 0) * 0.7px),
+      calc(var(--z, 0) * 1px)
+    );
+  }
+
+  /* --- fundo --- */
+
+  .layer--floor {
+    --z: -90;
+    --d: -6;
+    inset: 46% 0 -34% 0;
+  }
+
+  .floor {
+    position: absolute;
+    inset: 0;
+    transform-origin: 50% 0;
+    transform: rotateX(72deg);
+    background-image:
+      linear-gradient(rgba(164, 214, 248, 0.22) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(164, 214, 248, 0.22) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 60% 70% at 50% 25%, #000 25%, transparent 75%);
+    animation: scan 7s linear infinite;
+  }
+
+  .layer--halo {
+    --z: -30;
+    --d: -8;
+    inset: 4% 0 10%;
+  }
+
+  .halo {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      rgba(120, 189, 242, 0.24),
+      rgba(120, 189, 242, 0.07) 55%,
+      transparent 74%
+    );
+  }
+
+  .layer--rings {
+    --z: 20;
+    --d: 8;
+    inset: 9% 6% 13%;
+  }
+
+  .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    transform: rotateX(72deg) rotateZ(0deg);
+    animation: orbit 70s linear infinite;
+  }
+
+  .ring--a {
+    border: 1px solid rgba(164, 214, 248, 0.22);
+  }
+
+  .ring--b {
+    inset: 9%;
+    border: 1px dashed rgba(207, 214, 223, 0.2);
+    animation-duration: 110s;
+    animation-direction: reverse;
+  }
+
+  /* --- monograma --- */
+
+  .layer--mark {
+    --z: 60;
+    --d: 14;
+    left: 15%;
+    top: 25%;
+    width: 70%;
+  }
+
+  /* Desfaz a rotação do palco: o símbolo fica sempre de frente, sem distorção. */
+  .facing {
+    transform: rotateY(calc(11deg - var(--px, 0) * 8deg)) rotateX(calc(-9deg + var(--py, 0) * 5deg));
+  }
+
+  .mark {
+    position: relative;
+    animation: float 9s ease-in-out infinite alternate;
+  }
+
+  .mark :global(.mark__img) {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 28px 36px rgba(0, 0, 0, 0.55));
+  }
+
+  .mark__sheen {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    -webkit-mask: var(--mark-url) center / contain no-repeat;
+    mask: var(--mark-url) center / contain no-repeat;
+  }
+
+  .mark__sheen::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    left: 0;
+    width: 38%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.42), transparent);
+    transform: translateX(-140%) skewX(-16deg);
+    animation: sheen 9s ease-in-out 1.5s infinite;
+  }
+
+  .mark__reflection {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 100%;
+    margin-top: 0.5rem;
+    background: var(--mark-url) center / contain no-repeat;
+    transform: scaleY(-1);
+    opacity: 0.15;
+    -webkit-mask-image: linear-gradient(to top, #000, transparent 55%);
+    mask-image: linear-gradient(to top, #000, transparent 55%);
+  }
+
+  /* --- painéis --- */
+
+  .panel {
+    padding: 0.8rem 0.95rem;
+    border-radius: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    box-shadow: var(--shadow-2);
+  }
+
+  .panel__label {
+    margin-bottom: 0.4rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .panel__value {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text);
+    letter-spacing: -0.03em;
+  }
+
+  .panel__meta {
+    margin-top: 0.3rem;
+  }
+
+  .layer--schema {
+    --z: 95;
+    --d: 22;
+    left: 1%;
+    top: 5%;
+    width: 32%;
+  }
+
+  .nodes li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    padding-block: 0.2rem;
+    color: var(--text);
+  }
+
+  .nodes li span {
+    width: 0.5rem;
+    height: 0.5rem;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    background: rgba(120, 189, 242, 0.25);
+  }
+
+  .nodes li + li::before {
+    content: '';
+    position: absolute;
+    left: 0.25rem;
+    top: -0.5rem;
+    height: 0.9rem;
+    border-left: 1px solid var(--line-strong);
+  }
+
+  .layer--tests {
+    --z: 130;
+    --d: 30;
+    right: 0;
+    bottom: 12%;
+    width: 38%;
+  }
+
+  .bars {
+    display: flex;
+    gap: 3px;
+    margin-top: 0.7rem;
+    height: 1.1rem;
+    align-items: flex-end;
+  }
+
+  .bars i {
+    flex: 1;
+    border-radius: 1px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+    opacity: 0.85;
+  }
+
+  .bars i:nth-child(3n) {
+    height: 60%;
+  }
+  .bars i:nth-child(3n + 1) {
+    height: 85%;
+  }
+  .bars i:nth-child(3n + 2) {
+    height: 100%;
+  }
+
+  .layer--policy {
+    --z: 60;
+    --d: 12;
+    left: 3%;
+    bottom: 6%;
+    width: 40%;
+  }
+
+  .checks li {
+    position: relative;
+    padding-left: 1.15rem;
+    color: var(--text);
+  }
+
+  .checks li::before {
+    content: '';
+    position: absolute;
+    left: 0.15rem;
+    top: 0.42rem;
+    width: 0.32rem;
+    height: 0.55rem;
+    border: solid var(--accent);
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(40deg);
+  }
+
+  .layer--phone {
+    --z: 75;
+    --d: 16;
+    right: 2%;
+    top: 1%;
+    width: 19%;
+  }
+
+  .phone {
+    position: relative;
+    aspect-ratio: 9 / 17;
+    padding: 0.55rem 0.5rem;
+    border-radius: 1.1rem;
+    transform: rotateY(-14deg);
+    box-shadow: var(--shadow-2);
+  }
+
+  .phone__notch {
+    display: block;
+    width: 34%;
+    height: 0.28rem;
+    margin: 0 auto 0.6rem;
+    border-radius: 999px;
+    background: var(--line-strong);
+  }
+
+  .phone__row {
+    display: block;
+    height: 0.55rem;
+    margin-bottom: 0.45rem;
+    border-radius: 0.3rem;
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .phone__row--accent {
+    height: 1.5rem;
+    background: linear-gradient(90deg, rgba(120, 189, 242, 0.5), rgba(120, 189, 242, 0.12));
+  }
+
+  .phone__row--short {
+    width: 60%;
+  }
+
+  /* --- movimento --- */
+
+  @keyframes scan {
+    to {
+      transform: rotateX(72deg) translateY(44px);
+    }
+  }
+
+  @keyframes orbit {
+    to {
+      transform: rotateX(72deg) rotateZ(360deg);
+    }
+  }
+
+  @keyframes float {
+    to {
+      transform: translate3d(0, -7px, 0);
+    }
+  }
+
+  @keyframes sheen {
+    0%,
+    55% {
+      transform: translateX(-140%) skewX(-16deg);
+    }
+    100% {
+      transform: translateX(380%) skewX(-16deg);
+    }
+  }
+
+  @keyframes drift {
+    from {
+      transform: rotateX(9deg) rotateY(-11deg);
+    }
+    to {
+      transform: rotateX(9deg) rotateY(-5deg);
+    }
+  }
+
+  /* Sem cursor não há parallax: a cena deriva devagar sozinha. */
+  @media (hover: none) and (prefers-reduced-motion: no-preference) {
+    .stage {
+      animation: drift 18s ease-in-out infinite alternate;
+    }
+  }
+
+  /* Fora da viewport ou em dispositivo modesto, nada continua animando. */
+  .scene[data-inview='false'] :global(*),
+  .scene[data-inview='false'] :global(*::before) {
+    animation-play-state: paused;
+  }
+
+  :global(html[data-perf='lite']) .scene :global(*),
+  :global(html[data-perf='lite']) .scene :global(*::before) {
+    animation: none;
+  }
+
+  :global(html[data-perf='lite']) .mark__sheen {
+    display: none;
+  }
+
+  /* --- telas pequenas: cena mais simples --- */
+
+  @media (max-width: 47.99rem) {
+    .host {
+      max-width: 27rem;
+      aspect-ratio: 1 / 0.86;
+    }
+
+    .layer--policy,
+    .layer--phone {
+      display: none;
+    }
+
+    .layer--schema {
+      left: 3%;
+      top: 4%;
+      width: 42%;
+    }
+
+    .layer--tests {
+      width: 46%;
+      bottom: 6%;
+    }
+
+    .panel {
+      padding: 0.6rem 0.7rem;
+    }
+
+    .panel__value {
+      font-size: 1.6rem;
+    }
+  }
+</style>

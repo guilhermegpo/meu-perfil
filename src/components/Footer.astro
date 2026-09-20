@@ -1,23 +1,49 @@
 ---
 import { profile } from '../data/profile';
+import { asset } from '../lib/url';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
 
+/** Ano de build como valor inicial; `main.ts` troca pelo ano do visitante. */
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
   <div class="container footer__inner">
-    <p>© {year} {profile.name}</p>
-    <p>
-      Construído com <a href="https://astro.build" rel="noopener">Astro</a> ·
-      <a href="https://github.com/guilhermegpo/meu-perfil" rel="noopener">código-fonte</a>
+    <a class="footer__brand" href={asset('')} aria-label={`${profile.name} — início`}>
+      <Logo width={54} />
+    </a>
+
+    <p class="footer__copy">
+      © <span data-year>{year}</span>
+      {profile.name}.
     </p>
+
+    <ul class="footer__links" aria-label="Links">
+      <li>
+        <a href={profile.links.github} rel="noopener">
+          <Icon name="github" /> GitHub
+        </a>
+      </li>
+      <li>
+        <a href={profile.links.linkedin} rel="noopener">
+          <Icon name="linkedin" /> LinkedIn
+        </a>
+      </li>
+      <li>
+        <a href={`mailto:${profile.email}`}>
+          <Icon name="mail" /> E-mail
+        </a>
+      </li>
+    </ul>
   </div>
 </footer>
 
 <style>
   .footer {
     padding-block: var(--space-md);
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--line);
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.25));
   }
 
   .footer__inner {
@@ -25,8 +51,42 @@ const year = new Date().getFullYear();
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-xs);
+    gap: var(--space-sm) var(--space-md);
+  }
+
+  .footer__brand {
+    display: inline-flex;
+    opacity: 0.9;
+    transition: opacity var(--dur-fast) var(--ease);
+  }
+
+  .footer__brand:hover {
+    opacity: 1;
+  }
+
+  .footer__copy {
+    flex: 1 1 14rem;
     font-size: var(--step--1);
     color: var(--text-faint);
+  }
+
+  .footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    font-size: var(--step--1);
+  }
+
+  .footer__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .footer__links a:hover {
+    color: var(--text);
   }
 </style>

@@ -1,91 +1,152 @@
 ---
-import SectionHeading from './SectionHeading.astro';
+import { featuredProjects, projects, projectStack } from '../data/projects';
+import { asset } from '../lib/url';
+import Icon from './Icon.astro';
 import ProjectCard from './ProjectCard.astro';
-import { featuredProjects, otherProjects } from '../data/projects';
+import SectionHeading from './SectionHeading.astro';
 ---
 
-<section class="section" id="projetos">
+<section id="projetos" class="section" aria-labelledby="projetos-titulo">
   <div class="container">
     <SectionHeading
+      id="projetos-titulo"
       eyebrow="Projetos"
-      title="Cases"
-      lead="Cada projeto responde quatro perguntas: qual era o problema, o que eu fiz, como foi resolvido e o que mudou depois. Clique para ver o case completo."
+      title="O que construí"
+      lead="Três projetos em destaque, com case completo: problema, decisões, desafios e o que aprendi. Sistemas privados aparecem de forma genérica — sem telas, dados ou nomes."
     />
 
-    <div class="featured">
+    <h3 class="group-title" data-reveal>Em destaque</h3>
+    <ul class="featured">
       {
         featuredProjects.map((project, index) => (
-          <div
-            class="featured__item"
-            style={`--sticky-top: ${5.5 + index * 0.75}rem`}
-            data-reveal
-            data-reveal-delay={index * 90}
-          >
-            <ProjectCard project={project} featured order={index + 1} />
-          </div>
+          <li data-reveal data-reveal-delay={String(index * 90)}>
+            <ProjectCard project={project} />
+          </li>
         ))
       }
-    </div>
+    </ul>
 
-    {
-      otherProjects.length > 0 && (
-        <>
-          <h3 class="more">Outros projetos</h3>
-          <div class="grid">
-            {otherProjects.map((project, index) => (
-              <div data-reveal data-reveal-delay={index * 80}>
-                <ProjectCard project={project} order={featuredProjects.length + index + 1} />
-              </div>
-            ))}
-          </div>
-        </>
-      )
-    }
+    <h3 class="group-title group-title--all" data-reveal>Todos os projetos</h3>
+    <ul class="all" data-reveal>
+      {
+        projects.map((project) => (
+          <li class="row">
+            <div class="row__main">
+              <p class="row__name">{project.name}</p>
+              <p class="row__category">{project.category}</p>
+            </div>
+            <span class="badge row__status" data-tone={project.tone}>
+              {project.status}
+            </span>
+            <p class="row__stack">{projectStack(project.slug).slice(0, 4).join(' · ')}</p>
+            <div class="row__links">
+              {project.caseStudy ? (
+                <a class="row__link" href={asset(`projetos/${project.slug}`)}>
+                  Case study <Icon name="arrow" />
+                </a>
+              ) : (
+                <span class="row__note">Sem página pública</span>
+              )}
+              {project.repository && (
+                <a class="row__link" href={project.repository} rel="noopener">
+                  GitHub <Icon name="external" />
+                </a>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </section>
 
 <style>
+  .group-title {
+    margin-bottom: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .group-title--all {
+    margin-top: clamp(3rem, 7vw, 5rem);
+  }
+
   .featured {
     display: grid;
     gap: var(--space-md);
   }
 
-  .featured__item {
-    isolation: isolate;
-  }
-
-  .featured > *,
-  .grid > * {
-    height: 100%;
-    /* Sem isto, um card largo estica a faixa do grid além da viewport. */
-    min-width: 0;
-  }
-
-  .more {
-    margin-top: var(--space-lg);
-    margin-bottom: var(--space-sm);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-    gap: var(--space-md);
-  }
-
-  @media (min-width: 64rem) {
+  @media (min-width: 48rem) {
     .featured {
-      gap: var(--space-xl);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
 
-    .featured__item {
-      position: sticky;
-      top: var(--sticky-top);
+  @media (min-width: 72rem) {
+    .featured {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+  }
+
+  .all {
+    border-top: 1px solid var(--line);
+  }
+
+  .row {
+    display: grid;
+    gap: 0.4rem 1rem;
+    align-items: center;
+    padding-block: var(--space-sm);
+    border-bottom: 1px solid var(--line);
+  }
+
+  @media (min-width: 60rem) {
+    .row {
+      grid-template-columns: minmax(0, 1.6fr) auto minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: var(--space-md);
+    }
+  }
+
+  .row__name {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+
+  .row__category,
+  .row__stack,
+  .row__note {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  .row__status {
+    justify-self: start;
+  }
+
+  .row__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+  }
+
+  @media (min-width: 60rem) {
+    .row__links {
+      justify-content: flex-end;
+    }
+  }
+
+  .row__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
   }
 </style>
