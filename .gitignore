@@ -22,3 +22,6 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Mapeamento de pastas de repositórios privados (nomes internos)
+scripts/repos.local.json
