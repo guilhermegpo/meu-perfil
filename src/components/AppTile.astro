@@ -19,7 +19,12 @@ const titleId = `app-${project.slug}`;
   profundidade própria — fundo 0, brilho 5, arte 15, rótulos 25, texto 30 e
   botões 35.
 -->
-<article class="tile" data-tilt aria-labelledby={titleId}>
+<article
+  class="tile"
+  data-tilt
+  aria-labelledby={titleId}
+  style={`--pos: ${image.position ?? '50% 50%'}`}
+>
   <div class="tile__tilt">
     <div class="tile__bg"></div>
     <div class="tile__glow"></div>
@@ -143,14 +148,26 @@ const titleId = `app-${project.slug}`;
   }
 
   .tile__art :global(img) {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 900ms var(--ease);
+    object-position: var(--pos, 50% 50%);
+    /* Mesmo comportamento dos cartões em destaque: zoom leve e deslocamento interno. */
+    transform: translate3d(calc(var(--tx, 0) * -6px), calc(var(--ty, 0) * -4px), 0) scale(1.03);
+    transition: transform 700ms var(--ease);
   }
 
-  .tile:hover .tile__art :global(img) {
-    transform: scale(1.035);
+  .tile[data-tilting='true'] .tile__art :global(img),
+  .tile:focus-within .tile__art :global(img) {
+    transform: translate3d(calc(var(--tx, 0) * -6px), calc(var(--ty, 0) * -4px), 0) scale(1.06);
+    transition: transform 140ms linear;
+  }
+
+  .tile[data-tilting='true'] .tile__art,
+  .tile:focus-within .tile__art {
+    transform: translateZ(24px);
   }
 
   /* Reflexo suave que acompanha o cursor sobre a arte. */
@@ -242,6 +259,10 @@ const titleId = `app-${project.slug}`;
     .tile__glow {
       background: radial-gradient(24rem circle at 50% 0%, rgba(164, 214, 248, 0.13), transparent 60%);
     }
+
+    .tile__art :global(img) {
+      transform: scale(1.02);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -251,7 +272,15 @@ const titleId = `app-${project.slug}`;
     .tile__meta,
     .tile__body,
     .tile__actions,
-    .tile__glow {
+    .tile__glow,
+    .tile[data-tilting='true'] .tile__art,
+    .tile:focus-within .tile__art {
+      transform: none;
+    }
+
+    .tile__art :global(img),
+    .tile[data-tilting='true'] .tile__art :global(img),
+    .tile:focus-within .tile__art :global(img) {
       transform: none;
     }
   }

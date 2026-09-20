@@ -41,7 +41,7 @@ const PROJECTS = {
   'controle-de-chaves': { dir: 'controle-de-chaves', platforms: ['mobile', 'web'] },
   'meu-chamado': { dir: 'meu-chamado', platforms: ['mobile'] },
   'sistema-ila-fab': { dir: privateDir('sistema-ila-fab'), platforms: ['web'] },
-  'sistema-de-escalas': { dir: privateDir('sistema-de-escalas'), platforms: ['web'] },
+  'sistema-escalas-servico': { dir: privateDir('sistema-escalas-servico'), platforms: ['web'] },
   'meu-perfil': { dir: 'meu-perfil', platforms: ['web'], site: true },
 };
 

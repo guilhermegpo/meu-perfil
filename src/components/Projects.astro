@@ -1,5 +1,5 @@
 ---
-import { appsMeu, featuredProjects, hasPage, projects, projectStack } from '../data/projects';
+import { appsMeu, featuredProjects, projects, projectStack } from '../data/projects';
 import { asset } from '../lib/url';
 import AppTile from './AppTile.astro';
 import Icon from './Icon.astro';
@@ -63,16 +63,12 @@ import SectionHeading from './SectionHeading.astro';
                 {project.status}
               </span>
               <p class="row__stack">
-                {stack.length > 0 ? stack.join(' · ') : 'Detalhes técnicos em breve'}
+                {stack.length > 0 ? stack.join(' · ') : 'Produto mobile em desenvolvimento'}
               </p>
               <div class="row__links">
-                {hasPage(project) ? (
-                  <a class="row__link" href={asset(`projetos/${project.slug}`)}>
-                    {project.caseStudy ? 'Case study' : 'Ver página'} <Icon name="arrow" />
-                  </a>
-                ) : (
-                  <span class="row__note">Sem página pública</span>
-                )}
+                <a class="row__link" href={asset(`projetos/${project.slug}`)}>
+                  {project.caseStudy ? 'Case study' : 'Ver página'} <Icon name="arrow" />
+                </a>
                 {project.repository && (
                   <a class="row__link" href={project.repository} rel="noopener">
                     GitHub <Icon name="external" />
@@ -202,8 +198,7 @@ import SectionHeading from './SectionHeading.astro';
   }
 
   .row__category,
-  .row__stack,
-  .row__note {
+  .row__stack {
     font-size: 0.88rem;
     color: var(--text-muted);
   }

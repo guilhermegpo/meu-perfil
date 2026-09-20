@@ -40,6 +40,8 @@ export interface ArchitectureLayer {
 export interface HeroImage {
   readonly slug: string;
   readonly alt: string;
+  /** `object-position` do recorte no cartão, para cada arte mostrar o que importa. */
+  readonly position?: string;
 }
 
 /**
@@ -122,6 +124,11 @@ export const projects: readonly Project[] = [
     featured: true,
     disclosure:
       'Sistema operacional em uso por uma equipe real. Por isso o código, as telas, os dados e o nome da organização não são públicos.',
+    heroImage: {
+      slug: 'controle-de-chaves',
+      alt: 'Imagem ilustrativa do Controle de Chaves: painel de controle em um notebook e no celular, com totais, veículos fora da sede e operações em andamento, em tons de vermelho e grafite.',
+      position: '50% 42%',
+    },
     caseStudy: {
       context:
         'Aplicativo usado por uma equipe operacional para registrar a saída e o retorno de veículos e o estado das chaves. O sistema anterior dependia de um backend baseado em Google Drive, e o código-fonte original não estava mais disponível: a reconstrução partiu de um APK compilado de referência.',
@@ -274,6 +281,7 @@ export const projects: readonly Project[] = [
     heroImage: {
       slug: 'meu-chamado',
       alt: 'Imagem ilustrativa do Meu Chamado: tela inicial do aplicativo no celular, com chamados, tarefas, agenda, reuniões e lembretes.',
+      position: '50% 20%',
     },
     caseStudy: {
       context:
@@ -391,6 +399,11 @@ export const projects: readonly Project[] = [
     links: [],
     featured: true,
     disclosure: RESTRICTED,
+    heroImage: {
+      slug: 'sistema-cursos',
+      alt: 'Imagem ilustrativa do sistema de gestão de cursos: tela inicial em um notebook e no celular, com cadastro e importação de cursos, em tons de azul.',
+      position: '50% 30%',
+    },
     caseStudy: {
       context:
         'Sistema interno de uma seção de coordenação de cursos, desenvolvido e implantado durante meu período de serviço temporário. Acesso apenas autenticado, sem cadastro público.',
@@ -466,30 +479,142 @@ export const projects: readonly Project[] = [
     },
   },
   {
-    slug: 'sistema-de-escalas',
+    slug: 'sistema-escalas-servico',
     name: 'Sistema de escalas de serviço',
     category: 'Aplicação web interna',
     kind: 'web',
     status: 'Projeto interno',
     tone: 'internal',
-    tagline:
-      'Aplicação web interna para gerar e gerenciar escalas de serviço.',
+    tagline: 'Aplicação web interna para organização e gestão de escalas.',
     highlights: [
-      'Geração de escalas com regras de negócio',
+      'Geração de escalas com regras configuráveis',
       'Trocas, adiantamentos e aprovações',
-      'Importação e exportação em CSV, Excel e PDF',
+      'Importação e exportação em planilha, CSV e PDF',
       'Logs de auditoria e permissões por usuário',
     ],
     links: [],
     featured: false,
     disclosure: 'Código-fonte e dados não são públicos.',
+    heroImage: {
+      slug: 'sistema-escalas',
+      alt: 'Imagem ilustrativa do sistema de escalas: painel com totais e calendário mensal em um notebook e em celulares, em tons de azul-marinho.',
+      position: '50% 40%',
+    },
+    caseStudy: {
+      context:
+        'Aplicação web interna para organizar e gerir escalas de serviço: gera a escala do período, trata pedidos de troca e adiantamento, registra indisponibilidades e publica o resultado em documento. O acesso é apenas autenticado, com permissões por papel.',
+      problem:
+        'Montar escalas periódicas envolve regras (dias em que há escala, dias bloqueados, descanso mínimo entre serviços), pedidos entre pessoas (trocas, adiantamentos e indisponibilidades) e o registro do que foi decidido e por quem.',
+      objective:
+        'Reunir geração, ajustes, solicitações e publicação da escala em um só sistema, com regras configuráveis em vez de fixas no código e com histórico e auditoria.',
+      responsibility: [
+        'Fluxos e regras de negócio da escala',
+        'Modelo de dados e regras de acesso no banco',
+        'Interface: painel, calendário, solicitações e gestão',
+        'Geração e exportação da escala em PDF, planilha e CSV',
+      ],
+      architecture: {
+        summary:
+          'Aplicação React com roteamento e funções de servidor do TanStack Start, publicada em Cloudflare Workers, sobre Supabase. As regras de acesso ficam no banco e as regras da escala ficam em dados configuráveis.',
+        layers: [
+          {
+            name: 'Interface',
+            detail:
+              'React 19 e TypeScript, TanStack Router e Query, Tailwind e componentes Radix. O menu lateral tem modo próprio para telas pequenas, e o sistema pode ser instalado como PWA.',
+          },
+          {
+            name: 'Servidor',
+            detail: 'Funções de servidor para operações administrativas, publicadas em Cloudflare Workers.',
+          },
+          {
+            name: 'Dados',
+            detail: `PostgreSQL no Supabase, com ${projectEvidence('sistema-escalas-servico').policies} políticas RLS e ${projectEvidence('sistema-escalas-servico').sqlFunctions} funções SQL declaradas nas migrações, além de tabelas de papéis, permissões e auditoria.`,
+          },
+          {
+            name: 'Regras da escala',
+            detail:
+              'Dias da semana por tipo de escala, dias bloqueados (inclusive recorrentes), critério de ordenação e descanso mínimo, todos configuráveis.',
+          },
+          {
+            name: 'Documentos',
+            detail:
+              'Exportação em PDF com layout configurável (editor de colunas), planilha e CSV, e importação de planilhas.',
+          },
+        ],
+      },
+      decisions: [
+        {
+          title: 'Prévia antes de publicar',
+          body: 'A geração devolve uma prévia com avisos e com os dias sem candidato, e permite substituições manuais validadas pelas mesmas regras. A escala passa por rascunho, publicada e arquivada.',
+        },
+        {
+          title: 'Regras em dados, não em código',
+          body: 'Dias da semana, bloqueios, critério de ordenação, descanso mínimo e restrições (como pessoas vinculadas no mesmo dia) são configuráveis, para mudar uma regra sem nova publicação.',
+        },
+        {
+          title: 'Solicitações com estado e aviso',
+          body: 'Trocas e adiantamentos seguem os estados pendente, aprovada, rejeitada e cancelada, e cada decisão gera uma notificação.',
+        },
+        {
+          title: 'Papéis e permissões no banco',
+          body: 'Três papéis, mais permissões por usuário, verificados por políticas RLS e funções SQL: esconder um botão nunca é a única barreira.',
+        },
+        {
+          title: 'Documento configurável',
+          body: 'O PDF da escala tem um editor de layout, com colunas e opções como QR Code, em vez de um formato fixo.',
+        },
+      ],
+      features: [
+        'Geração da escala do período, com critérios e restrições configuráveis',
+        'Calendário mensal com publicação e arquivamento',
+        'Trocas e adiantamentos com aprovação',
+        'Indisponibilidades',
+        'Contagem de atribuições por pessoa',
+        'Gestão de escalas, usuários e vínculos entre pessoas',
+        'Histórico e painel de acompanhamento',
+        'Importação e exportação em planilha, CSV e PDF',
+        'Notificações dentro do sistema',
+        'Logs de auditoria e permissões por usuário',
+        'Interface responsiva',
+      ],
+      challenges: [
+        {
+          challenge: 'Distribuir os serviços de forma equilibrada respeitando as restrições.',
+          solution:
+            'O gerador ordena os candidatos por critério configurável, aplica o descanso mínimo e as restrições, e devolve avisos e os dias sem candidato em vez de falhar em silêncio.',
+        },
+        {
+          challenge: 'Saber em quais dias há escala em cada mês.',
+          solution:
+            'Os dias válidos são os dias da semana configurados para o tipo de escala, menos os dias bloqueados — feriados, eventos, bloqueios manuais e recorrentes.',
+        },
+        {
+          challenge: 'Corrigir a escala gerada sem perder a consistência.',
+          solution: 'Prévia editável: cada substituição é validada pelas mesmas regras antes de ser gravada.',
+        },
+        {
+          challenge: 'Importar dados de planilhas com grafias diferentes.',
+          solution:
+            'As ferramentas de importação normalizam o texto e resolvem cadastros já existentes, e cada importação fica registrada como um job.',
+        },
+      ],
+      results: [
+        'Fluxo completo no repositório: geração, ajustes, solicitações, publicação, importação, exportação e auditoria.',
+        `${projectEvidence('sistema-escalas-servico').policies} políticas RLS e ${projectEvidence('sistema-escalas-servico').sqlFunctions} funções SQL declaradas nas migrações.`,
+      ],
+      learnings: [
+        'O gerador de escalas é a parte de maior risco e a primeira que deveria receber testes automatizados: hoje o projeto não tem testes nem CI.',
+        'Regras em dados pedem telas para administrá-las e uma prévia para conferir o efeito antes de publicar.',
+      ],
+      status: 'Projeto interno, sem release público. Código-fonte e dados não são públicos.',
+    },
   },
   {
     slug: 'meu-financeiro',
     name: 'Meu Financeiro',
     category: 'Aplicativo mobile',
     kind: 'mobile',
-    status: 'Em breve',
+    status: 'Em desenvolvimento',
     tone: 'concept',
     tagline: 'Organização financeira pessoal: seu dinheiro, seus planos, no seu controle.',
     highlights: [
@@ -518,7 +643,7 @@ export const projects: readonly Project[] = [
       identity:
         'Identidade própria em azul e verde-água, com o "M" da família Apps Meu acompanhado de um gráfico de crescimento. Visual claro, limpo e estratégico.',
       status:
-        'O repositório ainda não foi publicado. O case técnico — arquitetura, decisões e testes — entra aqui quando o projeto estiver disponível. A imagem desta página é ilustrativa e os valores exibidos nela são fictícios.',
+        'Produto em desenvolvimento. O repositório ainda não foi publicado, por isso esta página traz só o que o produto já define: proposta e identidade visual. O case técnico — arquitetura, decisões e testes — entra aqui quando o projeto estiver disponível. A imagem é ilustrativa e os valores exibidos nela são fictícios.',
     },
   },
   {
@@ -526,7 +651,7 @@ export const projects: readonly Project[] = [
     name: 'Meu Treino',
     category: 'Aplicativo mobile',
     kind: 'mobile',
-    status: 'Em breve',
+    status: 'Em desenvolvimento',
     tone: 'concept',
     tagline: 'Disciplina hoje, resultados sempre: treinos organizados e evolução no controle.',
     highlights: [
@@ -555,7 +680,7 @@ export const projects: readonly Project[] = [
       identity:
         'Identidade própria em modo escuro, com azul-petróleo e turquesa e o "M" da família Apps Meu ao lado de um halter. Visual atlético, energético e tecnológico.',
       status:
-        'O repositório ainda não foi publicado. O case técnico — arquitetura, decisões e testes — entra aqui quando o projeto estiver disponível. A imagem desta página é ilustrativa.',
+        'Produto em desenvolvimento. O repositório ainda não foi publicado, por isso esta página traz só o que o produto já define: proposta e identidade visual. O case técnico — arquitetura, decisões e testes — entra aqui quando o projeto estiver disponível. A imagem é ilustrativa.',
     },
   },
   {

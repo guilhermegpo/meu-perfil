@@ -31,7 +31,7 @@ const study = project.caseStudy;
 const showcase = project.showcase;
 
 const title = `${project.name} — ${study ? 'case study' : 'família Apps Meu'} | ${profile.name}`;
-const description = project.tagline;
+const description = `${project.name} — ${project.tagline}`;
 
 const home = new URL(asset(''), Astro.site).href;
 const url = new URL(asset(`projetos/${project.slug}`), Astro.site).href;

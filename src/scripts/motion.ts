@@ -96,7 +96,7 @@ function initTilt(): void {
 
   document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((card) => {
     let raf = 0;
-    let pending: { rx: number; ry: number; mx: number; my: number } | null = null;
+    let pending: { rx: number; ry: number; mx: number; my: number; tx: number; ty: number } | null = null;
 
     const apply = (): void => {
       raf = 0;
@@ -105,6 +105,8 @@ function initTilt(): void {
       card.style.setProperty('--ry', `${pending.ry.toFixed(2)}deg`);
       card.style.setProperty('--mx', `${pending.mx.toFixed(1)}%`);
       card.style.setProperty('--my', `${pending.my.toFixed(1)}%`);
+      card.style.setProperty('--tx', pending.tx.toFixed(3));
+      card.style.setProperty('--ty', pending.ty.toFixed(3));
     };
 
     const queue = (next: typeof pending): void => {
@@ -122,12 +124,19 @@ function initTilt(): void {
       const rect = card.getBoundingClientRect();
       const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       const y = clamp((event.clientY - rect.top) / rect.height, 0, 1);
-      queue({ rx: (0.5 - y) * 2 * TILT_X, ry: (x - 0.5) * 2 * TILT_Y, mx: x * 100, my: y * 100 });
+      queue({
+        rx: (0.5 - y) * 2 * TILT_X,
+        ry: (x - 0.5) * 2 * TILT_Y,
+        mx: x * 100,
+        my: y * 100,
+        tx: (x - 0.5) * 2,
+        ty: (y - 0.5) * 2,
+      });
     });
 
     card.addEventListener('pointerleave', () => {
       card.dataset.tilting = 'false';
-      queue({ rx: 0, ry: 0, mx: 50, my: 30 });
+      queue({ rx: 0, ry: 0, mx: 50, my: 30, tx: 0, ty: 0 });
     });
   });
 }

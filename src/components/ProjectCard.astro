@@ -2,13 +2,16 @@
 import { asset } from '../lib/url';
 import { projectSignals, projectStack, type Project } from '../data/projects';
 import Icon from './Icon.astro';
-import ProjectPreview from './ProjectPreview.astro';
+import Picture from './Picture.astro';
 
 interface Props {
   project: Project;
 }
 
 const { project } = Astro.props;
+const image = project.heroImage;
+if (!image) throw new Error(`O projeto em destaque "${project.slug}" precisa de heroImage.`);
+
 const stack = projectStack(project.slug).slice(0, 6);
 const signals = projectSignals(project.slug);
 const titleId = `card-${project.slug}`;
@@ -21,16 +24,36 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
   `.card__tilt`, no máximo 4° em X e 6° em Y, e cada camada interna recebe
   uma profundidade própria (translateZ) para o efeito de paralaxe:
 
-    fundo 0 · brilho 5 · ilustração 15 · rótulo 25 · título 30 · botões 35
+    fundo 0 · brilho 5 · arte 15 (24 no hover) · rótulo 25 · título 30 · botões 35
+
+  A arte fica em uma camada própria, com recorte específico por projeto
+  (`object-position`), zoom leve e um deslocamento interno em sentido oposto
+  ao cursor — a imagem parece estar dentro do cartão, não colada nele.
 -->
-<article class="card" data-tilt aria-labelledby={titleId}>
+<article
+  class="card"
+  data-tilt
+  aria-labelledby={titleId}
+  style={`--pos: ${image.position ?? '50% 50%'}`}
+>
   <div class="card__tilt">
     <div class="card__bg"></div>
     <div class="card__glow"></div>
 
-    <div class="card__preview">
-      <ProjectPreview kind={project.kind} />
-      <span class="card__caption">Ilustração</span>
+    <div class="card__art">
+      <Picture
+        dir="projects"
+        name={`${image.slug}-hero`}
+        widths={[640, 1024, 1672]}
+        fallback={`${image.slug}-hero-1024.webp`}
+        sizes="(min-width: 72rem) 24rem, (min-width: 48rem) 40rem, 92vw"
+        alt={image.alt}
+        width={1672}
+        height={941}
+        class="card__img"
+      />
+      <span class="card__shade" aria-hidden="true"></span>
+      <span class="card__caption">Imagem ilustrativa</span>
     </div>
 
     <div class="card__label">
@@ -50,11 +73,7 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
         {stack.map((tech) => <li class="chip">{tech}</li>)}
       </ul>
 
-      {
-        signals.length > 0 && (
-          <p class="card__signals">{signals.join(' · ')}</p>
-        )
-      }
+      {signals.length > 0 && <p class="card__signals">{signals.join(' · ')}</p>}
 
       {project.disclosure && <p class="card__disclosure">Código e telas não públicos</p>}
     </div>
@@ -83,6 +102,7 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
     position: relative;
     height: 100%;
     perspective: 1100px;
+    --pos: 50% 50%;
   }
 
   .card__tilt {
@@ -91,7 +111,7 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
     flex-direction: column;
     gap: var(--space-sm);
     height: 100%;
-    padding: 1.1rem 1.1rem 1.25rem;
+    padding: 0.7rem 0.7rem 1.25rem;
     border-radius: var(--radius-lg);
     transform-style: preserve-3d;
     transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
@@ -143,50 +163,101 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
     opacity: 1;
   }
 
-  .card__preview,
+  .card__art,
   .card__label,
   .card__content,
   .card__actions {
     position: relative;
   }
 
-  /* z = 15 */
-  .card__preview {
-    transform: translateZ(15px);
-    padding: 0.6rem;
-    border-radius: var(--radius);
-    background: radial-gradient(120% 90% at 50% 0%, rgba(120, 189, 242, 0.1), transparent 70%), var(--bg-1);
-    border: 1px solid var(--line);
-  }
-
-  /* Reflexo suave que acompanha o cursor sobre a ilustração. */
-  .card__preview {
+  /* z = 15 (24 no hover): a arte do projeto, em camada própria. */
+  .card__art {
+    aspect-ratio: 16 / 9;
     overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--bg-1);
+    box-shadow:
+      0 0 0 1px var(--line),
+      0 18px 36px -20px rgba(0, 0, 0, 0.95);
+    transform: translateZ(15px);
+    transition:
+      transform 520ms var(--ease),
+      box-shadow var(--dur) var(--ease);
   }
 
-  .card__preview::after {
-    content: '';
+  .card[data-tilting='true'] .card__art,
+  .card:focus-within .card__art {
+    transform: translateZ(24px);
+    box-shadow:
+      0 0 0 1px rgba(164, 214, 248, 0.22),
+      0 26px 46px -20px rgba(0, 0, 0, 1);
+  }
+
+  .card[data-tilting='true'] .card__art {
+    transition: transform 120ms linear, box-shadow var(--dur) var(--ease);
+  }
+
+  .card__art :global(.card__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos);
+    /* Zoom leve, com folga para o deslocamento interno não deixar borda vazia. */
+    transform: translate3d(calc(var(--tx, 0) * -6px), calc(var(--ty, 0) * -4px), 0) scale(1.035);
+    transition: transform 700ms var(--ease);
+  }
+
+  .card[data-tilting='true'] .card__art :global(.card__img),
+  .card:focus-within .card__art :global(.card__img) {
+    transform: translate3d(calc(var(--tx, 0) * -6px), calc(var(--ty, 0) * -4px), 0) scale(1.06);
+    transition: transform 140ms linear;
+  }
+
+  /* Véu muito sutil na base: dá leitura à legenda sem escurecer a arte. */
+  .card__shade {
     position: absolute;
     inset: 0;
     pointer-events: none;
+    background: linear-gradient(180deg, rgba(6, 9, 14, 0) 62%, rgba(6, 9, 14, 0.42));
+  }
+
+  /* Reflexo que acompanha o cursor; só existe durante o hover. */
+  .card__shade::after {
+    content: '';
+    position: absolute;
+    inset: 0;
     opacity: 0;
-    background: radial-gradient(12rem circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.1), transparent 60%);
+    background: radial-gradient(14rem circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.16), transparent 60%);
     transition: opacity var(--dur) var(--ease);
   }
 
-  .card[data-tilting='true'] .card__preview::after {
+  .card[data-tilting='true'] .card__shade::after {
     opacity: 1;
+  }
+
+  .card__art::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
   }
 
   .card__caption {
     position: absolute;
-    right: 0.7rem;
+    right: 0.55rem;
     bottom: 0.5rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(6, 9, 14, 0.72);
     font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--text-faint);
+    color: var(--text-muted);
   }
 
   /* z = 25 */
@@ -196,6 +267,7 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
+    padding-inline: 0.5rem;
     transform: translateZ(25px);
   }
 
@@ -216,6 +288,7 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
     gap: 0.7rem;
     flex: 1;
     align-content: start;
+    padding-inline: 0.5rem;
     transform: translateZ(30px);
   }
 
@@ -273,6 +346,7 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
+    padding-inline: 0.5rem;
     transform: translateZ(35px);
   }
 
@@ -291,6 +365,10 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
       background: radial-gradient(26rem circle at 50% 0%, rgba(164, 214, 248, 0.14), transparent 60%);
     }
 
+    .card__art :global(.card__img) {
+      transform: scale(1.02);
+    }
+
     .card__tilt:active {
       transform: scale(0.99);
     }
@@ -302,12 +380,20 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
       transform: none;
     }
 
-    .card__preview,
+    .card__art,
     .card__label,
     .card__content,
     .card__actions,
     .card__glow,
-    .card__bg {
+    .card__bg,
+    .card[data-tilting='true'] .card__art,
+    .card:focus-within .card__art {
+      transform: none;
+    }
+
+    .card__art :global(.card__img),
+    .card[data-tilting='true'] .card__art :global(.card__img),
+    .card:focus-within .card__art :global(.card__img) {
       transform: none;
     }
   }

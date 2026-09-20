@@ -57,6 +57,7 @@ O CI roda tudo isso em cada pull request e antes de cada deploy.
 npm run evidence  # recalcula stack, testes e métricas a partir dos repositórios locais
 npm run brand     # regera favicon, ícones e Open Graph a partir do master da logo
 npm run assets    # otimiza a foto oficial e as imagens ilustrativas (AVIF, WebP, JPG)
+npm run sanitize  # gera as artes públicas sanitizadas dos projetos privados
 npm run banner    # regera o banner do perfil do GitHub
 npm run fonts     # rebaixa as fontes
 ```

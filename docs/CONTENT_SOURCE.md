@@ -13,15 +13,15 @@ Nomes de pastas de repositórios privados ficam fora deste arquivo (e do Git): e
 | `controle-de-chaves` | Controle de Chaves | Privado, em uso por uma equipe real | Genérico: sem organização, sem telas, sem dados, sem link de código |
 | `meu-chamado` | Meu Chamado | Público | Completo, com link para o repositório |
 | `sistema-ila-fab` | Sistema de gestão de cursos | Privado, uso institucional | Genérico e com aviso de divulgação restrita |
-| `sistema-de-escalas` | Sistema de escalas de serviço | Privado, uso interno | Genérico, apenas na lista "Todos os projetos" |
+| `sistema-escalas-servico` | Sistema de escalas de serviço | Privado, projeto interno | Case sanitizado em `/projetos/sistema-escalas-servico/`, sem instituição |
 | `meu-perfil` | Este portfólio | Público | Completo |
-| `meu-financeiro` | Meu Financeiro | Sem repositório publicado | Página enxuta da família Apps Meu: só o que o material do produto afirma; sem stack, testes ou métricas |
-| `meu-treino` | Meu Treino | Sem repositório publicado | Igual ao Meu Financeiro |
+| `meu-financeiro` | Meu Financeiro | Sem repositório publicado; status "Em desenvolvimento" | Página enxuta da família Apps Meu: só o que o material do produto afirma; sem stack, testes ou métricas |
+| `meu-treino` | Meu Treino | Sem repositório publicado; status "Em desenvolvimento" | Igual ao Meu Financeiro |
 
 Meu Financeiro e Meu Treino **não têm repositório** (verificado localmente e na conta do GitHub). Entram
 como páginas enxutas, sem número, tecnologia ou afirmação técnica, e não contam nas métricas nem na
-stack. O texto vem das próprias imagens ilustrativas do autor. **Pendência do autor:** confirmar o
-estado real de cada app e o rótulo "Em breve".
+stack. O texto vem das próprias imagens ilustrativas do autor. **Pendência do autor:** confirmar se
+"Em desenvolvimento" descreve bem o estado de cada app.
 
 ## Números calculados
 
@@ -68,8 +68,13 @@ coletor e adicione a regra.
 | Ilustrações de Meu Chamado, Meu Financeiro e Meu Treino | `Imagem Ilustrativa - *.png`, fornecidas pelo autor. Exibidas como "Imagem ilustrativa"; valores e nomes que aparecem nelas são fictícios |
 | Marca GPO | `GPO Logo.png`, oficial, sem alterações |
 
-Não são usadas as demais ilustrações da pasta de origem (Controle de Chaves, sistema de cursos e
-escalas), porque trazem nomes internos de organização.
+As ilustrações de Controle de Chaves, sistema de cursos e escalas trazem nomes de organização,
+logotipos, brasões, contagens da frota e, em duas delas, nome completo e número de identificação.
+Por isso **só as versões sanitizadas são publicadas** (`npm run sanitize`): logotipos, brasões e
+nomes foram substituídos por ícones e rótulos genéricos ("Chaves", "Gestão de Cursos", "Escalas"),
+contagens da frota viraram "—", textos identificadores foram cobertos ou borrados e a composição
+foi recortada para 16:9. Os originais e as coordenadas das máscaras ficam fora do Git
+(`scripts/sanitize-art.local.json`) e `npm test` barra a publicação de qualquer PNG original.
 
 ## Textos por seção
 

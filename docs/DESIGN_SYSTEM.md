@@ -127,7 +127,7 @@ com os hovers) e ficam neutralizadas por `prefers-reduced-motion`.
 | Links | Sublinhado cresce da esquerda |
 | Navegação | Sublinhado parcial no hover, completo na seção atual; fio de progresso de leitura sob o header |
 | Logo GPO | Encolhe levemente ao rolar e ganha um brilho que cruza o desenho no hover |
-| Cartões e vitrines | Tilt até 4° / 6°, brilho e reflexo que seguem o cursor, borda acende |
+| Cartões e vitrines | Tilt até 4° / 6°, borda acende, a arte sobe de 15 para 24 px em Z, dá zoom de 3,5% a 6% e desliza no sentido oposto ao cursor; reflexo segue o cursor |
 | Fichas, grupos, práticas | Elevam 3 a 4 px e ganham spotlight suave com mouse |
 | Métricas | Contam de 0 ao valor na primeira vez que aparecem |
 | Barras da stack | Crescem, escalonadas, quando o grupo é revelado |
@@ -162,8 +162,11 @@ fechável por Escape, `alt` em toda imagem (vazio nas decorativas), `forced-colo
   mockup ao centro, painéis flutuantes à direita. No site usam o mesmo enquadramento 3D e o rótulo
   "Imagem ilustrativa". Cada app mantém a própria paleta (claro azul-verde-água, claro azul e
   escuro turquesa), unidos pelo símbolo "M" da família Apps Meu.
-- Projetos privados ou institucionais usam ilustrações abstratas próprias (rotuladas
-  "Ilustração"): nenhuma arte com nome interno é publicada.
+- Projetos privados ou institucionais usam a **versão sanitizada** da própria ilustração
+  (rotulada "Imagem ilustrativa"): logotipos, brasões, nomes e contagens reais foram substituídos
+  por ícones e rótulos genéricos, preservando cores, mockup e estilo de cada produto. Cada card em
+  destaque tem identidade própria: vermelho e grafite (Controle de Chaves), claro e azul-verde-água
+  (Meu Chamado) e azul institucional (sistema de cursos).
 
 ## Componentes
 

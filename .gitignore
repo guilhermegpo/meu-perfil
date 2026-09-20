@@ -25,3 +25,6 @@ Thumbs.db
 
 # Mapeamento de pastas de repositórios privados (nomes internos)
 scripts/repos.local.json
+
+# Patches de sanitização de arte (nomes e coordenadas do material original)
+scripts/sanitize-art.local.json

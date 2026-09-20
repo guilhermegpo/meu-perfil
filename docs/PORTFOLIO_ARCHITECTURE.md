@@ -34,7 +34,7 @@ src/
 ├── scripts/        env, nav, reveal, motion, main
 └── styles/         global.css (tokens) e fonts.css
 
-scripts/            collect-evidence, generate-brand, generate-assets, generate-banner, verify, fetch-fonts
+scripts/            collect-evidence, generate-brand, generate-assets, sanitize-art, generate-banner, verify, fetch-fonts
 tests/              content.test.mjs (conteúdo e segurança)
 public/             favicon, ícones, og-image, manifesto, robots, assets/ (marca, foto, projetos)
 docs/               Esta documentação
@@ -67,6 +67,14 @@ public/assets/
 versões otimizadas; os originais são preservados (a foto vem como JPEG com extensão .png e é
 regravada como PNG sem perda). O componente `Picture.astro` monta o `<picture>` com AVIF, WebP e
 reserva, `srcset`, `sizes` e dimensões intrínsecas. Nenhuma imagem é redesenhada ou recolorida.
+
+### Artes de projetos privados
+
+`npm run sanitize` lê `scripts/sanitize-art.local.json` (ignorado pelo Git) e produz só as versões
+públicas em `public/assets/projects`. Três operações, aplicadas sobre os pixels: `blur`, `fill`
+(reconstrução das bordas, com granulado) e `svg` (texto e ícones genéricos no lugar de logotipos e
+nomes). O arquivo publicado não guarda camadas: o conteúdo original não pode ser recuperado. O
+teste de conteúdo barra a publicação de qualquer PNG original desses projetos.
 
 ## Casos de estudo
 

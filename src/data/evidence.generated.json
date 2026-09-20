@@ -43,7 +43,7 @@
       "commits": 2540,
       "version": null
     },
-    "sistema-de-escalas": {
+    "sistema-escalas-servico": {
       "migrations": 41,
       "sqlFunctions": 18,
       "policies": 145,
@@ -72,7 +72,7 @@
       "name": "React",
       "projects": [
         "sistema-ila-fab",
-        "sistema-de-escalas"
+        "sistema-escalas-servico"
       ],
       "count": 2
     },
@@ -81,7 +81,7 @@
       "name": "TypeScript",
       "projects": [
         "sistema-ila-fab",
-        "sistema-de-escalas",
+        "sistema-escalas-servico",
         "meu-perfil"
       ],
       "count": 3
@@ -99,7 +99,7 @@
       "name": "TanStack Router",
       "projects": [
         "sistema-ila-fab",
-        "sistema-de-escalas"
+        "sistema-escalas-servico"
       ],
       "count": 2
     },
@@ -108,7 +108,7 @@
       "name": "Tailwind CSS",
       "projects": [
         "sistema-ila-fab",
-        "sistema-de-escalas"
+        "sistema-escalas-servico"
       ],
       "count": 2
     },
@@ -126,7 +126,7 @@
       "projects": [
         "controle-de-chaves",
         "sistema-ila-fab",
-        "sistema-de-escalas"
+        "sistema-escalas-servico"
       ],
       "count": 3
     },
@@ -136,7 +136,7 @@
       "projects": [
         "controle-de-chaves",
         "sistema-ila-fab",
-        "sistema-de-escalas"
+        "sistema-escalas-servico"
       ],
       "count": 3
     },
@@ -187,7 +187,7 @@
       "projects": [
         "controle-de-chaves",
         "sistema-ila-fab",
-        "sistema-de-escalas"
+        "sistema-escalas-servico"
       ],
       "count": 3
     },
@@ -205,7 +205,7 @@
       "projects": [
         "controle-de-chaves",
         "sistema-ila-fab",
-        "sistema-de-escalas"
+        "sistema-escalas-servico"
       ],
       "count": 3
     },
@@ -215,7 +215,7 @@
       "projects": [
         "controle-de-chaves",
         "sistema-ila-fab",
-        "sistema-de-escalas"
+        "sistema-escalas-servico"
       ],
       "count": 3
     },
@@ -243,7 +243,7 @@
       "projects": [
         "controle-de-chaves",
         "sistema-ila-fab",
-        "sistema-de-escalas"
+        "sistema-escalas-servico"
       ],
       "count": 3
     },
@@ -268,7 +268,7 @@
       "name": "ESLint",
       "projects": [
         "sistema-ila-fab",
-        "sistema-de-escalas",
+        "sistema-escalas-servico",
         "meu-perfil"
       ],
       "count": 3
@@ -278,7 +278,7 @@
       "name": "Prettier",
       "projects": [
         "sistema-ila-fab",
-        "sistema-de-escalas"
+        "sistema-escalas-servico"
       ],
       "count": 2
     }

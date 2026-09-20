@@ -39,7 +39,7 @@ const publicFiles = [
   ...(await files(path.join(root, 'public'), isText)),
   ...(await files(path.join(root, 'dist'), isText)),
   ...(await files(path.join(root, 'docs'), isText)),
-  ...(await files(path.join(root, 'scripts'), (f) => isText(f) && !f.endsWith('repos.local.json'))),
+  ...(await files(path.join(root, 'scripts'), (f) => isText(f) && !f.endsWith('.local.json'))),
 ];
 const contents = await Promise.all(publicFiles.map(async (f) => [f, await readFile(f, 'utf8')]));
 
@@ -96,6 +96,25 @@ test('o conteúdo público não cita ferramentas de IA como parte da narrativa',
     .filter(([, text]) => pattern.test(text))
     .map(([file]) => path.relative(root, file));
   assert.deepEqual(hits, []);
+});
+
+test('projetos privados só publicam a arte sanitizada, nunca o PNG original', async () => {
+  const files = await readdir(path.join(root, 'public', 'assets', 'projects'));
+  const privateArt = ['controle-de-chaves', 'sistema-cursos', 'sistema-escalas'];
+  for (const name of privateArt) {
+    assert.ok(files.includes(`${name}-hero-1024.webp`), `falta a arte sanitizada de ${name}`);
+    assert.equal(files.filter((f) => f.startsWith(name) && f.endsWith('.png')).length, 0, `PNG original de ${name} publicado`);
+  }
+  // Nenhuma arte de projeto privado pode ser referenciada com nome de arquivo original.
+  assert.equal(files.filter((f) => /\s/.test(f)).length, 0, 'nome de arquivo com espaço sugere arquivo original copiado');
+});
+
+test('nenhum projeto usa texto de pendência na listagem', async () => {
+  const html = await readFile(path.join(root, 'dist', 'index.html'), 'utf8');
+  for (const phrase of ['Sem página pública', 'Detalhes técnicos em breve', 'Em breve']) {
+    assert.ok(!html.includes(phrase), `a home ainda contém "${phrase}"`);
+  }
+  assert.ok(html.includes('Em desenvolvimento'), 'status Em desenvolvimento ausente');
 });
 
 test('nenhum console.log ou debugger no código do site', () => {
