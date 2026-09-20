@@ -15,8 +15,13 @@ Nomes de pastas de repositórios privados ficam fora deste arquivo (e do Git): e
 | `sistema-ila-fab` | Sistema de gestão de cursos | Privado, uso institucional | Genérico e com aviso de divulgação restrita |
 | `sistema-de-escalas` | Sistema de escalas de serviço | Privado, uso interno | Genérico, apenas na lista "Todos os projetos" |
 | `meu-perfil` | Este portfólio | Público | Completo |
+| `meu-financeiro` | Meu Financeiro | Sem repositório publicado | Página enxuta da família Apps Meu: só o que o material do produto afirma; sem stack, testes ou métricas |
+| `meu-treino` | Meu Treino | Sem repositório publicado | Igual ao Meu Financeiro |
 
-Não existe projeto "Meu Financeiro" nos repositórios; por isso ele não aparece em lugar nenhum.
+Meu Financeiro e Meu Treino **não têm repositório** (verificado localmente e na conta do GitHub). Entram
+como páginas enxutas, sem número, tecnologia ou afirmação técnica, e não contam nas métricas nem na
+stack. O texto vem das próprias imagens ilustrativas do autor. **Pendência do autor:** confirmar o
+estado real de cada app e o rótulo "Em breve".
 
 ## Números calculados
 
@@ -54,6 +59,17 @@ Não aparecem porque nenhum repositório os comprova: **Docker** (nenhum Dockerf
 **IntelliJ IDEA**, **VS Code** (só uma lista de extensões recomendadas) e "APIs REST" como item
 próprio (o acesso a dados é via Supabase). Se houver projeto que os use, inclua o repositório no
 coletor e adicione a regra.
+
+## Imagens
+
+| Imagem | Origem |
+| --- | --- |
+| Foto profissional (Sobre, avatar do hero e do contato, JSON-LD) | `Foto.png`, fornecida pelo autor como foto oficial |
+| Ilustrações de Meu Chamado, Meu Financeiro e Meu Treino | `Imagem Ilustrativa - *.png`, fornecidas pelo autor. Exibidas como "Imagem ilustrativa"; valores e nomes que aparecem nelas são fictícios |
+| Marca GPO | `GPO Logo.png`, oficial, sem alterações |
+
+Não são usadas as demais ilustrações da pasta de origem (Controle de Chaves, sistema de cursos e
+escalas), porque trazem nomes internos de organização.
 
 ## Textos por seção
 
@@ -142,14 +158,11 @@ Fonte: este repositório, `docs/PORTFOLIO_ARCHITECTURE.md` e as medições de Li
 
 ## Ferramentas de desenvolvimento
 
-O portfólio trata ferramentas assistidas por IA como **ferramenta de desenvolvimento**, não como
-autoria: aparecem em uma linha discreta no rodapé da seção Stack, numa linha "Ferramentas de
-desenvolvimento" nos cases do Controle de Chaves e do sistema de cursos, e em um item da
-experiência. O Meu Chamado (família Apps Meu) não cita ferramenta alguma. Nenhum texto afirma que
-o código foi escrito à mão nem chama a ferramenta de autora.
-
-A fonte é o histórico dos repositórios (trailers de coautoria e a plataforma de desenvolvimento
-assistido usada nos sistemas web). Contagens de commits ficam na auditoria privada, não no site.
+O portfólio não trata ferramentas de desenvolvimento como parte da narrativa pública: o foco é o
+problema resolvido, os requisitos, a arquitetura, as decisões, a validação e o produto entregue.
+Nenhuma página nomeia ferramentas assistidas por IA, e nenhum texto afirma que todo o código foi
+escrito à mão. `npm test` barra a volta desses termos. O levantamento de autoria dos
+repositórios fica na auditoria privada, fora do Git.
 
 ## Pendências de confirmação
 

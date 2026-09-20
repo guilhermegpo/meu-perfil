@@ -15,7 +15,8 @@
     "evidence": "node scripts/collect-evidence.mjs",
     "brand": "node scripts/generate-brand.mjs",
     "fonts": "node scripts/fetch-fonts.mjs",
-    "banner": "node scripts/generate-banner.mjs"
+    "banner": "node scripts/generate-banner.mjs",
+    "assets": "node scripts/generate-assets.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

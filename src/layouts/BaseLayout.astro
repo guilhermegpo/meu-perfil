@@ -30,6 +30,7 @@ const graph = [
     jobTitle: profile.role,
     description: profile.description,
     url: siteUrl,
+    image: absolute('assets/profile/foto-960.jpg'),
     email: `mailto:${profile.email}`,
     address: {
       '@type': 'PostalAddress',
@@ -86,7 +87,7 @@ const graph = [
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogAlt} />
 
-    <link rel="icon" type="image/png" sizes="48x48" href={asset('brand/favicon.png')} />
+    <link rel="icon" type="image/png" sizes="48x48" href={asset('assets/brand/favicon.png')} />
     <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
     <link rel="manifest" href={asset('site.webmanifest')} />
     <link rel="sitemap" href={asset('sitemap-index.xml')} />

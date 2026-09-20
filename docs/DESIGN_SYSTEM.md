@@ -20,10 +20,10 @@ Uma cópia byte a byte está em `src/assets/brand/gpo-master.png` e nunca é edi
 | Arquivo | Uso |
 | --- | --- |
 | `src/assets/brand/gpo-logo.png` | Marca recortada, resolução original. Entrada do pipeline de imagens do Astro (navbar, hero, rodapé). |
-| `public/brand/gpo-logo.png` / `.webp` | Mesma marca para uso externo. |
-| `public/brand/gpo-logo-512.png`, `gpo-logo-192.png` | Ícones quadrados (marca sobre ladrilho escuro) para manifesto e apps. |
-| `public/brand/favicon.png` | Favicon 48 × 48. |
-| `public/brand/apple-touch-icon.png` e `public/apple-touch-icon.png` | Ícone iOS 180 × 180 (a cópia na raiz atende o Safari). |
+| `public/assets/brand/gpo-logo.png` / `.webp` | Mesma marca para uso externo. |
+| `public/assets/brand/gpo-logo-512.png`, `gpo-logo-192.png` | Ícones quadrados (marca sobre ladrilho escuro) para manifesto e apps. |
+| `public/assets/brand/favicon.png` | Favicon 48 × 48. |
+| `public/assets/brand/apple-touch-icon.png` e `public/apple-touch-icon.png` | Ícone iOS 180 × 180 (a cópia na raiz atende o Safari). |
 | `public/og-image.png` | Cartão Open Graph 1200 × 630. |
 | `../guilhermegpo/assets/banner.png` | Banner do perfil do GitHub (`npm run banner`). |
 
@@ -115,6 +115,25 @@ Não há tema claro: o site é escuro por decisão de marca.
 em grade −90, halo −30, anéis 20, monograma 60, painéis 60 a 130. O cursor desloca cada camada
 proporcionalmente à sua profundidade (`--d`), com parallax de rolagem de até 26 px.
 
+## Microinterações
+
+Todas usam só `transform` e `opacity` (o reveal usa a propriedade `translate`, para não disputar
+com os hovers) e ficam neutralizadas por `prefers-reduced-motion`.
+
+| Onde | Efeito |
+| --- | --- |
+| Entrada dos blocos | Sobe 18 px e aparece uma vez; o traço do eyebrow "desenha" |
+| Botões | Elevam 1 px, a seta desliza 3 px, o primário ganha uma faixa de luz |
+| Links | Sublinhado cresce da esquerda |
+| Navegação | Sublinhado parcial no hover, completo na seção atual; fio de progresso de leitura sob o header |
+| Logo GPO | Encolhe levemente ao rolar e ganha um brilho que cruza o desenho no hover |
+| Cartões e vitrines | Tilt até 4° / 6°, brilho e reflexo que seguem o cursor, borda acende |
+| Fichas, grupos, práticas | Elevam 3 a 4 px e ganham spotlight suave com mouse |
+| Métricas | Contam de 0 ao valor na primeira vez que aparecem |
+| Barras da stack | Crescem, escalonadas, quando o grupo é revelado |
+| Hero | Peças entram em sequência e flutuam devagar, defasadas |
+| Contato | Halo muito lento atrás do painel |
+
 ## Comportamento por dispositivo
 
 | Situação | Comportamento |
@@ -131,6 +150,20 @@ proporcionalmente à sua profundidade (`--d`), com parallax de rolagem de até 2
 HTML semântico e landmarks, `aria-labelledby` nas seções, skip link, foco visível de 2 px em
 qualquer elemento interativo, alvos de toque ≥ 44 px, `aria-current` na seção atual, menu móvel
 fechável por Escape, `alt` em toda imagem (vazio nas decorativas), `forced-colors` respeitado.
+
+## Fotografia e ilustrações
+
+- **Foto oficial** (`public/assets/profile`): retrato 4:5 no card do Sobre, com `object-position` no
+  rosto, gradiente inferior que funde a base com o fundo do site e legenda de vidro. O card tem
+  `overflow: hidden`, proporção fixa e uma moldura deslocada cujo espaço é reservado por padding,
+  então nada vaza do grid. Um recorte quadrado do rosto (avatar) aparece no hero e no contato.
+- **Imagens ilustrativas** (`public/assets/projects`): Meu Financeiro, Meu Chamado e Meu Treino
+  seguem o mesmo formato (16:9, 1672 × 941) e a mesma composição — marca e proposta à esquerda,
+  mockup ao centro, painéis flutuantes à direita. No site usam o mesmo enquadramento 3D e o rótulo
+  "Imagem ilustrativa". Cada app mantém a própria paleta (claro azul-verde-água, claro azul e
+  escuro turquesa), unidos pelo símbolo "M" da família Apps Meu.
+- Projetos privados ou institucionais usam ilustrações abstratas próprias (rotuladas
+  "Ilustração"): nenhuma arte com nome interno é publicada.
 
 ## Componentes
 

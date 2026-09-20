@@ -2,9 +2,10 @@
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 import Icon from '../../components/Icon.astro';
+import Picture from '../../components/Picture.astro';
 import { evidence } from '../../data/evidence';
 import { profile } from '../../data/profile';
-import { projects, projectSignals, projectStack, type Project } from '../../data/projects';
+import { hasPage, projects, projectSignals, projectStack, type Project } from '../../data/projects';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { asset } from '../../lib/url';
 
@@ -17,7 +18,7 @@ import { asset } from '../../lib/url';
  */
 export function getStaticPaths() {
   return projects
-    .filter((project) => project.caseStudy)
+    .filter(hasPage)
     .map((project) => ({ params: { slug: project.slug }, props: { project } }));
 }
 
@@ -26,9 +27,10 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const study = project.caseStudy!;
+const study = project.caseStudy;
+const showcase = project.showcase;
 
-const title = `${project.name} — case study | ${profile.name}`;
+const title = `${project.name} — ${study ? 'case study' : 'família Apps Meu'} | ${profile.name}`;
 const description = project.tagline;
 
 const home = new URL(asset(''), Astro.site).href;
@@ -83,7 +85,7 @@ const sections = [
   { id: 'status', label: 'Status atual' },
 ];
 
-const others = projects.filter((p) => p.caseStudy && p.slug !== project.slug);
+const others = projects.filter((p) => hasPage(p) && p.slug !== project.slug);
 const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
 ---
 
@@ -105,6 +107,7 @@ const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
         <div class="head__badges">
           <span class="badge">{kindLabel}</span>
           <span class="badge">{project.category}</span>
+          {project.family && <span class="badge">{project.family}</span>}
           <span class="badge" data-tone={project.tone}>{project.status}</span>
         </div>
         <h1 class="head__title">{project.name}</h1>
@@ -124,7 +127,11 @@ const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
               </a>
             ))
           }
-          {project.links.length === 0 && <span class="head__private">Código-fonte privado</span>}
+          {project.links.length === 0 && (
+            <span class="head__private">
+              {study ? 'Código-fonte privado' : 'Repositório ainda não publicado'}
+            </span>
+          )}
         </div>
       </header>
 
@@ -138,6 +145,30 @@ const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
         )
       }
 
+      {
+        project.heroImage && (
+          <figure class="art" data-tilt>
+            <div class="art__tilt">
+              <Picture
+                dir="projects"
+                name={`${project.heroImage.slug}-hero`}
+                widths={[640, 1024, 1672]}
+                fallback={`${project.heroImage.slug}-hero-1024.webp`}
+                sizes="(min-width: 68rem) 64rem, 92vw"
+                alt={project.heroImage.alt}
+                width={1672}
+                height={941}
+                eager
+                class="art__img"
+              />
+              <span class="art__glow" aria-hidden="true"></span>
+              <figcaption class="art__caption">Imagem ilustrativa</figcaption>
+            </div>
+          </figure>
+        )
+      }
+
+      {study && (
       <div class="layout">
         <nav class="toc" aria-label="Neste case">
           <ol>
@@ -146,7 +177,7 @@ const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
                 .filter((s) => s.id !== 'tecnologias' || stackAll.length > 0)
                 .map((s) => (
                   <li>
-                    <a href={`#${s.id}`}>{s.label}</a>
+                    <a href={`#${s.id}`} data-toc-link={s.id}>{s.label}</a>
                   </li>
                 ))
             }
@@ -200,7 +231,6 @@ const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
                 </ul>
                 <p class="muted">
                   Detectadas no repositório por script, em {evidence.generatedAt}.
-                  {project.tooling && ` Ferramentas de desenvolvimento: ${project.tooling}`}
                 </p>
               </section>
             )
@@ -277,6 +307,33 @@ const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
           </section>
         </div>
       </div>
+      )}
+
+      {showcase && (
+        <div class="body showcase">
+          <section id="sobre-app" aria-labelledby="h-sobre-app">
+            <h2 id="h-sobre-app">Sobre o app</h2>
+            <p>{showcase.intro}</p>
+          </section>
+
+          <section id="proposta" aria-labelledby="h-proposta">
+            <h2 id="h-proposta">{showcase.pointsTitle}</h2>
+            <ul class="list list--cols">
+              {showcase.points.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+
+          <section id="identidade" aria-labelledby="h-identidade">
+            <h2 id="h-identidade">Identidade visual</h2>
+            <p>{showcase.identity}</p>
+          </section>
+
+          <section id="status" aria-labelledby="h-status-app">
+            <h2 id="h-status-app">Status atual</h2>
+            <p>{showcase.status}</p>
+          </section>
+        </div>
+      )}
 
       {
         others.length > 0 && (
@@ -624,5 +681,140 @@ const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
 
   .more a:hover {
     color: var(--accent-strong);
+  }
+
+  /* --- refinamentos --- */
+
+  .case {
+    position: relative;
+  }
+
+  /* Brilho suave atrás do cabeçalho do case. */
+  .case::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 34rem;
+    pointer-events: none;
+    background: radial-gradient(46rem 22rem at 18% 0%, rgba(120, 189, 242, 0.1), transparent 70%);
+  }
+
+  .case .container {
+    position: relative;
+  }
+
+  .art {
+    position: relative;
+    margin: var(--space-lg) 0 0;
+    perspective: 1400px;
+  }
+
+  .art__tilt {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2), 0 50px 90px -40px rgba(0, 0, 0, 0.9);
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 520ms var(--ease);
+    will-change: transform;
+  }
+
+  .art[data-tilting='true'] .art__tilt {
+    transition: transform 90ms linear;
+  }
+
+  .art :global(.art__img) {
+    width: 100%;
+    height: auto;
+  }
+
+  .art__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(22rem circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.14), transparent 60%);
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .art[data-tilting='true'] .art__glow {
+    opacity: 1;
+  }
+
+  .art__caption {
+    position: absolute;
+    right: 0.8rem;
+    bottom: 0.7rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(6, 9, 14, 0.72);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .art__tilt {
+      transform: none;
+    }
+  }
+
+  /* Fio ligando as camadas da arquitetura. */
+  .layer:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 1.85rem;
+    top: 2.6rem;
+    bottom: -0.65rem;
+    width: 1px;
+    background: linear-gradient(180deg, var(--line-strong), transparent);
+  }
+
+  .layer {
+    transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .layer:hover {
+    transform: translateX(4px);
+    border-color: var(--line-strong);
+  }
+
+  .decision,
+  .challenge {
+    transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .decision:hover,
+  .challenge:hover {
+    transform: translateY(-2px);
+    border-color: var(--line-strong);
+  }
+
+  .toc a {
+    position: relative;
+    transition: color var(--dur-fast) var(--ease), transform var(--dur) var(--ease);
+  }
+
+  .toc a[aria-current] {
+    color: var(--text);
+    transform: translateX(4px);
+  }
+
+  .toc a[aria-current]::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--space-sm) - 1px);
+    top: 0.3rem;
+    bottom: 0.3rem;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
+  .showcase {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
   }
 </style>

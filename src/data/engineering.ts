@@ -137,15 +137,20 @@ export const practices: readonly Practice[] = [
 ];
 
 export interface Metric {
+  /** Valor numérico, usado pelo contador animado. */
+  readonly count: number;
+  /** Valor já formatado, exibido sem JavaScript. */
   readonly value: string;
   readonly label: string;
 }
 
+const metric = (count: number, label: string): Metric => ({ count, value: formatNumber(count), label });
+
 /** Métricas exibidas na faixa de números, todas derivadas da evidência. */
 export const metricsStrip: readonly Metric[] = [
-  { value: String(metrics.projectsAnalyzed), label: 'Projetos analisados' },
-  { value: formatNumber(metrics.automatedTests), label: 'Testes automatizados' },
-  { value: String(metrics.technologies), label: 'Tecnologias utilizadas' },
-  { value: String(metrics.mobileApps), label: 'Aplicações mobile' },
-  { value: String(metrics.webSystems), label: 'Sistemas web' },
+  metric(metrics.projectsAnalyzed, 'Projetos analisados'),
+  metric(metrics.automatedTests, 'Testes automatizados'),
+  metric(metrics.technologies, 'Tecnologias utilizadas'),
+  metric(metrics.mobileApps, 'Aplicações mobile'),
+  metric(metrics.webSystems, 'Sistemas web'),
 ];

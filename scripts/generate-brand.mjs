@@ -5,8 +5,8 @@
  *
  * Entrada:  src/assets/brand/gpo-master.png   (prata metálica, fundo transparente)
  * Saídas:   src/assets/brand/gpo-logo.png     monograma recortado (resolução original), para o Astro
- *           public/brand/gpo-logo.png|.webp   mesma marca, para uso externo e dados estruturados
- *           public/brand/gpo-logo-512.png, gpo-logo-192.png, favicon.png, apple-touch-icon.png
+ *           public/assets/brand/gpo-logo.png|.webp   mesma marca, para uso externo e dados estruturados
+ *           public/assets/brand/gpo-logo-512.png, gpo-logo-192.png, favicon.png, apple-touch-icon.png
  *           public/og-image.png               cartão de compartilhamento 1200x630
  *
  * A marca não é redesenhada: o script só recorta a margem transparente e a
@@ -53,9 +53,9 @@ const save = async (file, buffer) => {
 };
 
 await save('src/assets/brand/gpo-logo.png', mark);
-await save('public/brand/gpo-logo.png', mark);
+await save('public/assets/brand/gpo-logo.png', mark);
 await save(
-  'public/brand/gpo-logo.webp',
+  'public/assets/brand/gpo-logo.webp',
   await sharp(mark).webp({ quality: 95, alphaQuality: 100 }).toBuffer(),
 );
 
@@ -80,10 +80,10 @@ async function tile(size, { radius = 0.22, fill = 0.74 } = {}) {
 }
 
 const touchIcon = await tile(180, { radius: 0 });
-await save('public/brand/favicon.png', await tile(48, { radius: 0.2, fill: 0.84 }));
-await save('public/brand/gpo-logo-192.png', await tile(192));
-await save('public/brand/gpo-logo-512.png', await tile(512));
-await save('public/brand/apple-touch-icon.png', touchIcon);
+await save('public/assets/brand/favicon.png', await tile(48, { radius: 0.2, fill: 0.84 }));
+await save('public/assets/brand/gpo-logo-192.png', await tile(192));
+await save('public/assets/brand/gpo-logo-512.png', await tile(512));
+await save('public/assets/brand/apple-touch-icon.png', touchIcon);
 // Cópia na raiz: o Safari procura /apple-touch-icon.png sem ler o <head>.
 await save('public/apple-touch-icon.png', touchIcon);
 

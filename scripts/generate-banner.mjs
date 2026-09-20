@@ -3,9 +3,9 @@
  *
  *   npm run banner
  *
- * Entrada: public/brand/gpo-logo.png (gerada por `npm run brand`)
+ * Entrada: public/assets/brand/gpo-logo.png (gerada por `npm run brand`)
  * Saída:   ../guilhermegpo/assets/banner.png, se o repositório do perfil
- *          existir ao lado; caso contrário, public/brand/github-banner.png.
+ *          existir ao lado; caso contrário, public/assets/brand/github-banner.png.
  *
  * O banner compartilha paleta, grade e composição com o site e com a imagem
  * Open Graph. Um único arquivo escuro serve aos dois temas do GitHub.
@@ -21,7 +21,7 @@ const H = 480;
 const profileAssets = rel('../guilhermegpo/assets');
 const target = await access(profileAssets).then(
   () => `${profileAssets}/banner.png`,
-  () => rel('public/brand/github-banner.png'),
+  () => rel('public/assets/brand/github-banner.png'),
 );
 
 const vLines = Array.from({ length: 17 }, (_, i) => `<line x1="${i * 100}" y1="0" x2="${i * 100}" y2="${H}"/>`).join('');
@@ -53,7 +53,7 @@ const background = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="$
   <text x="600" y="392" font-family="Consolas, monospace" font-size="22" fill="#6f8096">guilhermegpo.github.io/meu-perfil</text>
 </svg>`);
 
-const mark = await sharp(rel('public/brand/gpo-logo.png')).resize({ width: 400 }).png().toBuffer();
+const mark = await sharp(rel('public/assets/brand/gpo-logo.png')).resize({ width: 400 }).png().toBuffer();
 const { height: markH } = await sharp(mark).metadata();
 const markTop = Math.round((H - markH) / 2) - 12;
 

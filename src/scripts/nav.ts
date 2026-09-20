@@ -3,9 +3,12 @@
  * móvel. Sem listener de scroll — tudo por IntersectionObserver.
  */
 export function initNav(): void {
+  initToc();
+
   const header = document.querySelector<HTMLElement>('[data-header]');
   if (!header) return;
 
+  initProgress(header);
   initScrolledState(header);
   initScrollSpy(header);
   initMenu(header);
@@ -80,4 +83,48 @@ function initMenu(header: HTMLElement): void {
   });
 
   desktop.addEventListener('change', () => setOpen(false));
+}
+
+/** Barra fina sob o header com o progresso de leitura. Só transform, um quadro por rolagem. */
+function initProgress(header: HTMLElement): void {
+  let raf = 0;
+
+  const update = (): void => {
+    raf = 0;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    header.style.setProperty('--progress', max > 0 ? (window.scrollY / max).toFixed(4) : '0');
+  };
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    },
+    { passive: true },
+  );
+  update();
+}
+
+/** Sumário dos cases: marca a seção que cruza a faixa central da tela. */
+function initToc(): void {
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('a[data-toc-link]'));
+  if (links.length === 0 || !('IntersectionObserver' in window)) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        for (const link of links) {
+          if (link.dataset.tocLink === entry.target.id) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        }
+      }
+    },
+    { rootMargin: '-30% 0px -60% 0px', threshold: 0 },
+  );
+
+  links.forEach((link) => {
+    const section = document.getElementById(link.dataset.tocLink ?? '');
+    if (section) observer.observe(section);
+  });
 }

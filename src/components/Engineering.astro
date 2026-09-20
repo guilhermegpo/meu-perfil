@@ -18,7 +18,9 @@ import SectionHeading from './SectionHeading.astro';
         metricsStrip.map((metric) => (
           <div class="metric">
             <dt class="metric__label">{metric.label}</dt>
-            <dd class="metric__value">{metric.value}</dd>
+            <dd class="metric__value" data-count={metric.count}>
+              {metric.value}
+            </dd>
           </div>
         ))
       }
@@ -27,8 +29,10 @@ import SectionHeading from './SectionHeading.astro';
     <ul class="practices">
       {
         practices.map((practice, index) => (
-          <li class="practice" data-reveal data-reveal-delay={String((index % 3) * 70)}>
-            <p class="practice__index">{String(index + 1).padStart(2, '0')}</p>
+          <li class="practice" data-spot data-reveal data-reveal-delay={String((index % 3) * 70)}>
+            <p class="practice__index" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </p>
             <h3 class="practice__title">{practice.title}</h3>
             <p class="practice__summary">{practice.summary}</p>
             <ul class="practice__evidence">
@@ -50,12 +54,23 @@ import SectionHeading from './SectionHeading.astro';
 
 <style>
   .metrics {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     margin: 0 0 clamp(2rem, 5vw, 3.5rem);
     padding: 0;
     border-radius: var(--radius-lg);
     overflow: hidden;
+    box-shadow: var(--shadow-2);
+  }
+
+  /* Filete de luz no topo da faixa. */
+  .metrics::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(164, 214, 248, 0.6), transparent);
   }
 
   @media (min-width: 40rem) {
@@ -74,7 +89,7 @@ import SectionHeading from './SectionHeading.astro';
     display: flex;
     flex-direction: column-reverse;
     gap: 0.25rem;
-    padding: 1.25rem 1.35rem;
+    padding: 1.35rem 1.35rem 1.25rem;
     border-right: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
   }
@@ -86,6 +101,7 @@ import SectionHeading from './SectionHeading.astro';
     font-weight: 600;
     line-height: 1;
     letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
     background: linear-gradient(180deg, #ffffff, #aebbc9);
     -webkit-background-clip: text;
     background-clip: text;
@@ -115,39 +131,61 @@ import SectionHeading from './SectionHeading.astro';
   }
 
   .practice {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
+    overflow: hidden;
     padding: 1.35rem 1.4rem 1.5rem;
     border: 1px solid var(--line);
     border-radius: var(--radius);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent), var(--surface);
     transition:
+      opacity var(--dur-slow) var(--ease),
+      translate var(--dur-slow) var(--ease),
+      transform var(--dur) var(--ease),
       border-color var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
+      box-shadow var(--dur) var(--ease);
   }
 
   .practice:hover {
+    transform: translateY(-4px);
     border-color: var(--line-strong);
+    box-shadow: 0 24px 44px -26px rgba(0, 0, 0, 0.9);
   }
 
+  /* Número em marca-d'água, no canto: hierarquia sem competir com o texto. */
   .practice__index {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.14em;
-    color: var(--accent);
+    position: absolute;
+    top: 0.6rem;
+    right: 1rem;
+    font-family: var(--font-display);
+    font-size: 3.4rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: rgba(164, 214, 248, 0.07);
+    transition: color var(--dur) var(--ease);
+    pointer-events: none;
+  }
+
+  .practice:hover .practice__index {
+    color: rgba(164, 214, 248, 0.16);
   }
 
   .practice__title {
+    position: relative;
     font-size: var(--step-1);
   }
 
   .practice__summary {
+    position: relative;
     font-size: 0.93rem;
     color: var(--text-muted);
   }
 
   .practice__evidence {
+    position: relative;
     display: grid;
     gap: 0.4rem;
     margin-top: auto;

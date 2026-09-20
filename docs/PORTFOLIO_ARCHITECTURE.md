@@ -34,9 +34,9 @@ src/
 ├── scripts/        env, nav, reveal, motion, main
 └── styles/         global.css (tokens) e fonts.css
 
-scripts/            collect-evidence, generate-brand, generate-banner, verify, fetch-fonts
+scripts/            collect-evidence, generate-brand, generate-assets, generate-banner, verify, fetch-fonts
 tests/              content.test.mjs (conteúdo e segurança)
-public/             favicon, ícones, og-image, manifesto, robots, brand/
+public/             favicon, ícones, og-image, manifesto, robots, assets/ (marca, foto, projetos)
 docs/               Esta documentação
 legacy/             Primeira versão do site, sanitizada
 ```
@@ -54,9 +54,24 @@ repositórios locais ──npm run evidence──▶ evidence.generated.json ─
 - Textos narrativos vivem em `src/data/projects.ts`; números vêm sempre do JSON.
 - Para atualizar após mudar os projetos: `npm run evidence`, revisar o diff, commitar.
 
+## Assets
+
+```text
+public/assets/
+├── brand/      logo oficial recortada (png, webp), ícones 192/512, favicon, apple-touch
+├── profile/    foto-oficial.png (original) + foto-{480,960}.{avif,webp,jpg} + avatar-{96,192}.*
+└── projects/   {app}-hero.png (original) + {app}-hero-{640,1024,1672}.{avif,webp}
+```
+
+`npm run assets` lê a foto e as imagens ilustrativas da pasta acima do repositório e gera as
+versões otimizadas; os originais são preservados (a foto vem como JPEG com extensão .png e é
+regravada como PNG sem perda). O componente `Picture.astro` monta o `<picture>` com AVIF, WebP e
+reserva, `srcset`, `sizes` e dimensões intrínsecas. Nenhuma imagem é redesenhada ou recolorida.
+
 ## Casos de estudo
 
-`src/pages/projetos/[slug].astro` gera uma rota por projeto que tem `caseStudy`. Cada página traz
+`src/pages/projetos/[slug].astro` gera uma rota por projeto que tem `caseStudy` (case completo) ou
+`showcase` (página enxuta para apps ainda sem repositório publicado). Cada página traz
 título, descrição, canonical, Open Graph e JSON-LD próprios (`SoftwareSourceCode` para
 repositório público; `CreativeWork` para os demais; `BreadcrumbList`). Adicionar um projeto:
 
@@ -69,8 +84,9 @@ repositório público; `CreativeWork` para os demais; `BreadcrumbList`). Adicion
 - **Só CSS** para a composição: `perspective`, `preserve-3d`, `translateZ`, rotação e sombras em
   camadas. Three.js não foi usado porque o efeito não justifica centenas de kilobytes.
 - **Módulos** (`src/scripts`): `env.ts` detecta capacidades; `motion.ts` faz parallax do hero,
-  tilt dos cartões e o equivalente em toque; `nav.ts` cuida do header, do scroll-spy e do menu;
-  `reveal.ts` revela blocos ao rolar.
+  tilt dos cartões, spotlight que segue o cursor e o equivalente em toque; `nav.ts` cuida do
+  header, do progresso de leitura, do scroll-spy, do sumário dos cases e do menu; `reveal.ts`
+  revela blocos ao rolar; `count.ts` anima os números da faixa de métricas.
 - **Regras de desempenho:** apenas `transform`/`opacity`; escrita em `requestAnimationFrame`
   (um quadro por evento, laço para quando nada muda); `IntersectionObserver` pausa a cena fora da
   viewport; nenhum listener de `scroll` no header (usa um sentinela); listeners de ponteiro só

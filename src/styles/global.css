@@ -99,6 +99,8 @@ html {
   scroll-padding-top: calc(var(--header-h) + 1rem);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* A projeção 3D pode passar da largura; sem isto o viewport mobile se alarga. */
+  overflow-x: clip;
 }
 
 body {
@@ -230,11 +232,68 @@ a:hover {
   width: 1.75rem;
   height: 1px;
   background: linear-gradient(90deg, var(--accent), transparent);
+  transform-origin: left;
+  transition: transform 900ms var(--ease) 150ms;
+}
+
+.js-reveal [data-reveal]:not(.is-visible) .eyebrow::before,
+.js-reveal .eyebrow[data-reveal]:not(.is-visible)::before {
+  transform: scaleX(0);
+}
+
+/* Link com sublinhado que cresce da esquerda; só transform. */
+.ulink {
+  position: relative;
+  text-decoration: none;
+}
+
+.ulink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+
+.ulink:hover::after,
+.ulink:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/*
+ * Spotlight: um brilho suave acompanha o cursor dentro do bloco. Os valores
+ * --mx/--my vêm de `scripts/motion.ts`, só em dispositivos com mouse.
+ */
+[data-spot] {
+  position: relative;
+}
+
+[data-spot]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(20rem circle at var(--mx, 50%) var(--my, 0%), rgba(164, 214, 248, 0.11), transparent 62%);
+  transition: opacity var(--dur) var(--ease);
+}
+
+[data-spot][data-spotting='true']::before {
+  opacity: 1;
 }
 
 /* -------------------------------------------------------------- controles -- */
 
 .btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -255,6 +314,7 @@ a:hover {
     transform var(--dur-fast) var(--ease),
     background-color var(--dur-fast) var(--ease),
     border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur) var(--ease),
     color var(--dur-fast) var(--ease);
 }
 
@@ -262,6 +322,7 @@ a:hover {
   color: var(--text);
   border-color: rgba(164, 214, 248, 0.55);
   background: rgba(120, 189, 242, 0.08);
+  transform: translateY(-1px);
 }
 
 .btn:active {
@@ -279,12 +340,33 @@ a:hover {
   color: var(--on-accent);
   background: linear-gradient(180deg, #b9e0fa, var(--accent-strong));
   border-color: transparent;
+  box-shadow: 0 14px 34px -12px rgba(120, 189, 242, 0.85);
 }
 
 .btn svg {
   width: 1.05em;
   height: 1.05em;
   flex: none;
+  transition: transform var(--dur) var(--ease);
+}
+
+.btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Faixa de luz que cruza o botão primário no hover. */
+.btn--primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.5) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 700ms var(--ease);
+}
+
+.btn--primary:hover::before {
+  transform: translateX(120%);
 }
 
 .badge {
@@ -322,6 +404,10 @@ a:hover {
 .badge[data-tone='published'] {
   color: var(--accent);
 }
+.badge[data-tone='concept'] {
+  color: var(--accent-strong);
+  border-style: dashed;
+}
 
 .chip {
   display: inline-flex;
@@ -350,17 +436,21 @@ a:hover {
 
 /* -------------------------------------------------------- revelação (JS) -- */
 
+/*
+ * A revelação usa a propriedade `translate`, não `transform`: assim ela não
+ * disputa com os efeitos de hover e tilt dos próprios elementos.
+ */
 .js-reveal [data-reveal] {
   opacity: 0;
-  transform: translateY(16px);
+  translate: 0 18px;
   transition:
     opacity var(--dur-slow) var(--ease),
-    transform var(--dur-slow) var(--ease);
+    translate var(--dur-slow) var(--ease);
 }
 
 .js-reveal [data-reveal].is-visible {
   opacity: 1;
-  transform: none;
+  translate: 0 0;
 }
 
 /* ------------------------------------------------- modo econômico e a11y -- */
@@ -388,7 +478,7 @@ html[data-perf='lite'] .glass * {
 
   .js-reveal [data-reveal] {
     opacity: 1;
-    transform: none;
+    translate: none;
   }
 }
 

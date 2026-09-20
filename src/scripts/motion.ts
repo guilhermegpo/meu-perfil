@@ -20,6 +20,7 @@ export function initMotion(): void {
   initScene();
   initTilt();
   initTouchLight();
+  initSpotlight();
 }
 
 /* ------------------------------------------------------------------ hero -- */
@@ -148,4 +149,37 @@ function initTouchLight(): void {
   );
 
   document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((card) => observer.observe(card));
+}
+
+/**
+ * Spotlight: em blocos marcados com `data-spot`, um brilho suave acompanha o
+ * cursor. Só mouse e trackpad; o CSS cuida da aparência.
+ */
+function initSpotlight(): void {
+  if (!finePointer.matches) return;
+
+  document.querySelectorAll<HTMLElement>('[data-spot]').forEach((el) => {
+    let raf = 0;
+    let x = 50;
+    let y = 0;
+
+    const paint = (): void => {
+      raf = 0;
+      el.style.setProperty('--mx', `${x.toFixed(1)}%`);
+      el.style.setProperty('--my', `${y.toFixed(1)}%`);
+    };
+
+    el.addEventListener('pointermove', (event) => {
+      if (event.pointerType !== 'mouse' || !motionAllowed()) return;
+      const rect = el.getBoundingClientRect();
+      x = clamp(((event.clientX - rect.left) / rect.width) * 100, 0, 100);
+      y = clamp(((event.clientY - rect.top) / rect.height) * 100, 0, 100);
+      el.dataset.spotting = 'true';
+      if (!raf) raf = requestAnimationFrame(paint);
+    });
+
+    el.addEventListener('pointerleave', () => {
+      el.dataset.spotting = 'false';
+    });
+  });
 }

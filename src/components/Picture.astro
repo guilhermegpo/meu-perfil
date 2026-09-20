@@ -1,0 +1,60 @@
+---
+/**
+ * Imagem responsiva para os assets derivados em `public/assets`.
+ *
+ * `npm run assets` gera, para cada imagem, versões AVIF e WebP em várias
+ * larguras. Aqui elas viram um `<picture>` com `srcset`: o navegador escolhe o
+ * melhor formato e a menor largura suficiente. `width` e `height` reservam o
+ * espaço e evitam salto de layout.
+ */
+import { asset } from '../lib/url';
+
+interface Props {
+  /** Pasta em `public/assets`, por exemplo `profile` ou `projects`. */
+  dir: string;
+  /** Prefixo dos arquivos: `foto` gera `foto-480.avif`, `foto-960.avif`… */
+  name: string;
+  widths: readonly number[];
+  /** Formatos modernos, do preferido ao menos preferido. */
+  formats?: readonly ('avif' | 'webp')[];
+  /** Arquivo de reserva, com extensão, relativo à pasta. */
+  fallback: string;
+  sizes: string;
+  alt: string;
+  /** Dimensões intrínsecas da maior versão, para reservar o espaço. */
+  width: number;
+  height: number;
+  class?: string;
+  eager?: boolean;
+}
+
+const {
+  dir,
+  name,
+  widths,
+  formats = ['avif', 'webp'],
+  fallback,
+  sizes,
+  alt,
+  width,
+  height,
+  class: className,
+  eager = false,
+} = Astro.props;
+
+const url = (file: string): string => asset(`assets/${dir}/${file}`);
+const srcset = (ext: string): string => widths.map((w) => `${url(`${name}-${w}.${ext}`)} ${w}w`).join(', ');
+---
+
+<picture>
+  {formats.map((ext) => <source type={`image/${ext}`} srcset={srcset(ext)} sizes={sizes} />)}
+  <img
+    src={url(fallback)}
+    alt={alt}
+    width={width}
+    height={height}
+    class={className}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+  />
+</picture>

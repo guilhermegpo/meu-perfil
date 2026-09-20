@@ -20,7 +20,7 @@ const projectName = (id: string): string => projects.find((p) => p.slug === id)?
     <div class="groups">
       {
         stackGroups.map((group, index) => (
-          <section class="group glass" data-reveal data-reveal-delay={String(index * 60)}>
+          <section class="group glass" data-spot data-reveal data-reveal-delay={String(index * 60)}>
             <h3 class="group__title">{group.title}</h3>
             <ul class="group__list">
               {group.items.map((tech) => (
@@ -29,7 +29,7 @@ const projectName = (id: string): string => projects.find((p) => p.slug === id)?
                   <span class="tech__count">{projectCountLabel(tech.count)}</span>
                   <span class="tech__pips" aria-hidden="true">
                     {Array.from({ length: total }, (_, i) => (
-                      <i class:list={{ on: i < tech.count }} />
+                      <i class:list={{ on: i < tech.count }} style={`--k:${i}`} />
                     ))}
                   </span>
                   <span class="sr-only">: {tech.projects.map(projectName).join(', ')}</span>
@@ -43,8 +43,7 @@ const projectName = (id: string): string => projects.find((p) => p.slug === id)?
 
     <p class="source" data-reveal>
       Levantamento de {evidence.generatedAt}, gerado por script a partir dos repositórios. Veja como
-      em <code>docs/CONTENT_SOURCE.md</code>. Ferramentas de desenvolvimento assistido por IA fazem
-      parte do meu fluxo, ao lado de Git, testes e CI.
+      em <code>docs/CONTENT_SOURCE.md</code>.
     </p>
   </div>
 </section>
@@ -126,6 +125,26 @@ const projectName = (id: string): string => projects.find((p) => p.slug === id)?
 
   .tech__pips i.on {
     background: linear-gradient(180deg, var(--accent-strong), var(--accent-deep));
+    transform-origin: bottom;
+    transition: transform 700ms var(--ease) calc(var(--k, 0) * 70ms + 250ms);
+  }
+
+  /* As barras crescem quando o grupo é revelado. */
+  :global(.js-reveal) .group:not(:global(.is-visible)) .tech__pips i.on {
+    transform: scaleY(0);
+  }
+
+  .group {
+    transition:
+      opacity var(--dur-slow) var(--ease),
+      translate var(--dur-slow) var(--ease),
+      transform var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+
+  .group:hover {
+    transform: translateY(-3px);
+    border-color: var(--line-strong);
   }
 
   .source {

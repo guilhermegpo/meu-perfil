@@ -2,6 +2,7 @@
 import { profile } from '../data/profile';
 import { resumeAvailable, resumeHref } from '../lib/resume';
 import Icon from './Icon.astro';
+import Picture from './Picture.astro';
 
 const mailto = `mailto:${profile.email}?subject=${encodeURIComponent('Contato pelo portfólio')}`;
 ---
@@ -9,7 +10,25 @@ const mailto = `mailto:${profile.email}?subject=${encodeURIComponent('Contato pe
 <section id="contato" class="section" aria-labelledby="contato-titulo">
   <div class="container">
     <div class="cta glass" data-reveal>
+      <div class="cta__orb" aria-hidden="true"></div>
+
       <div class="cta__copy">
+        <p class="cta__who">
+          <Picture
+            dir="profile"
+            name="avatar"
+            widths={[96, 192]}
+            fallback="avatar-192.jpg"
+            sizes="44px"
+            alt=""
+            width={192}
+            height={192}
+          />
+          <span>
+            <strong>{profile.name}</strong>
+            <span>{profile.role} · {profile.location}</span>
+          </span>
+        </p>
         <p class="eyebrow">Contato</p>
         <h2 id="contato-titulo" class="cta__title">Vamos construir algo?</h2>
         <p class="cta__lead">
@@ -46,17 +65,37 @@ const mailto = `mailto:${profile.email}?subject=${encodeURIComponent('Contato pe
     display: grid;
     gap: var(--space-md);
     padding: clamp(1.75rem, 5vw, 3.5rem);
-    border-radius: var(--radius-lg);
+    border-radius: calc(var(--radius-lg) + 0.5rem);
     overflow: hidden;
     box-shadow: var(--shadow-2);
+    isolation: isolate;
   }
 
-  .cta::before {
-    content: '';
+  /* Halo giratório muito lento atrás do painel: profundidade sem distração. */
+  .cta__orb {
     position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(40rem 20rem at 100% 0%, rgba(120, 189, 242, 0.14), transparent 60%);
+    top: -55%;
+    right: -25%;
+    z-index: -1;
+    width: 90%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      radial-gradient(closest-side at 72% 28%, rgba(120, 189, 242, 0.24), transparent 70%),
+      radial-gradient(closest-side at 26% 72%, rgba(164, 214, 248, 0.13), transparent 70%);
+    -webkit-mask-image: radial-gradient(closest-side, #000 30%, transparent 78%);
+    mask-image: radial-gradient(closest-side, #000 30%, transparent 78%);
+    animation: spin 60s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  :global(html[data-perf='lite']) .cta__orb {
+    animation: none;
   }
 
   @media (min-width: 60rem) {
@@ -69,6 +108,35 @@ const mailto = `mailto:${profile.email}?subject=${encodeURIComponent('Contato pe
   .cta__copy,
   .cta__actions {
     position: relative;
+  }
+
+  .cta__who {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: var(--space-md);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .cta__who :global(img) {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.8);
+  }
+
+  .cta__who span {
+    display: grid;
+    line-height: 1.35;
+  }
+
+  .cta__who strong {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    color: var(--text);
   }
 
   .cta__title {

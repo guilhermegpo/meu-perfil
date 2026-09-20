@@ -90,6 +90,14 @@ test('nada de nome interno, dado militar ou link de repositório privado', async
   assert.deepEqual(hits, []);
 });
 
+test('o conteúdo público não cita ferramentas de IA como parte da narrativa', () => {
+  const pattern = /lovable|claude|anthropic|gpt-engineer|coautoria|(?:gerado|feito|escrito) (?:por|com) (?:ia|bot|intelig)/i;
+  const hits = contents
+    .filter(([, text]) => pattern.test(text))
+    .map(([file]) => path.relative(root, file));
+  assert.deepEqual(hits, []);
+});
+
 test('nenhum console.log ou debugger no código do site', () => {
   const hits = contents
     .filter(([f]) => f.includes(`${path.sep}src${path.sep}`))

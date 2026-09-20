@@ -4,12 +4,16 @@
  * translateZ. Nenhuma biblioteca de 3D é carregada.
  *
  * Camadas, do fundo para a frente (profundidade em px, `--z`):
- *   piso em grade −90 · halo −30 · anéis 20 · monograma 60 · painéis 60–130
+ *   piso em grade −90 · halo −30 · feixe −20 · anéis 20 · monograma 60 ·
+ *   painéis e peças de vidro 40 a 130
  *
  * `--d` é a força do parallax de cada camada: quanto mais perto do
  * observador, mais ela se desloca com o cursor. O movimento é dado por duas
  * variáveis (`--px`, `--py`), escritas por `scripts/motion.ts` em
  * requestAnimationFrame. Tudo aqui usa apenas transform e opacity.
+ *
+ * Cada peça tem três níveis: `.layer` (profundidade e parallax), `.enter`
+ * (entrada escalonada) e `.float` (flutuação lenta e defasada).
  *
  * A cena é decorativa (aria-hidden): nada dela é conteúdo.
  */
@@ -28,6 +32,7 @@ const tests = formatNumber(evidence.metrics.automatedTests);
       <div class="stage">
         <div class="layer layer--floor"><div class="floor"></div></div>
         <div class="layer layer--halo"><div class="halo"></div></div>
+        <div class="layer layer--beam"><div class="beam"></div></div>
 
         <div class="layer layer--rings">
           <div class="ring ring--a"></div>
@@ -36,54 +41,93 @@ const tests = formatNumber(evidence.metrics.automatedTests);
 
         <div class="layer layer--mark">
           <div class="facing">
-            <div class="mark">
-              <Logo width={520} eager class="mark__img" />
-              <div class="mark__sheen"></div>
-              <div class="mark__reflection"></div>
+            <div class="enter" style="--delay: 80ms">
+              <div class="mark">
+                <Logo width={520} eager class="mark__img" />
+                <div class="mark__sheen"></div>
+                <div class="mark__reflection"></div>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="layer layer--schema">
-          <div class="panel glass">
-            <p class="panel__label">domínio</p>
-            <ul class="nodes">
-              <li><span></span>Workspace</li>
-              <li><span></span>Membership</li>
-              <li><span></span>Role</li>
-            </ul>
+          <div class="enter" style="--delay: 380ms">
+            <div class="float" style="--bob: 8s; --phase: -1s">
+              <div class="panel glass">
+                <p class="panel__label">domínio</p>
+                <ul class="nodes">
+                  <li><span></span>Workspace</li>
+                  <li><span></span>Membership</li>
+                  <li><span></span>Role</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="layer layer--phone">
-          <div class="phone glass">
-            <i class="phone__notch"></i>
-            <i class="phone__row phone__row--accent"></i>
-            <i class="phone__row"></i>
-            <i class="phone__row phone__row--short"></i>
-            <i class="phone__row"></i>
+          <div class="enter" style="--delay: 520ms">
+            <div class="float" style="--bob: 9s; --phase: -3s">
+              <div class="phone glass">
+                <i class="phone__notch"></i>
+                <i class="phone__row phone__row--accent"></i>
+                <i class="phone__row"></i>
+                <i class="phone__row phone__row--short"></i>
+                <i class="phone__row"></i>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="layer layer--tests">
-          <div class="panel glass">
-            <p class="panel__label">automatizados</p>
-            <p class="panel__value">{tests}</p>
-            <p class="panel__meta">testes · {evidence.metrics.testedProjects} projetos</p>
-            <div class="bars">
-              {Array.from({ length: 14 }, () => <i />)}
+          <div class="enter" style="--delay: 660ms">
+            <div class="float" style="--bob: 7s; --phase: -2s">
+              <div class="panel glass">
+                <p class="panel__label">automatizados</p>
+                <p class="panel__value">{tests}</p>
+                <p class="panel__meta">testes · {evidence.metrics.testedProjects} projetos</p>
+                <div class="bars">
+                  {Array.from({ length: 14 }, (_, i) => <i style={`animation-delay: ${1000 + i * 35}ms`} />)}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="layer layer--policy">
-          <div class="panel glass">
-            <p class="panel__label">no banco</p>
-            <ul class="checks">
-              <li>RLS por tabela</li>
-              <li>Funções transacionais</li>
-              <li>Permissões por perfil</li>
-            </ul>
+          <div class="enter" style="--delay: 800ms">
+            <div class="float" style="--bob: 10s; --phase: -5s">
+              <div class="panel glass">
+                <p class="panel__label">no banco</p>
+                <ul class="checks">
+                  <li>RLS por tabela</li>
+                  <li>Funções transacionais</li>
+                  <li>Permissões por perfil</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer layer--code">
+          <div class="enter" style="--delay: 940ms">
+            <div class="float" style="--bob: 6s; --phase: -2.5s">
+              <div class="tile glass"><span>&lt;/&gt;</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer layer--shield">
+          <div class="enter" style="--delay: 1060ms">
+            <div class="float" style="--bob: 7.5s; --phase: -4s">
+              <div class="tile glass">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3 5 6v5c0 4.500 3 8 7 10 4-2 7-5.500 7-10V6z"></path>
+                  <path d="m9 12 2 2 4-4"></path>
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -132,6 +176,15 @@ const tests = formatNumber(evidence.metrics.automatedTests);
     );
   }
 
+  /* Entrada escalonada e flutuação lenta, em níveis separados do parallax. */
+  .enter {
+    animation: enter 900ms var(--ease) var(--delay, 0ms) both;
+  }
+
+  .float {
+    animation: bob var(--bob, 8s) ease-in-out var(--phase, 0s) infinite alternate;
+  }
+
   /* --- fundo --- */
 
   .layer--floor {
@@ -146,10 +199,10 @@ const tests = formatNumber(evidence.metrics.automatedTests);
     transform-origin: 50% 0;
     transform: rotateX(72deg);
     background-image:
-      linear-gradient(rgba(164, 214, 248, 0.22) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(164, 214, 248, 0.22) 1px, transparent 1px);
+      linear-gradient(rgba(164, 214, 248, 0.28) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(164, 214, 248, 0.28) 1px, transparent 1px);
     background-size: 44px 44px;
-    mask-image: radial-gradient(ellipse 60% 70% at 50% 25%, #000 25%, transparent 75%);
+    mask-image: radial-gradient(ellipse 62% 72% at 50% 22%, #000 22%, transparent 76%);
     animation: scan 7s linear infinite;
   }
 
@@ -165,10 +218,37 @@ const tests = formatNumber(evidence.metrics.automatedTests);
     border-radius: 50%;
     background: radial-gradient(
       closest-side,
-      rgba(120, 189, 242, 0.24),
-      rgba(120, 189, 242, 0.07) 55%,
+      rgba(120, 189, 242, 0.26),
+      rgba(120, 189, 242, 0.08) 55%,
       transparent 74%
     );
+  }
+
+  /* Luz volumétrica muito discreta: um leque suave que gira devagar. */
+  .layer--beam {
+    --z: -20;
+    --d: -4;
+    inset: -8% 0 0;
+  }
+
+  /* Círculo: girar não altera a caixa do elemento, então nada extrapola a largura. */
+  .beam {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    opacity: 0.55;
+    background: conic-gradient(
+      from 190deg at 50% 62%,
+      transparent 0deg,
+      rgba(164, 214, 248, 0.11) 22deg,
+      transparent 46deg,
+      transparent 200deg,
+      rgba(164, 214, 248, 0.06) 220deg,
+      transparent 244deg
+    );
+    -webkit-mask-image: radial-gradient(closest-side, #000 40%, transparent 92%);
+    mask-image: radial-gradient(closest-side, #000 40%, transparent 92%);
+    animation: sweep 48s linear infinite;
   }
 
   .layer--rings {
@@ -186,7 +266,7 @@ const tests = formatNumber(evidence.metrics.automatedTests);
   }
 
   .ring--a {
-    border: 1px solid rgba(164, 214, 248, 0.22);
+    border: 1px solid rgba(164, 214, 248, 0.24);
   }
 
   .ring--b {
@@ -240,7 +320,7 @@ const tests = formatNumber(evidence.metrics.automatedTests);
     width: 38%;
     background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.42), transparent);
     transform: translateX(-140%) skewX(-16deg);
-    animation: sheen 9s ease-in-out 1.5s infinite;
+    animation: sheen 9s ease-in-out 1.8s infinite;
   }
 
   .mark__reflection {
@@ -345,6 +425,8 @@ const tests = formatNumber(evidence.metrics.automatedTests);
     border-radius: 1px;
     background: linear-gradient(180deg, var(--accent), var(--accent-deep));
     opacity: 0.85;
+    transform-origin: bottom;
+    animation: grow 900ms var(--ease) both;
   }
 
   .bars i:nth-child(3n) {
@@ -426,11 +508,70 @@ const tests = formatNumber(evidence.metrics.automatedTests);
     width: 60%;
   }
 
+  /* Peças pequenas de vidro: código e segurança. */
+  .tile {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    border-radius: 0.8rem;
+    color: var(--accent-strong);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-2);
+  }
+
+  .tile svg {
+    width: 52%;
+    height: auto;
+  }
+
+  .layer--code {
+    --z: 118;
+    --d: 28;
+    left: 36%;
+    top: 3%;
+    width: 9%;
+  }
+
+  .layer--shield {
+    --z: 84;
+    --d: 20;
+    right: 34%;
+    bottom: 2%;
+    width: 9%;
+  }
+
   /* --- movimento --- */
+
+  @keyframes enter {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 22px, 0) scale(0.96);
+    }
+  }
+
+  @keyframes bob {
+    to {
+      transform: translate3d(0, -6px, 0);
+    }
+  }
+
+  @keyframes grow {
+    from {
+      transform: scaleY(0);
+    }
+  }
 
   @keyframes scan {
     to {
       transform: rotateX(72deg) translateY(44px);
+    }
+  }
+
+  @keyframes sweep {
+    to {
+      transform: rotate(360deg);
     }
   }
 
@@ -483,7 +624,8 @@ const tests = formatNumber(evidence.metrics.automatedTests);
     animation: none;
   }
 
-  :global(html[data-perf='lite']) .mark__sheen {
+  :global(html[data-perf='lite']) .mark__sheen,
+  :global(html[data-perf='lite']) .layer--beam {
     display: none;
   }
 
@@ -496,7 +638,9 @@ const tests = formatNumber(evidence.metrics.automatedTests);
     }
 
     .layer--policy,
-    .layer--phone {
+    .layer--phone,
+    .layer--code,
+    .layer--shield {
       display: none;
     }
 

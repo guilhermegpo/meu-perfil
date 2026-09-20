@@ -3,6 +3,7 @@ import { profile } from '../data/profile';
 import { resumeAvailable, resumeHref } from '../lib/resume';
 import HeroScene from './HeroScene.astro';
 import Icon from './Icon.astro';
+import Picture from './Picture.astro';
 
 const socials = [
   { label: 'GitHub', href: profile.links.github, icon: 'github' as const },
@@ -15,7 +16,20 @@ const socials = [
   <div class="container hero__grid">
     <div class="hero__copy">
       <p class="status glass" data-reveal>
-        <span class="status__dot" aria-hidden="true"></span>
+        <span class="status__avatar">
+          <Picture
+            dir="profile"
+            name="avatar"
+            widths={[96, 192]}
+            fallback="avatar-192.jpg"
+            sizes="30px"
+            alt=""
+            width={192}
+            height={192}
+            eager
+          />
+          <span class="status__dot" aria-hidden="true"></span>
+        </span>
         {profile.status}
         <span class="status__place">· {profile.location}</span>
       </p>
@@ -104,7 +118,7 @@ const socials = [
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.4rem 0.95rem;
+    padding: 0.3rem 0.95rem 0.3rem 0.35rem;
     border-radius: 999px;
     font-size: 0.82rem;
     color: var(--text);
@@ -114,10 +128,28 @@ const socials = [
     color: var(--text-muted);
   }
 
-  .status__dot {
+  .status__avatar {
     position: relative;
-    width: 0.5rem;
-    height: 0.5rem;
+    display: block;
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .status__avatar :global(img) {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--line-strong);
+  }
+
+  .status__dot {
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    width: 0.62rem;
+    height: 0.62rem;
+    border: 2px solid var(--bg-1);
     border-radius: 50%;
     background: var(--tone-live);
   }
@@ -125,7 +157,7 @@ const socials = [
   .status__dot::after {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: -2px;
     border-radius: 50%;
     background: var(--tone-live);
     animation: ping 2.6s ease-out infinite;
@@ -228,10 +260,12 @@ const socials = [
     transition:
       color var(--dur-fast) var(--ease),
       border-color var(--dur-fast) var(--ease),
-      background-color var(--dur-fast) var(--ease);
+      background-color var(--dur-fast) var(--ease),
+      transform var(--dur-fast) var(--ease);
   }
 
   .socials__link:hover {
+    transform: translateY(-2px);
     color: var(--text);
     border-color: var(--line-strong);
     background: rgba(255, 255, 255, 0.05);

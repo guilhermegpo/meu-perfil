@@ -14,7 +14,7 @@ import { evidence, formatNumber, projectEvidence } from './evidence';
 
 export type ProjectKind = 'mobile' | 'web' | 'site';
 /** Tom visual do selo de status. */
-export type StatusTone = 'live' | 'alpha' | 'internal' | 'published';
+export type StatusTone = 'live' | 'alpha' | 'internal' | 'published' | 'concept';
 
 export interface ProjectLink {
   readonly label: string;
@@ -34,6 +34,25 @@ export interface CaseChallenge {
 export interface ArchitectureLayer {
   readonly name: string;
   readonly detail: string;
+}
+
+/** Imagem ilustrativa oficial do projeto, derivada em `public/assets/projects/{slug}-hero-*`. */
+export interface HeroImage {
+  readonly slug: string;
+  readonly alt: string;
+}
+
+/**
+ * Página enxuta para projetos que ainda não têm repositório publicado. Só
+ * carrega o que o próprio material do produto afirma; não há stack, teste,
+ * arquitetura ou métrica, porque nada disso pode ser comprovado ainda.
+ */
+export interface Showcase {
+  readonly intro: string;
+  readonly pointsTitle: string;
+  readonly points: readonly string[];
+  readonly identity: string;
+  readonly status: string;
 }
 
 export interface CaseStudy {
@@ -73,14 +92,12 @@ export interface Project {
   readonly repository?: string;
   /** Aviso de divulgação restrita, exibido no cartão e no case. */
   readonly disclosure?: string;
-  /** Ferramenta de desenvolvimento relevante. Exibida em uma linha discreta, nunca como autoria. */
-  readonly tooling?: string;
   readonly caseStudy?: CaseStudy;
+  /** Família de produtos a que o projeto pertence. */
+  readonly family?: string;
+  readonly heroImage?: HeroImage;
+  readonly showcase?: Showcase;
 }
-
-const TOOLING_ASSISTANT = 'assistente de IA.';
-
-const TOOLING_PLATFORM = 'plataforma de desenvolvimento assistido (Lovable).';
 
 const RESTRICTED =
   'Sistema de uso institucional e restrito. O código-fonte, as telas e os dados não são públicos; este texto descreve apenas o problema, a natureza da solução e a minha atuação.';
@@ -105,7 +122,6 @@ export const projects: readonly Project[] = [
     featured: true,
     disclosure:
       'Sistema operacional em uso por uma equipe real. Por isso o código, as telas, os dados e o nome da organização não são públicos.',
-    tooling: TOOLING_ASSISTANT,
     caseStudy: {
       context:
         'Aplicativo usado por uma equipe operacional para registrar a saída e o retorno de veículos e o estado das chaves. O sistema anterior dependia de um backend baseado em Google Drive, e o código-fonte original não estava mais disponível: a reconstrução partiu de um APK compilado de referência.',
@@ -254,6 +270,11 @@ export const projects: readonly Project[] = [
     ],
     featured: true,
     repository: 'https://github.com/guilhermegpo/meu-chamado',
+    family: 'Apps Meu',
+    heroImage: {
+      slug: 'meu-chamado',
+      alt: 'Imagem ilustrativa do Meu Chamado: tela inicial do aplicativo no celular, com chamados, tarefas, agenda, reuniões e lembretes.',
+    },
     caseStudy: {
       context:
         'Projeto independente e não oficial, em código aberto. Nasce da necessidade de organizar responsabilidades e o acompanhamento de pessoas em um só lugar que funcione sem internet.',
@@ -370,7 +391,6 @@ export const projects: readonly Project[] = [
     links: [],
     featured: true,
     disclosure: RESTRICTED,
-    tooling: TOOLING_PLATFORM,
     caseStudy: {
       context:
         'Sistema interno de uma seção de coordenação de cursos, desenvolvido e implantado durante meu período de serviço temporário. Acesso apenas autenticado, sem cadastro público.',
@@ -463,7 +483,80 @@ export const projects: readonly Project[] = [
     links: [],
     featured: false,
     disclosure: 'Código-fonte e dados não são públicos.',
-    tooling: TOOLING_PLATFORM,
+  },
+  {
+    slug: 'meu-financeiro',
+    name: 'Meu Financeiro',
+    category: 'Aplicativo mobile',
+    kind: 'mobile',
+    status: 'Em breve',
+    tone: 'concept',
+    tagline: 'Organização financeira pessoal: seu dinheiro, seus planos, no seu controle.',
+    highlights: [
+      'Controle de receitas e despesas',
+      'Objetivos financeiros',
+      'Acompanhamento da evolução financeira',
+      'Dados 100% locais',
+    ],
+    links: [],
+    featured: false,
+    family: 'Apps Meu',
+    heroImage: {
+      slug: 'meu-financeiro',
+      alt: 'Imagem ilustrativa do Meu Financeiro: painel do aplicativo no celular e em um monitor, com saldo, receitas, despesas, categorias e objetivos.',
+    },
+    showcase: {
+      intro:
+        'Aplicativo de organização financeira pessoal da família Apps Meu, pensado para dar clareza sobre receitas, despesas, metas e evolução, com os dados guardados no próprio aparelho.',
+      pointsTitle: 'Proposta do produto',
+      points: [
+        'Controle de receitas e despesas',
+        'Definição e acompanhamento de objetivos',
+        'Visão da evolução financeira ao longo do tempo',
+        'Dados 100% locais',
+      ],
+      identity:
+        'Identidade própria em azul e verde-água, com o "M" da família Apps Meu acompanhado de um gráfico de crescimento. Visual claro, limpo e estratégico.',
+      status:
+        'O repositório ainda não foi publicado. O case técnico — arquitetura, decisões e testes — entra aqui quando o projeto estiver disponível. A imagem desta página é ilustrativa e os valores exibidos nela são fictícios.',
+    },
+  },
+  {
+    slug: 'meu-treino',
+    name: 'Meu Treino',
+    category: 'Aplicativo mobile',
+    kind: 'mobile',
+    status: 'Em breve',
+    tone: 'concept',
+    tagline: 'Disciplina hoje, resultados sempre: treinos organizados e evolução no controle.',
+    highlights: [
+      'Treinos personalizados',
+      'Acompanhamento da evolução',
+      'Registro de séries e repetições',
+      'Foco e disciplina',
+    ],
+    links: [],
+    featured: false,
+    family: 'Apps Meu',
+    heroImage: {
+      slug: 'meu-treino',
+      alt: 'Imagem ilustrativa do Meu Treino: tela inicial do aplicativo no celular, com o próximo treino, metas semanais e gráfico de evolução, em ambiente escuro de academia.',
+    },
+    showcase: {
+      intro:
+        'Aplicativo de treino da família Apps Meu: organiza os treinos, registra séries e repetições e mostra a evolução para manter a consistência.',
+      pointsTitle: 'Proposta do produto',
+      points: [
+        'Treinos personalizados por objetivo',
+        'Registro de séries e repetições',
+        'Acompanhamento do progresso',
+        'Metas semanais e foco em disciplina',
+      ],
+      identity:
+        'Identidade própria em modo escuro, com azul-petróleo e turquesa e o "M" da família Apps Meu ao lado de um halter. Visual atlético, energético e tecnológico.',
+      status:
+        'O repositório ainda não foi publicado. O case técnico — arquitetura, decisões e testes — entra aqui quando o projeto estiver disponível. A imagem desta página é ilustrativa.',
+    },
   },
   {
     slug: 'meu-perfil',
@@ -559,6 +652,14 @@ export const projects: readonly Project[] = [
 
 export const featuredProjects = projects.filter((project) => project.featured);
 
+/** Produtos da família Apps Meu, na ordem em que aparecem na vitrine. */
+export const appsMeu = ['meu-financeiro', 'meu-chamado', 'meu-treino']
+  .map((slug) => projects.find((project) => project.slug === slug))
+  .filter((project): project is Project => project !== undefined);
+
+/** Todo projeto com página própria: case completo ou vitrine enxuta. */
+export const hasPage = (project: Project): boolean => Boolean(project.caseStudy ?? project.showcase);
+
 export const projectBySlug = (slug: string): Project => {
   const found = projects.find((project) => project.slug === slug);
   if (!found) throw new Error(`Projeto desconhecido: ${slug}`);
@@ -567,6 +668,7 @@ export const projectBySlug = (slug: string): Project => {
 
 /** Sinais técnicos verificáveis exibidos no cartão, calculados da evidência. */
 export function projectSignals(slug: string): string[] {
+  if (!(slug in evidence.projects)) return [];
   const e = projectEvidence(slug);
   const signals: string[] = [];
   if (e.testCases > 0) signals.push(`${formatNumber(e.testCases)} testes`);

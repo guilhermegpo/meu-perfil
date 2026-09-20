@@ -112,6 +112,13 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
     background: var(--glass), linear-gradient(160deg, var(--surface-2), var(--surface));
     box-shadow: var(--shadow-2);
     transform: translateZ(0);
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .card[data-tilting='true'] .card__bg,
+  .card[data-lit='true'] .card__bg,
+  .card:focus-within .card__bg {
+    border-color: rgba(164, 214, 248, 0.32);
   }
 
   /* z = 5: brilho especular que segue o cursor. */
@@ -150,6 +157,25 @@ const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
     border-radius: var(--radius);
     background: radial-gradient(120% 90% at 50% 0%, rgba(120, 189, 242, 0.1), transparent 70%), var(--bg-1);
     border: 1px solid var(--line);
+  }
+
+  /* Reflexo suave que acompanha o cursor sobre a ilustração. */
+  .card__preview {
+    overflow: hidden;
+  }
+
+  .card__preview::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(12rem circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.1), transparent 60%);
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .card[data-tilting='true'] .card__preview::after {
+    opacity: 1;
   }
 
   .card__caption {
