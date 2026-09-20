@@ -61,7 +61,7 @@ coletor e adicione a regra.
 | --- | --- |
 | Hero (status, cargo, frentes, descrição) | Informado pelo autor. Frentes Web, Mobile e Backend validadas na auditoria: Web (sistemas React e este site), Mobile (Flutter e Capacitor/Android), Backend (Supabase: SQL, RLS, funções transacionais, Edge Functions) |
 | Painéis do hero | "domínio": modelo do Meu Chamado (Workspace, Membership, Role). "no banco": práticas do Controle de Chaves e dos sistemas web. "419 testes": evidência |
-| Sobre | Síntese das práticas verificadas nos projetos; formação informada pelo autor. A nota sobre IA vem dos trailers de coautoria (`Co-Authored-By`) do histórico do Meu Chamado e do Controle de Chaves e do histórico da plataforma Lovable nos sistemas web |
+| Sobre | Síntese das práticas verificadas nos projetos; formação informada pelo autor. |
 | Experiência e formação | **Informadas pelo autor** (`experience.ts`, `education.ts`). Não são verificáveis pelo código; o único vínculo comprovável é o sistema de gestão de cursos existir e ter sido implantado |
 | Cartões e cases | `projects.ts`, redigido a partir da documentação de cada projeto (tabela abaixo) |
 | Stack | Evidência (acima) |
@@ -114,8 +114,10 @@ e está declarada no case.
 ### Sistema de escalas de serviço
 
 Fonte: estrutura do repositório privado (rotas, dependências, tabelas). O repositório não tem
-README; por isso o projeto entra só na lista, sem case e sem citar instituição. **Pendência do
-autor:** confirmar se pode ser citado e como.
+README; por isso o projeto entra só na lista, sem case e sem citar instituição. A descrição se limita ao que o código mostra (rotas de geração,
+trocas, importação e exportação, logs, permissões) e não afirma contexto de uso. **Pendência do
+autor:** confirmar se pode ser citado e como; até lá o projeto pode ser retirado da lista sem
+impacto no restante.
 
 ### Este portfólio
 
@@ -138,13 +140,16 @@ Fonte: este repositório, `docs/PORTFOLIO_ARCHITECTURE.md` e as medições de Li
 | UX e acessibilidade | `scripts/verify.mjs` deste site |
 | Performance | Medições deste site; script de profiling do Controle de Chaves |
 
-## Divulgação de uso de IA
+## Ferramentas de desenvolvimento
 
-O histórico do Meu Chamado (46 de 90 commits) e do Controle de Chaves (43 de 64) traz coautoria de
-um assistente de IA; os dois sistemas web foram gerados na plataforma Lovable (quase todos os
-commits têm o autor `gpt-engineer-app[bot]`). O site declara isso em Sobre e em cada case. As
-frases sobre o que fica com o autor (requisitos, revisão, validação, decisões) são declaração
-do autor e devem ser revistas por ele.
+O portfólio trata ferramentas assistidas por IA como **ferramenta de desenvolvimento**, não como
+autoria: aparecem em uma linha discreta no rodapé da seção Stack, numa linha "Ferramentas de
+desenvolvimento" nos cases do Controle de Chaves e do sistema de cursos, e em um item da
+experiência. O Meu Chamado (família Apps Meu) não cita ferramenta alguma. Nenhum texto afirma que
+o código foi escrito à mão nem chama a ferramenta de autora.
+
+A fonte é o histórico dos repositórios (trailers de coautoria e a plataforma de desenvolvimento
+assistido usada nos sistemas web). Contagens de commits ficam na auditoria privada, não no site.
 
 ## Pendências de confirmação
 

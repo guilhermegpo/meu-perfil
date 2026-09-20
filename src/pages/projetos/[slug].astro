@@ -129,18 +129,11 @@ const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
       </header>
 
       {
-        (project.disclosure || project.aiNote) && (
-          <aside class="notes" aria-label="Avisos sobre este case">
-            {project.disclosure && (
-              <p class="note glass">
-                <strong>Divulgação restrita.</strong> {project.disclosure}
-              </p>
-            )}
-            {project.aiNote && (
-              <p class="note glass">
-                <strong>Desenvolvimento assistido por IA.</strong> {project.aiNote}
-              </p>
-            )}
+        project.disclosure && (
+          <aside class="notes" aria-label="Aviso sobre este case">
+            <p class="note glass">
+              <strong>Divulgação restrita.</strong> {project.disclosure}
+            </p>
           </aside>
         )
       }
@@ -207,6 +200,7 @@ const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
                 </ul>
                 <p class="muted">
                   Detectadas no repositório por script, em {evidence.generatedAt}.
+                  {project.tooling && ` Ferramentas de desenvolvimento: ${project.tooling}`}
                 </p>
               </section>
             )

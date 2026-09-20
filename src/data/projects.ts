@@ -73,16 +73,14 @@ export interface Project {
   readonly repository?: string;
   /** Aviso de divulgação restrita, exibido no cartão e no case. */
   readonly disclosure?: string;
-  /** Transparência sobre desenvolvimento assistido por IA. */
-  readonly aiNote?: string;
+  /** Ferramenta de desenvolvimento relevante. Exibida em uma linha discreta, nunca como autoria. */
+  readonly tooling?: string;
   readonly caseStudy?: CaseStudy;
 }
 
-const AI_NOTE_CLAUDE =
-  'Desenvolvido com apoio de um assistente de IA (Claude), o que aparece como coautoria no histórico do repositório. Requisitos, revisão, validação e decisões de arquitetura ficam comigo.';
+const TOOLING_ASSISTANT = 'assistente de IA.';
 
-const AI_NOTE_LOVABLE =
-  'Construído na plataforma Lovable, de desenvolvimento assistido por IA — o histórico do repositório reflete isso. Minha atuação está nos requisitos, nos fluxos, no modelo de dados e nas regras de acesso, na implantação, na documentação e no suporte.';
+const TOOLING_PLATFORM = 'plataforma de desenvolvimento assistido (Lovable).';
 
 const RESTRICTED =
   'Sistema de uso institucional e restrito. O código-fonte, as telas e os dados não são públicos; este texto descreve apenas o problema, a natureza da solução e a minha atuação.';
@@ -107,7 +105,7 @@ export const projects: readonly Project[] = [
     featured: true,
     disclosure:
       'Sistema operacional em uso por uma equipe real. Por isso o código, as telas, os dados e o nome da organização não são públicos.',
-    aiNote: AI_NOTE_CLAUDE,
+    tooling: TOOLING_ASSISTANT,
     caseStudy: {
       context:
         'Aplicativo usado por uma equipe operacional para registrar a saída e o retorno de veículos e o estado das chaves. O sistema anterior dependia de um backend baseado em Google Drive, e o código-fonte original não estava mais disponível: a reconstrução partiu de um APK compilado de referência.',
@@ -218,11 +216,6 @@ export const projects: readonly Project[] = [
           solution:
             'Reconstrução do projeto com a toolchain oficial do Android, sem patch binário, e diagnóstico documentado do defeito do artefato original.',
         },
-        {
-          challenge: 'O cliente legado trazia uma credencial embutida.',
-          solution:
-            'Credencial tratada como comprometida e descartada; o primeiro administrador passou a ser criado localmente, sem senha em arquivo versionado.',
-        },
       ],
       results: [
         'Em uso por uma equipe operacional real.',
@@ -261,7 +254,6 @@ export const projects: readonly Project[] = [
     ],
     featured: true,
     repository: 'https://github.com/guilhermegpo/meu-chamado',
-    aiNote: AI_NOTE_CLAUDE,
     caseStudy: {
       context:
         'Projeto independente e não oficial, em código aberto. Nasce da necessidade de organizar responsabilidades e o acompanhamento de pessoas em um só lugar que funcione sem internet.',
@@ -378,10 +370,10 @@ export const projects: readonly Project[] = [
     links: [],
     featured: true,
     disclosure: RESTRICTED,
-    aiNote: AI_NOTE_LOVABLE,
+    tooling: TOOLING_PLATFORM,
     caseStudy: {
       context:
-        'Sistema interno de uma seção de coordenação de cursos, desenvolvido e implantado durante meu período de serviço no Instituto de Logística da Aeronáutica. Acesso apenas autenticado, sem cadastro público.',
+        'Sistema interno de uma seção de coordenação de cursos, desenvolvido e implantado durante meu período de serviço temporário. Acesso apenas autenticado, sem cadastro público.',
       problem:
         'O planejamento, a coordenação e o acompanhamento de cursos exigiam centralizar as informações, padronizar os registros e dar suporte à consulta e à rastreabilidade.',
       objective:
@@ -458,10 +450,10 @@ export const projects: readonly Project[] = [
     name: 'Sistema de escalas de serviço',
     category: 'Aplicação web interna',
     kind: 'web',
-    status: 'Uso interno',
+    status: 'Projeto interno',
     tone: 'internal',
     tagline:
-      'Aplicação web interna para gerar e gerenciar escalas de serviço, com trocas, indisponibilidades e aprovações.',
+      'Aplicação web interna para gerar e gerenciar escalas de serviço.',
     highlights: [
       'Geração de escalas com regras de negócio',
       'Trocas, adiantamentos e aprovações',
@@ -470,8 +462,8 @@ export const projects: readonly Project[] = [
     ],
     links: [],
     featured: false,
-    disclosure: RESTRICTED,
-    aiNote: AI_NOTE_LOVABLE,
+    disclosure: 'Código-fonte e dados não são públicos.',
+    tooling: TOOLING_PLATFORM,
   },
   {
     slug: 'meu-perfil',
