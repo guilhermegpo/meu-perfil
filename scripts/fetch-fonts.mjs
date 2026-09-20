@@ -44,7 +44,7 @@ if (!response.ok) throw new Error(`Google Fonts respondeu ${response.status}`);
 const css = await response.text();
 
 /** Divide a folha em blocos @font-face individuais. */
-const blocks = [...css.matchAll(/\/\*\s*([\w-\[\]]+)\s*\*\/\s*(@font-face\s*\{[^}]+\})/g)];
+const blocks = [...css.matchAll(/\/\*\s*([\w[\]-]+)\s*\*\/\s*(@font-face\s*\{[^}]+\})/g)];
 if (blocks.length === 0) throw new Error('Nenhum @font-face encontrado na resposta.');
 
 const rules = [];
