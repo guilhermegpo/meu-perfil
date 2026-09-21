@@ -63,7 +63,7 @@ import SectionHeading from './SectionHeading.astro';
             <li class="education__item">
               <p class="education__name">{item.title}</p>
               <p class="education__meta">
-                {[item.institution, item.period, item.status].filter(Boolean).join(' · ')}
+                {[item.institution, item.period ?? item.status].filter(Boolean).join(' · ')}
               </p>
               {item.note && <p class="education__note">{item.note}</p>}
             </li>
