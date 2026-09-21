@@ -1,128 +1,116 @@
 ---
-import SectionHeading from './SectionHeading.astro';
+import { education } from '../data/education';
 import { experience } from '../data/experience';
 import { asset } from '../lib/url';
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
 ---
 
-<section class="section" id="experiencia">
+<section id="experiencia" class="section" aria-labelledby="experiencia-titulo">
   <div class="container">
     <SectionHeading
+      id="experiencia-titulo"
       eyebrow="Experiência"
-      title="Trajetória profissional"
-      lead="Duas experiências: uma em desenvolvimento de software, outra em rotina fiscal. A segunda não é preenchimento — foi onde aprendi a lidar com prazo rígido e informação que não pode estar errada."
+      title="Trajetória e formação"
+      lead="Trabalho real, descrito pelo que fiz e pela tecnologia usada. Nada de detalhe interno de instituição."
     />
 
     <ol class="timeline">
       {
         experience.map((entry, index) => (
-          <li class="entry" data-reveal data-reveal-delay={index * 90}>
+          <li class="entry" data-reveal data-reveal-delay={String(index * 80)}>
             <div class="entry__meta">
               <p class="entry__period">{entry.period}</p>
-              <p class="entry__location">{entry.location}</p>
+              <p class="entry__place">{entry.location}</p>
             </div>
 
-            <div class="entry__body">
+            <div class="entry__body glass">
               <h3 class="entry__org">{entry.organization}</h3>
-
               <p class="entry__role">
                 {entry.role}
-                {entry.focus && (
-                  <>
-                    <span class="entry__sep" aria-hidden="true">
-                      ·
-                    </span>
-                    <span class="entry__focus">{entry.focus}</span>
-                  </>
-                )}
+                {entry.focus && <span> · {entry.focus}</span>}
               </p>
-
               <p class="entry__summary">{entry.summary}</p>
 
               <ul class="entry__list">
-                {entry.achievements.map((item) => (
-                  <li>{item}</li>
-                ))}
+                {entry.achievements.map((item) => <li>{item}</li>)}
               </ul>
 
               {entry.stack && (
-                <ul class="entry__stack">
+                <ul class="entry__stack" aria-label="Tecnologias">
                   {entry.stack.map((tech) => (
-                    <li>{tech}</li>
+                    <li class="chip">{tech}</li>
                   ))}
                 </ul>
               )}
 
               {entry.caseStudy && (
-                <p class="entry__link">
-                  <a href={asset(`projetos/${entry.caseStudy}/`)}>Ver o case completo</a>
-                </p>
+                <a class="entry__case" href={asset(`projetos/${entry.caseStudy}`)}>
+                  Ver o case <Icon name="arrow" />
+                </a>
               )}
             </div>
           </li>
         ))
       }
     </ol>
+
+    <div class="education" data-reveal>
+      <h3 class="education__title">Formação</h3>
+      <ul class="education__list">
+        {
+          education.map((item) => (
+            <li class="education__item">
+              <p class="education__name">{item.title}</p>
+              <p class="education__meta">
+                {[item.institution, item.period, item.status].filter(Boolean).join(' · ')}
+              </p>
+              {item.note && <p class="education__note">{item.note}</p>}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </section>
 
 <style>
   .timeline {
     display: grid;
-    margin: 0;
+    gap: var(--space-md);
   }
 
   .entry {
     display: grid;
-    grid-template-columns: 11rem 1fr;
-    gap: var(--space-md);
-    /* Espaço entre entradas como padding, não gap: assim a linha do tempo
-       corre contínua em vez de virar segmentos soltos. */
-    padding-bottom: var(--space-lg);
+    gap: 0.75rem;
   }
 
-  .entry:last-child {
-    padding-bottom: 0;
-  }
-
-  .entry:last-child .entry__meta {
-    border-right-color: transparent;
+  @media (min-width: 56rem) {
+    .entry {
+      grid-template-columns: 11rem minmax(0, 1fr);
+      gap: var(--space-md);
+    }
   }
 
   .entry__meta {
-    position: relative;
-    padding-right: var(--space-md);
-    border-right: 1px solid var(--border);
-  }
-
-  /* Marcador na linha do tempo, alinhado com a primeira linha do título. */
-  .entry__meta::after {
-    content: '';
-    position: absolute;
-    top: 0.45rem;
-    right: -4.5px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--bg);
-    border: 2px solid var(--border-strong);
-  }
-
-  .entry:first-child .entry__meta::after {
-    background: var(--accent);
-    border-color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
   }
 
   .entry__period {
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    font-weight: 500;
-    color: var(--text);
+    color: var(--accent);
   }
 
-  .entry__location {
-    margin-top: 0.15rem;
-    font-size: var(--step--1);
+  .entry__place {
     color: var(--text-faint);
+  }
+
+  .entry__body {
+    display: grid;
+    gap: var(--space-xs);
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: var(--radius-lg);
   }
 
   .entry__org {
@@ -130,103 +118,97 @@ import { asset } from '../lib/url';
   }
 
   .entry__role {
-    margin-top: 0.2rem;
-    font-size: var(--step--1);
-    color: var(--text-faint);
-  }
-
-  .entry__sep {
-    margin-inline: 0.4rem;
-  }
-
-  .entry__focus {
-    font-weight: 550;
-    color: var(--accent);
+    color: var(--text-muted);
+    font-weight: 500;
   }
 
   .entry__summary {
-    margin-top: var(--space-xs);
-    max-width: var(--measure);
+    max-width: 66ch;
     color: var(--text-muted);
   }
 
   .entry__list {
     display: grid;
-    gap: 0.35rem;
-    margin-top: var(--space-sm);
+    gap: 0.4rem;
+    max-width: 66ch;
+    margin-top: 0.25rem;
+    font-size: 0.95rem;
+    color: var(--text-muted);
   }
 
   .entry__list li {
     position: relative;
-    padding-left: 1.15rem;
-    font-size: var(--step--1);
-    color: var(--text-muted);
+    padding-left: 1.1rem;
   }
 
   .entry__list li::before {
     content: '';
     position: absolute;
-    left: 0.15rem;
-    top: 0.62em;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
+    left: 0;
+    top: 0.7em;
+    width: 0.4rem;
+    height: 1px;
     background: var(--accent);
   }
 
   .entry__stack {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-top: var(--space-sm);
+    gap: 0.4rem;
+    margin-top: 0.5rem;
   }
 
-  .entry__stack li {
-    padding: 0.15rem 0.55rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+  .entry__case {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-self: start;
+    min-height: 2.75rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .education {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--line);
+  }
+
+  .education__title {
+    margin-bottom: var(--space-sm);
     font-family: var(--font-mono);
-    font-size: var(--step--1);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .education__list {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  @media (min-width: 56rem) {
+    .education__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+  }
+
+  .education__name {
+    font-weight: 600;
+  }
+
+  .education__meta {
+    margin-top: 0.15rem;
+    font-size: 0.85rem;
     color: var(--text-faint);
   }
 
-  .entry__link {
-    margin-top: var(--space-sm);
-    font-size: var(--step--1);
-    font-weight: 550;
-  }
-
-  @media (max-width: 48rem) {
-    .entry {
-      grid-template-columns: 1fr;
-      gap: var(--space-xs);
-      padding-left: var(--space-sm);
-      padding-bottom: var(--space-lg);
-      border-left: 1px solid var(--border);
-    }
-
-    .entry:last-child {
-      padding-bottom: 0;
-      border-left-color: transparent;
-    }
-
-    .entry__meta {
-      display: flex;
-      align-items: baseline;
-      gap: 0.6rem;
-      padding-right: 0;
-      border-right: 0;
-    }
-
-    .entry__meta::after {
-      top: 0.5rem;
-      right: auto;
-      left: calc(-1 * var(--space-sm) - 4.5px);
-    }
-
-    .entry__location::before {
-      content: '·';
-      margin-right: 0.6rem;
-    }
+  .education__note {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
   }
 </style>

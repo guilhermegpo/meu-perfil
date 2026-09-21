@@ -1,0 +1,286 @@
+{
+  "generatedAt": "2026-09-21",
+  "metrics": {
+    "projectsAnalyzed": 5,
+    "automatedTests": 427,
+    "testedProjects": 2,
+    "mobileApps": 2,
+    "webSystems": 3,
+    "technologies": 24,
+    "adrs": 17
+  },
+  "projects": {
+    "controle-de-chaves": {
+      "migrations": 37,
+      "sqlFunctions": 74,
+      "policies": 35,
+      "adrs": 0,
+      "testCases": 127,
+      "testFiles": 10,
+      "tags": 0,
+      "commits": 74,
+      "version": null
+    },
+    "meu-chamado": {
+      "migrations": 0,
+      "sqlFunctions": 0,
+      "policies": 0,
+      "adrs": 17,
+      "testCases": 300,
+      "testFiles": 41,
+      "tags": 3,
+      "commits": 90,
+      "version": "0.2.0-alpha.4"
+    },
+    "sistema-gestao-cursos": {
+      "migrations": 106,
+      "sqlFunctions": 95,
+      "policies": 140,
+      "adrs": 0,
+      "testCases": 0,
+      "testFiles": 0,
+      "tags": 0,
+      "commits": 2540,
+      "version": null
+    },
+    "sistema-escalas-servico": {
+      "migrations": 41,
+      "sqlFunctions": 18,
+      "policies": 145,
+      "adrs": 0,
+      "testCases": 0,
+      "testFiles": 0,
+      "tags": 0,
+      "commits": 500,
+      "version": null
+    },
+    "meu-perfil": {
+      "migrations": 0,
+      "sqlFunctions": 0,
+      "policies": 0,
+      "adrs": 0,
+      "testCases": 0,
+      "testFiles": 0,
+      "tags": 0,
+      "commits": 52,
+      "version": null
+    }
+  },
+  "technologies": [
+    {
+      "category": "Frontend",
+      "name": "React",
+      "projects": [
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico"
+      ],
+      "count": 2
+    },
+    {
+      "category": "Frontend",
+      "name": "TypeScript",
+      "projects": [
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico",
+        "meu-perfil"
+      ],
+      "count": 3
+    },
+    {
+      "category": "Frontend",
+      "name": "JavaScript",
+      "projects": [
+        "controle-de-chaves"
+      ],
+      "count": 1
+    },
+    {
+      "category": "Frontend",
+      "name": "TanStack Router",
+      "projects": [
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico"
+      ],
+      "count": 2
+    },
+    {
+      "category": "Frontend",
+      "name": "Tailwind CSS",
+      "projects": [
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico"
+      ],
+      "count": 2
+    },
+    {
+      "category": "Frontend",
+      "name": "Astro",
+      "projects": [
+        "meu-perfil"
+      ],
+      "count": 1
+    },
+    {
+      "category": "Frontend",
+      "name": "Vite",
+      "projects": [
+        "controle-de-chaves",
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico"
+      ],
+      "count": 3
+    },
+    {
+      "category": "Frontend",
+      "name": "PWA",
+      "projects": [
+        "controle-de-chaves",
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico"
+      ],
+      "count": 3
+    },
+    {
+      "category": "Mobile",
+      "name": "Flutter",
+      "projects": [
+        "meu-chamado"
+      ],
+      "count": 1
+    },
+    {
+      "category": "Mobile",
+      "name": "Dart",
+      "projects": [
+        "meu-chamado"
+      ],
+      "count": 1
+    },
+    {
+      "category": "Mobile",
+      "name": "Riverpod",
+      "projects": [
+        "meu-chamado"
+      ],
+      "count": 1
+    },
+    {
+      "category": "Mobile",
+      "name": "Capacitor",
+      "projects": [
+        "controle-de-chaves"
+      ],
+      "count": 1
+    },
+    {
+      "category": "Mobile",
+      "name": "Android",
+      "projects": [
+        "controle-de-chaves",
+        "meu-chamado"
+      ],
+      "count": 2
+    },
+    {
+      "category": "Backend",
+      "name": "Supabase",
+      "projects": [
+        "controle-de-chaves",
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico"
+      ],
+      "count": 3
+    },
+    {
+      "category": "Backend",
+      "name": "Edge Functions",
+      "projects": [
+        "controle-de-chaves"
+      ],
+      "count": 1
+    },
+    {
+      "category": "Banco de dados",
+      "name": "PostgreSQL",
+      "projects": [
+        "controle-de-chaves",
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico"
+      ],
+      "count": 3
+    },
+    {
+      "category": "Banco de dados",
+      "name": "Row Level Security",
+      "projects": [
+        "controle-de-chaves",
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico"
+      ],
+      "count": 3
+    },
+    {
+      "category": "Banco de dados",
+      "name": "Drift / SQLite",
+      "projects": [
+        "meu-chamado"
+      ],
+      "count": 1
+    },
+    {
+      "category": "DevOps",
+      "name": "GitHub Actions",
+      "projects": [
+        "controle-de-chaves",
+        "meu-chamado",
+        "meu-perfil"
+      ],
+      "count": 3
+    },
+    {
+      "category": "DevOps",
+      "name": "Cloudflare Workers",
+      "projects": [
+        "controle-de-chaves",
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico"
+      ],
+      "count": 3
+    },
+    {
+      "category": "Ferramentas",
+      "name": "Vitest",
+      "projects": [
+        "controle-de-chaves"
+      ],
+      "count": 1
+    },
+    {
+      "category": "Ferramentas",
+      "name": "Flutter Test",
+      "projects": [
+        "meu-chamado"
+      ],
+      "count": 1
+    },
+    {
+      "category": "Ferramentas",
+      "name": "ESLint",
+      "projects": [
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico",
+        "meu-perfil"
+      ],
+      "count": 3
+    },
+    {
+      "category": "Ferramentas",
+      "name": "Prettier",
+      "projects": [
+        "sistema-gestao-cursos",
+        "sistema-escalas-servico"
+      ],
+      "count": 2
+    }
+  ]
+}

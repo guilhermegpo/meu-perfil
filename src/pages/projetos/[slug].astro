@@ -1,9 +1,12 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import { projects, type Project } from '../../data/projects';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import Picture from '../../components/Picture.astro';
+import { evidence } from '../../data/evidence';
 import { profile } from '../../data/profile';
+import { hasPage, projects, projectSignals, projectStack, type Project } from '../../data/projects';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { asset } from '../../lib/url';
 
 /**
@@ -14,10 +17,9 @@ import { asset } from '../../lib/url';
  * buscador e quebra o botão voltar. Página real resolve os três.
  */
 export function getStaticPaths() {
-  return projects.map((project) => ({
-    params: { slug: project.slug },
-    props: { project },
-  }));
+  return projects
+    .filter(hasPage)
+    .map((project) => ({ params: { slug: project.slug }, props: { project } }));
 }
 
 interface Props {
@@ -25,111 +27,332 @@ interface Props {
 }
 
 const { project } = Astro.props;
+const study = project.caseStudy;
+const showcase = project.showcase;
 
-const title = `${project.name} — ${profile.displayName}`;
-const description = project.tagline;
+const title = `${project.name} — ${study ? 'case study' : 'família Apps Meu'} | ${profile.name}`;
+const description = `${project.name} — ${project.tagline}`;
 
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'CreativeWork',
-  name: project.name,
-  abstract: project.tagline,
-  author: { '@type': 'Person', name: profile.name },
-  keywords: project.stack.join(', '),
-};
+const home = new URL(asset(''), Astro.site).href;
+const url = new URL(asset(`projetos/${project.slug}`), Astro.site).href;
+const stackAll = projectStack(project.slug, { all: true });
+// Testes e ADRs vão ao topo; políticas RLS e funções SQL ficam dentro do case, como evidência.
+const signals = projectSignals(project.slug).filter((item) => !/RLS/.test(item));
+
+const structuredData = [
+  project.repository
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareSourceCode',
+        name: project.name,
+        description: project.tagline,
+        codeRepository: project.repository,
+        author: { '@id': `${home}#person` },
+        keywords: stackAll.join(', '),
+        url,
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWork',
+        name: project.name,
+        description: project.tagline,
+        author: { '@id': `${home}#person` },
+        keywords: stackAll.join(', '),
+        url,
+      },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Início', item: home },
+      { '@type': 'ListItem', position: 2, name: 'Projetos', item: `${home}#projetos` },
+      { '@type': 'ListItem', position: 3, name: project.name, item: url },
+    ],
+  },
+];
+
+const sections = [
+  { id: 'contexto', label: 'Contexto' },
+  { id: 'problema', label: 'Problema' },
+  { id: 'objetivo', label: 'Objetivo' },
+  { id: 'responsabilidade', label: 'Minha responsabilidade' },
+  { id: 'arquitetura', label: 'Arquitetura' },
+  { id: 'tecnologias', label: 'Tecnologias' },
+  { id: 'decisoes', label: 'Principais decisões' },
+  { id: 'funcionalidades', label: 'Funcionalidades' },
+  { id: 'desafios', label: 'Desafios e soluções' },
+  { id: 'resultados', label: 'Resultados' },
+  { id: 'aprendizados', label: 'Aprendizados' },
+  { id: 'status', label: 'Status atual' },
+];
+
+const others = projects.filter((p) => hasPage(p) && p.slug !== project.slug);
+const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
 ---
 
-<BaseLayout title={title} description={description} structuredData={structuredData}>
+<BaseLayout
+  title={title}
+  description={description}
+  structuredData={structuredData}
+  ogType="article"
+>
   <Header onHome={false} />
 
   <main id="conteudo" class="case">
     <div class="container">
       <a class="back" href={`${asset('')}#projetos`}>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m0 0 5-5m-5 5 5 5" /></svg>
-        Voltar aos projetos
+        <Icon name="arrow-left" /> Voltar aos projetos
       </a>
 
-      <header class="case__head">
-        <div class="case__badges">
-          <span class="badge badge--category">{project.category}</span>
-          <span class="badge" data-status={project.status}>{project.status}</span>
+      <header class="head">
+        <div class="head__badges">
+          <span class="badge">{kindLabel}</span>
+          <span class="badge">{project.category}</span>
+          {project.family && <span class="badge">{project.family}</span>}
+          <span class="badge" data-tone={project.tone}>{project.status}</span>
         </div>
-
-        <h1 class="case__title">{project.name}</h1>
-        <p class="case__tagline">{project.tagline}</p>
-
-        <ul class="case__stack">
-          {project.stack.map((tech) => <li>{tech}</li>)}
-        </ul>
+        <h1 class="head__title">{project.name}</h1>
+        <p class="head__tagline">{project.tagline}</p>
 
         {
-          project.links.length > 0 && (
-            <p class="case__links">
-              {project.links.map((link) => (
-                <a class="button button--outline" href={link.href} rel="noopener">
-                  {link.label}
-                </a>
-              ))}
-            </p>
+          signals.length > 0 && (
+            <p class="head__signals">{signals.join(' · ')}</p>
           )
         }
+
+        <div class="head__links">
+          {
+            project.links.map((link, index) => (
+              <a class:list={['btn', { 'btn--primary': index === 0 }]} href={link.href} rel="noopener">
+                {link.label} <Icon name="external" />
+              </a>
+            ))
+          }
+          {project.links.length === 0 && (
+            <span class="head__private">
+              {study ? 'Código-fonte privado' : 'Projeto em desenvolvimento'}
+            </span>
+          )}
+        </div>
       </header>
 
       {
         project.disclosure && (
-          <aside class="notice" aria-label="Aviso sobre divulgação">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 8h.01M11 12h1v4h1" />
-            </svg>
-            <p>{project.disclosure}</p>
+          <aside class="notes" aria-label="Aviso sobre este case">
+            <p class="note glass">
+              <strong>Divulgação restrita.</strong> {project.disclosure}
+            </p>
           </aside>
         )
       }
 
-      <div class="case__body">
-        <section class="block">
-          <h2>Problema</h2>
-          <p>{project.problem}</p>
-        </section>
+      {
+        project.heroImage && (
+          <figure class="art" data-tilt>
+            <div class="art__tilt">
+              <Picture
+                dir="projects"
+                name={`${project.heroImage.slug}-hero`}
+                widths={[640, 1024, 1672]}
+                fallback={`${project.heroImage.slug}-hero-1024.webp`}
+                sizes="(min-width: 68rem) 64rem, 92vw"
+                alt={project.heroImage.alt}
+                width={1672}
+                height={941}
+                eager
+                class="art__img"
+              />
+              <span class="art__glow" aria-hidden="true"></span>
+              <figcaption class="art__caption">Imagem ilustrativa</figcaption>
+            </div>
+          </figure>
+        )
+      }
 
-        <section class="block">
-          <h2>Minha participação</h2>
-          <ul class="bullets">
-            {project.participation.map((item) => <li>{item}</li>)}
-          </ul>
-        </section>
+      {study && (
+      <div class="layout">
+        <nav class="toc" aria-label="Neste case">
+          <ol>
+            {
+              sections
+                .filter((s) => s.id !== 'tecnologias' || stackAll.length > 0)
+                .map((s) => (
+                  <li>
+                    <a href={`#${s.id}`} data-toc-link={s.id}>{s.label}</a>
+                  </li>
+                ))
+            }
+          </ol>
+        </nav>
 
-        <section class="block">
-          <h2>Solução</h2>
-          <p>{project.solution}</p>
-        </section>
+        <div class="body">
+          <section id="contexto" aria-labelledby="h-contexto">
+            <h2 id="h-contexto">Contexto</h2>
+            <p>{study.context}</p>
+          </section>
 
-        <section class="block">
-          <h2>Resultado</h2>
-          <p>{project.result}</p>
-        </section>
+          <section id="problema" aria-labelledby="h-problema">
+            <h2 id="h-problema">Problema</h2>
+            <p>{study.problem}</p>
+          </section>
 
-        {
-          project.planned && (
-            <section class="block">
-              <h2>Ainda não implementado</h2>
-              <p class="block__note">
-                Listado aqui de propósito: enquanto não estiver funcionando, não é resultado.
-              </p>
-              <ul class="bullets bullets--planned">
-                {project.planned.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            </section>
-          )
-        }
+          <section id="objetivo" aria-labelledby="h-objetivo">
+            <h2 id="h-objetivo">Objetivo</h2>
+            <p>{study.objective}</p>
+          </section>
+
+          <section id="responsabilidade" aria-labelledby="h-responsabilidade">
+            <h2 id="h-responsabilidade">Minha responsabilidade</h2>
+            <ul class="list">
+              {study.responsibility.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+
+          <section id="arquitetura" aria-labelledby="h-arquitetura">
+            <h2 id="h-arquitetura">Arquitetura</h2>
+            <p>{study.architecture.summary}</p>
+            <ol class="layers">
+              {
+                study.architecture.layers.map((layer) => (
+                  <li class="layer glass">
+                    <p class="layer__name">{layer.name}</p>
+                    <p class="layer__detail">{layer.detail}</p>
+                  </li>
+                ))
+              }
+            </ol>
+          </section>
+
+          {
+            stackAll.length > 0 && (
+              <section id="tecnologias" aria-labelledby="h-tecnologias">
+                <h2 id="h-tecnologias">Tecnologias</h2>
+                <ul class="chips" aria-label="Tecnologias detectadas no repositório">
+                  {stackAll.map((tech) => <li class="chip">{tech}</li>)}
+                </ul>
+                <p class="muted">
+                  Detectadas no repositório por script, em {evidence.generatedAt}.
+                </p>
+              </section>
+            )
+          }
+
+          <section id="decisoes" aria-labelledby="h-decisoes">
+            <h2 id="h-decisoes">Principais decisões</h2>
+            <ul class="decisions">
+              {
+                study.decisions.map((decision) => (
+                  <li class="decision">
+                    <h3>{decision.title}</h3>
+                    <p>{decision.body}</p>
+                  </li>
+                ))
+              }
+            </ul>
+          </section>
+
+          <section id="funcionalidades" aria-labelledby="h-funcionalidades">
+            <h2 id="h-funcionalidades">Funcionalidades</h2>
+            <ul class="list list--cols">
+              {study.features.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+
+          <section id="desafios" aria-labelledby="h-desafios">
+            <h2 id="h-desafios">Desafios e soluções</h2>
+            <ul class="challenges">
+              {
+                study.challenges.map((item) => (
+                  <li class="challenge">
+                    <p class="challenge__q">
+                      <span>Desafio</span>
+                      {item.challenge}
+                    </p>
+                    <p class="challenge__a">
+                      <span>Solução</span>
+                      {item.solution}
+                    </p>
+                  </li>
+                ))
+              }
+            </ul>
+          </section>
+
+          <section id="resultados" aria-labelledby="h-resultados">
+            <h2 id="h-resultados">Resultados</h2>
+            <ul class="list">
+              {study.results.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+
+          <section id="aprendizados" aria-labelledby="h-aprendizados">
+            <h2 id="h-aprendizados">Aprendizados</h2>
+            <ul class="list">
+              {study.learnings.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+
+          <section id="status" aria-labelledby="h-status">
+            <h2 id="h-status">Status atual</h2>
+            <p>{study.status}</p>
+            {
+              study.planned && (
+                <>
+                  <p class="muted">No roadmap, ainda não implementado:</p>
+                  <ul class="list list--planned">
+                    {study.planned.map((item) => <li>{item}</li>)}
+                  </ul>
+                </>
+              )
+            }
+          </section>
+        </div>
       </div>
+      )}
 
-      <p class="case__foot">
-        <a class="button button--primary" href={`${asset('')}#contato`}>Falar comigo</a>
-      </p>
+      {showcase && (
+        <div class="body showcase">
+          <section id="sobre-app" aria-labelledby="h-sobre-app">
+            <h2 id="h-sobre-app">Sobre o app</h2>
+            <p>{showcase.intro}</p>
+          </section>
+
+          <section id="proposta" aria-labelledby="h-proposta">
+            <h2 id="h-proposta">{showcase.pointsTitle}</h2>
+            <ul class="list list--cols">
+              {showcase.points.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+
+          <section id="identidade" aria-labelledby="h-identidade">
+            <h2 id="h-identidade">Identidade visual</h2>
+            <p>{showcase.identity}</p>
+          </section>
+
+          <section id="status" aria-labelledby="h-status-app">
+            <h2 id="h-status-app">Status atual</h2>
+            <p>{showcase.status}</p>
+          </section>
+        </div>
+      )}
+
+      {
+        others.length > 0 && (
+          <nav class="more" aria-label="Outros cases">
+            <p class="more__title">Outros cases</p>
+            <ul>
+              {others.map((other) => (
+                <li>
+                  <a href={asset(`projetos/${other.slug}`)}>
+                    <span>{other.name}</span>
+                    <Icon name="arrow" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
     </div>
   </main>
 
@@ -138,191 +361,461 @@ const structuredData = {
 
 <style>
   .case {
-    padding-block: var(--space-lg) var(--space-xl);
+    padding-top: calc(var(--header-h) + var(--space-md));
+    padding-bottom: clamp(3rem, 8vw, 6rem);
   }
 
   .back {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: var(--step--1);
-    font-weight: 550;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    font-size: 0.92rem;
+    color: var(--text-muted);
     text-decoration: none;
   }
 
-  .back svg {
-    width: 1rem;
-    height: 1rem;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: transform 0.25s var(--ease);
+  .back:hover {
+    color: var(--text);
   }
 
-  .back:hover svg {
-    transform: translateX(-3px);
-  }
-
-  .case__head {
+  .head {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-sm);
+    max-width: 56rem;
     margin-top: var(--space-md);
-    padding-bottom: var(--space-md);
-    border-bottom: 1px solid var(--border);
   }
 
-  .case__badges {
+  .head__badges {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 0.5rem;
   }
 
-  .badge {
-    padding: 0.15rem 0.65rem;
-    border-radius: var(--radius-full);
-    background: var(--bg-subtle);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    color: var(--text-muted);
+  .head__title {
+    font-size: var(--step-hero);
+    line-height: 1;
+    letter-spacing: -0.035em;
   }
 
-  .badge--category {
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-  }
-
-  .badge[data-status='implantado'] {
-    background: var(--accent-subtle);
-    color: var(--accent);
-  }
-
-  .case__title {
-    margin-top: var(--space-sm);
-    font-size: var(--step-4);
-  }
-
-  .case__tagline {
-    margin-top: var(--space-xs);
-    max-width: var(--measure);
+  .head__tagline {
+    max-width: 52ch;
     font-size: var(--step-1);
     color: var(--text-muted);
   }
 
-  .case__stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-top: var(--space-md);
-  }
-
-  .case__stack li {
-    padding: 0.2rem 0.6rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+  .head__signals {
     font-family: var(--font-mono);
-    font-size: var(--step--1);
+    font-size: 0.82rem;
     color: var(--text-faint);
   }
 
-  .case__links {
+  .head__links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: var(--space-md);
-  }
-
-  .notice {
-    display: flex;
+    align-items: center;
     gap: 0.75rem;
+  }
+
+  .head__private {
+    font-size: 0.9rem;
+    color: var(--text-faint);
+  }
+
+  .notes {
+    display: grid;
+    gap: var(--space-xs);
+    max-width: 56rem;
     margin-top: var(--space-md);
-    padding: var(--space-sm) var(--space-md);
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
-    border-radius: var(--radius-md);
-    background: var(--accent-subtle);
   }
 
-  .notice svg {
-    flex: 0 0 auto;
-    width: 1.15rem;
-    height: 1.15rem;
-    margin-top: 0.2rem;
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 1.7;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .notice p {
-    font-size: var(--step--1);
+  .note {
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
     color: var(--text-muted);
   }
 
-  .case__body {
-    display: grid;
-    gap: var(--space-lg);
-    margin-top: var(--space-lg);
+  .note strong {
+    color: var(--text);
   }
 
-  .block h2 {
+  .layout {
+    display: grid;
+    gap: var(--space-lg);
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  @media (min-width: 64rem) {
+    .layout {
+      grid-template-columns: 14rem minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .toc {
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+    }
+  }
+
+  .toc ol {
+    display: none;
+    gap: 0.1rem;
+    padding-left: var(--space-sm);
+    border-left: 1px solid var(--line);
+  }
+
+  @media (min-width: 64rem) {
+    .toc ol {
+      display: grid;
+    }
+  }
+
+  .toc a {
+    display: block;
+    padding-block: 0.3rem;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .toc a:hover {
+    color: var(--text);
+  }
+
+  .body {
+    display: grid;
+    gap: clamp(2.25rem, 5vw, 3.5rem);
+    max-width: 52rem;
+  }
+
+  .body section {
+    display: grid;
+    gap: var(--space-sm);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+
+  .body h2 {
+    font-size: var(--step-3);
+  }
+
+  .body p {
+    color: var(--text-muted);
+  }
+
+  .body h3 {
+    font-size: var(--step-1);
+  }
+
+  .muted {
+    font-size: 0.86rem;
+    color: var(--text-faint);
+  }
+
+  .list {
+    display: grid;
+    gap: 0.55rem;
+    color: var(--text-muted);
+  }
+
+  .list li {
+    position: relative;
+    padding-left: 1.2rem;
+  }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.75em;
+    width: 0.5rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .list--planned li::before {
+    background: var(--text-faint);
+  }
+
+  @media (min-width: 48rem) {
+    .list--cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.55rem 1.75rem;
+    }
+  }
+
+  .layers {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: var(--space-xs);
+    counter-reset: layer;
+  }
+
+  .layer {
+    position: relative;
+    display: grid;
+    gap: 0.25rem;
+    padding: 1rem 1.15rem 1rem 3.4rem;
+    border-radius: var(--radius);
+  }
+
+  .layer::before {
+    counter-increment: layer;
+    content: counter(layer);
+    position: absolute;
+    left: 1.1rem;
+    top: 1rem;
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
     font-family: var(--font-mono);
-    font-size: var(--step--1);
-    font-weight: 500;
-    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    color: var(--accent);
+  }
+
+  .layer__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .layer__detail {
+    font-size: 0.93rem;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .decisions {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .decision {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .challenges {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .challenge {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  @media (min-width: 48rem) {
+    .challenge {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+    }
+  }
+
+  .challenge p {
+    font-size: 0.94rem;
+  }
+
+  .challenge__q {
+    color: var(--text) !important;
+  }
+
+  .challenge span {
+    display: block;
+    margin-bottom: 0.15rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--accent);
   }
 
-  .block p {
-    margin-top: var(--space-xs);
-    max-width: var(--measure);
+  .more {
+    margin-top: clamp(3rem, 7vw, 5rem);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--line);
+  }
+
+  .more__title {
+    margin-bottom: var(--space-xs);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     color: var(--text-muted);
   }
 
-  .block__note {
-    font-size: var(--step--1);
-    font-style: italic;
-  }
-
-  .bullets {
+  .more ul {
     display: grid;
-    gap: 0.4rem;
-    margin-top: var(--space-sm);
+    gap: 0.25rem;
   }
 
-  .bullets li {
+  .more a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 3rem;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .more a:hover {
+    color: var(--accent-strong);
+  }
+
+  /* --- refinamentos --- */
+
+  .case {
     position: relative;
-    padding-left: 1.25rem;
-    max-width: var(--measure);
-    color: var(--text-muted);
   }
 
-  .bullets li::before {
+  /* Brilho suave atrás do cabeçalho do case. */
+  .case::before {
     content: '';
     position: absolute;
-    left: 0.2rem;
-    top: 0.66em;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
+    inset: 0 0 auto;
+    height: 34rem;
+    pointer-events: none;
+    background: radial-gradient(46rem 22rem at 18% 0%, rgba(120, 189, 242, 0.1), transparent 70%);
+  }
+
+  .case .container {
+    position: relative;
+  }
+
+  .art {
+    position: relative;
+    margin: var(--space-lg) 0 0;
+    perspective: 1400px;
+  }
+
+  .art__tilt {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2), 0 50px 90px -40px rgba(0, 0, 0, 0.9);
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 520ms var(--ease);
+    will-change: transform;
+  }
+
+  .art[data-tilting='true'] .art__tilt {
+    transition: transform 90ms linear;
+  }
+
+  .art :global(.art__img) {
+    width: 100%;
+    height: auto;
+  }
+
+  .art__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(22rem circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.14), transparent 60%);
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .art[data-tilting='true'] .art__glow {
+    opacity: 1;
+  }
+
+  .art__caption {
+    position: absolute;
+    right: 0.8rem;
+    bottom: 0.7rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(6, 9, 14, 0.72);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .art__tilt {
+      transform: none;
+    }
+  }
+
+  /* Fio ligando as camadas da arquitetura. */
+  .layer:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 1.85rem;
+    top: 2.6rem;
+    bottom: -0.65rem;
+    width: 1px;
+    background: linear-gradient(180deg, var(--line-strong), transparent);
+  }
+
+  .layer {
+    transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .layer:hover {
+    transform: translateX(4px);
+    border-color: var(--line-strong);
+  }
+
+  .decision,
+  .challenge {
+    transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .decision:hover,
+  .challenge:hover {
+    transform: translateY(-2px);
+    border-color: var(--line-strong);
+  }
+
+  .toc a {
+    position: relative;
+    transition: color var(--dur-fast) var(--ease), transform var(--dur) var(--ease);
+  }
+
+  .toc a[aria-current] {
+    color: var(--text);
+    transform: translateX(4px);
+  }
+
+  .toc a[aria-current]::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--space-sm) - 1px);
+    top: 0.3rem;
+    bottom: 0.3rem;
+    width: 2px;
+    border-radius: 2px;
     background: var(--accent);
   }
 
-  .bullets--planned li::before {
-    background: transparent;
-    border: 1.5px solid var(--text-faint);
-  }
-
-  .case__foot {
-    margin-top: var(--space-xl);
-    padding-top: var(--space-md);
-    border-top: 1px solid var(--border);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .back:hover svg {
-      transform: none;
-    }
+  .showcase {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
   }
 </style>

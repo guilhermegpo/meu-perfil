@@ -1,0 +1,29 @@
+---
+/**
+ * Monograma GPO oficial, sem alteração de desenho. O arquivo em
+ * `src/assets/brand/gpo-logo.png` é o master recortado; o pipeline do Astro
+ * entrega WebP nas dimensões pedidas, com densidade 2x para telas nítidas.
+ */
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/gpo-logo.png';
+
+interface Props {
+  /** Largura em CSS pixels. A altura acompanha a proporção original (1,49:1). */
+  width: number;
+  eager?: boolean;
+  class?: string;
+}
+
+const { width, eager = false, class: className } = Astro.props;
+---
+
+<Image
+  src={logo}
+  width={width}
+  densities={[1, 2]}
+  format="webp"
+  alt=""
+  class={className}
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+/>

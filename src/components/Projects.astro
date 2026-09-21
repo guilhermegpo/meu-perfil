@@ -1,91 +1,239 @@
 ---
-import SectionHeading from './SectionHeading.astro';
+import { appsMeu, featuredProjects, projects, projectStack } from '../data/projects';
+import { asset } from '../lib/url';
+import AppTile from './AppTile.astro';
+import Icon from './Icon.astro';
 import ProjectCard from './ProjectCard.astro';
-import { featuredProjects, otherProjects } from '../data/projects';
+import SectionHeading from './SectionHeading.astro';
 ---
 
-<section class="section" id="projetos">
+<section id="projetos" class="section" aria-labelledby="projetos-titulo">
   <div class="container">
     <SectionHeading
+      id="projetos-titulo"
       eyebrow="Projetos"
-      title="Cases"
-      lead="Cada projeto responde quatro perguntas: qual era o problema, o que eu fiz, como foi resolvido e o que mudou depois. Clique para ver o case completo."
+      title="O que construí"
+      lead="Três projetos em destaque, com case completo: problema, decisões, desafios e o que aprendi. Sistemas privados aparecem de forma genérica — sem telas, dados ou nomes."
     />
 
-    <div class="featured">
+    <h3 class="group-title" data-reveal>Em destaque</h3>
+    <ul class="featured">
       {
         featuredProjects.map((project, index) => (
-          <div
-            class="featured__item"
-            style={`--sticky-top: ${5.5 + index * 0.75}rem`}
-            data-reveal
-            data-reveal-delay={index * 90}
-          >
-            <ProjectCard project={project} featured order={index + 1} />
-          </div>
+          <li data-reveal data-reveal-delay={String(index * 90)}>
+            <ProjectCard project={project} />
+          </li>
         ))
       }
+    </ul>
+
+    <div class="apps">
+      <div class="apps__head" data-reveal>
+        <h3 class="group-title">Família Apps Meu</h3>
+        <p class="apps__lead">
+          Aplicativos que compartilham o mesmo símbolo "M" e a mesma linguagem visual, cada um com
+          identidade própria: organização, finanças e treino. Só o Meu Chamado tem código público;
+          nos demais, os detalhes técnicos serão documentados conforme a implementação evoluir.
+        </p>
+      </div>
+
+      <ul class="apps__grid">
+        {
+          appsMeu.map((project, index) => (
+            <li data-reveal data-reveal-delay={String(index * 90)}>
+              <AppTile project={project} />
+            </li>
+          ))
+        }
+      </ul>
     </div>
 
-    {
-      otherProjects.length > 0 && (
-        <>
-          <h3 class="more">Outros projetos</h3>
-          <div class="grid">
-            {otherProjects.map((project, index) => (
-              <div data-reveal data-reveal-delay={index * 80}>
-                <ProjectCard project={project} order={featuredProjects.length + index + 1} />
+    <h3 class="group-title group-title--all" data-reveal>Todos os projetos</h3>
+    <ul class="all" data-reveal>
+      {
+        projects.map((project) => {
+          const stack = projectStack(project.slug).slice(0, 4);
+          return (
+            <li class="row" data-spot>
+              <div class="row__main">
+                <p class="row__name">{project.name}</p>
+                <p class="row__category">{project.category}</p>
               </div>
-            ))}
-          </div>
-        </>
-      )
-    }
+              <span class="badge row__status" data-tone={project.tone}>
+                {project.status}
+              </span>
+              <p class="row__stack">
+                {stack.length > 0 ? stack.join(' · ') : 'Produto mobile em desenvolvimento'}
+              </p>
+              <div class="row__links">
+                <a class="row__link" href={asset(`projetos/${project.slug}`)}>
+                  {project.caseStudy ? 'Case study' : 'Ver página'} <Icon name="arrow" />
+                </a>
+                {project.repository && (
+                  <a class="row__link" href={project.repository} rel="noopener">
+                    GitHub <Icon name="external" />
+                  </a>
+                )}
+              </div>
+            </li>
+          );
+        })
+      }
+    </ul>
   </div>
 </section>
 
 <style>
+  .group-title {
+    margin-bottom: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .group-title--all {
+    margin-top: clamp(3rem, 7vw, 5rem);
+  }
+
   .featured {
     display: grid;
     gap: var(--space-md);
   }
 
-  .featured__item {
-    isolation: isolate;
+  @media (min-width: 48rem) {
+    .featured {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
-  .featured > *,
-  .grid > * {
-    height: 100%;
-    /* Sem isto, um card largo estica a faixa do grid além da viewport. */
-    min-width: 0;
+  @media (min-width: 72rem) {
+    .featured {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
-  .more {
-    margin-top: var(--space-lg);
-    margin-bottom: var(--space-sm);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-faint);
+  /* --- Família Apps Meu --- */
+
+  .apps {
+    position: relative;
+    margin-top: clamp(3rem, 7vw, 5rem);
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: calc(var(--radius-lg) + 0.5rem);
+    background:
+      radial-gradient(50rem 22rem at 50% -10%, rgba(120, 189, 242, 0.08), transparent 70%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 40%);
   }
 
-  .grid {
+  .apps__head {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 0.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .apps__head .group-title {
+    margin-bottom: 0;
+  }
+
+  .apps__lead {
+    max-width: 68ch;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+
+  .apps__grid {
+    display: grid;
     gap: var(--space-md);
   }
 
   @media (min-width: 64rem) {
-    .featured {
-      gap: var(--space-xl);
+    .apps__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+  }
 
-    .featured__item {
-      position: sticky;
-      top: var(--sticky-top);
+  @media (min-width: 40rem) and (max-width: 63.99rem) {
+    .apps__grid {
+      max-width: 42rem;
+      margin-inline: auto;
     }
+  }
+
+  /* --- Todos os projetos --- */
+
+  .all {
+    border-top: 1px solid var(--line);
+  }
+
+  .row {
+    display: grid;
+    gap: 0.4rem 1rem;
+    align-items: center;
+    padding: var(--space-sm) 0.75rem;
+    border-bottom: 1px solid var(--line);
+    transition:
+      background-color var(--dur) var(--ease),
+      padding-left var(--dur) var(--ease);
+  }
+
+  .row:hover {
+    background: linear-gradient(90deg, rgba(120, 189, 242, 0.06), transparent 70%);
+    padding-left: 1.1rem;
+  }
+
+  @media (min-width: 60rem) {
+    .row {
+      grid-template-columns: minmax(0, 1.5fr) 14rem minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: var(--space-md);
+    }
+  }
+
+  .row__name {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+
+  .row__category,
+  .row__stack {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  .row__status {
+    justify-self: start;
+  }
+
+  .row__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+  }
+
+  @media (min-width: 60rem) {
+    .row__links {
+      justify-content: flex-end;
+    }
+  }
+
+  .row__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .row__link :global(svg) {
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .row__link:hover :global(svg) {
+    transform: translateX(3px);
   }
 </style>

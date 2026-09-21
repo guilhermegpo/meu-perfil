@@ -1,205 +1,294 @@
 ---
+import { profile } from '../data/profile';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import Picture from './Picture.astro';
 import SectionHeading from './SectionHeading.astro';
 
+/**
+ * Cada ficha abaixo aponta para algo que existe nos projetos. O texto é curto
+ * de propósito: as evidências estão nas outras seções.
+ */
 const facts = [
   {
-    eyebrow: 'Formação',
-    title: 'ADS concluído',
-    body: 'Universidade Cruzeiro do Sul',
-    size: 'wide',
+    label: 'Formação',
+    value: 'Graduado em ADS',
+    note: 'Análise e Desenvolvimento de Sistemas, Universidade Cruzeiro do Sul · concluído em 2026',
   },
   {
-    eyebrow: 'Atuação',
-    title: 'Full Stack',
-    body: 'Interface, backend e dados',
-    size: 'regular',
+    label: 'Atuação',
+    value: 'Web, Mobile e Backend',
+    note: 'Cada frente tem um projeto que a comprova',
   },
   {
-    eyebrow: 'Foco',
-    title: 'Mobile & Backend',
-    body: 'Direção profissional',
-    size: 'regular',
+    label: 'Produto real',
+    value: 'Sistemas em uso',
+    note: 'Aplicação institucional implantada e app operacional em uso por uma equipe',
   },
   {
-    eyebrow: 'Experiência real',
-    title: 'Projeto implantado',
-    body: 'Aplicação web interna no ILA/FAB',
-    size: 'wide',
-  },
-] as const;
-
-const pillars = [
-  {
-    title: 'Entender antes de codar',
-    body: 'No ILA, o trabalho começou conversando com quem usaria o sistema e mapeando o fluxo que já existia. Requisito mal entendido custa mais caro que qualquer bug.',
-  },
-  {
-    title: 'Decisão documentada',
-    body: 'Escolhas de arquitetura relevantes viram registro escrito — contexto, alternativas e consequências. Se eu não consigo explicar uma decisão, ela não entra no projeto.',
-  },
-  {
-    title: 'Entregar e sustentar',
-    body: 'Implantar não é o fim. Suporte ao usuário e documentação fazem parte da entrega, e são o que decide se o sistema continua vivo depois que você sai.',
+    label: 'Método',
+    value: 'Do requisito ao release',
+    note: 'Modelo de dados, regras no banco, interface, testes e versionamento',
   },
 ];
 ---
 
-<section class="section about" id="sobre">
+<section id="sobre" class="section" aria-labelledby="sobre-titulo">
   <div class="container">
-    <SectionHeading
-      eyebrow="Sobre"
-      title="Produto, engenharia e contexto"
-      lead="Formado em Análise e Desenvolvimento de Sistemas, com experiência prática construindo uma solução que entrou em uso real. Meu interesse está em produtos completos — do modelo de dados à interface — com atenção especial a desenvolvimento web e mobile."
-    />
+    <SectionHeading id="sobre-titulo" eyebrow="Sobre" title="Engenharia voltada ao uso real" />
 
-    <ul class="bento" aria-label="Resumo profissional">
-      {
-        facts.map((fact, index) => (
-          <li
-            class="fact"
-            data-size={fact.size}
-            data-reveal
-            data-reveal-delay={index * 60}
-          >
-            <p class="fact__eyebrow">{fact.eyebrow}</p>
-            <h3 class="fact__title">{fact.title}</h3>
-            <p class="fact__body">{fact.body}</p>
-          </li>
-        ))
-      }
+    <div class="about">
+      <div class="about__main">
+        <div class="about__text" data-reveal>
+          <p>
+            Trabalho do requisito ao uso: converso com quem opera o sistema, modelo os dados,
+            coloco as regras críticas onde elas não podem ser contornadas e só então cuido da
+            interface.
+          </p>
+          <p>
+            Implantei uma aplicação web interna em uma instituição e mantenho projetos próprios em
+            que segurança, testes, versionamento e documentação fazem parte do produto — não do que
+            sobra no fim.
+          </p>
+        </div>
 
-      {
-        pillars.map((pillar, index) => (
-          <li class="pillar" data-reveal data-reveal-delay={(index + facts.length) * 60}>
-            <span class="pillar__index" aria-hidden="true">0{index + 1}</span>
-            <h3 class="pillar__title">{pillar.title}</h3>
-            <p class="pillar__body">{pillar.body}</p>
-          </li>
-        ))
-      }
-    </ul>
+        <ul class="facts">
+          {
+            facts.map((fact, index) => (
+              <li class="fact glass" data-spot data-reveal data-reveal-delay={String(index * 70)}>
+                <p class="fact__label">{fact.label}</p>
+                <p class="fact__value">{fact.value}</p>
+                <p class="fact__note">{fact.note}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <figure class="portrait" data-reveal data-reveal-delay="100">
+        <div class="portrait__card">
+          <Picture
+            dir="profile"
+            name="foto"
+            widths={[480, 960]}
+            fallback="foto-960.jpg"
+            sizes="(min-width: 56rem) 24rem, 90vw"
+            alt={`Retrato profissional de ${profile.name}`}
+            width={960}
+            height={1200}
+            class="portrait__img"
+          />
+          <div class="portrait__fade" aria-hidden="true"></div>
+          <figcaption class="portrait__caption glass">
+            <span class="portrait__mark" aria-hidden="true"><Logo width={40} /></span>
+            <span class="portrait__who">
+              <strong>{profile.name}</strong>
+              <span>{profile.role}</span>
+            </span>
+          </figcaption>
+        </div>
+        <p class="portrait__place">
+          <Icon name="globe" />
+          {profile.location}
+        </p>
+      </figure>
+    </div>
   </div>
 </section>
 
 <style>
   .about {
-    position: relative;
-  }
-
-  .bento {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: start;
+  }
+
+  @media (min-width: 56rem) {
+    .about {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.8fr);
+    }
+  }
+
+  .about__main {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .about__text {
+    display: grid;
     gap: var(--space-sm);
-    margin: 0;
+    max-width: 62ch;
+    font-size: var(--step-1);
+    line-height: 1.6;
+    color: var(--text-muted);
   }
 
-  .fact,
-  .pillar {
+  .about__text p:first-child {
+    color: var(--text);
+  }
+
+  /* --- retrato --- */
+
+  .portrait {
     position: relative;
-    min-width: 0;
-    overflow: hidden;
-    padding: var(--space-md);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--bg-elevated);
-    transition: border-color var(--motion-normal) var(--ease-standard),
-      transform var(--motion-normal) var(--ease-emphasized),
-      box-shadow var(--motion-normal) var(--ease-standard);
+    justify-self: center;
+    width: min(100%, 25rem);
+    margin: 0;
+    /* Reserva o espaço da moldura deslocada, para nada vazar do grid. */
+    padding: 0 0.9rem 0.9rem 0;
   }
 
-  .fact::after {
+  @media (min-width: 56rem) {
+    .portrait {
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+      justify-self: end;
+    }
+  }
+
+  /* Moldura deslocada: dá profundidade sem exagero. */
+  .portrait::before {
     content: '';
     position: absolute;
-    right: -2.5rem;
-    bottom: -3.5rem;
-    width: 9rem;
-    aspect-ratio: 1;
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    border-radius: 50%;
-    box-shadow: 0 0 0 1.5rem color-mix(in srgb, var(--accent) 5%, transparent),
-      0 0 0 3rem color-mix(in srgb, var(--accent) 4%, transparent);
+    inset: 0.9rem 0 0 0.9rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(160deg, rgba(120, 189, 242, 0.08), transparent 60%);
+  }
+
+  .portrait__card {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg);
+    background: var(--bg-1);
+    box-shadow: var(--shadow-2);
+    isolation: isolate;
+    transition:
+      transform var(--dur-slow) var(--ease),
+      box-shadow var(--dur-slow) var(--ease);
+  }
+
+  .portrait:hover .portrait__card {
+    transform: translateY(-4px);
+    box-shadow: 0 40px 70px -28px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(164, 214, 248, 0.14);
+  }
+
+  .portrait__card :global(.portrait__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 14%;
+    transition: transform 1200ms var(--ease);
+  }
+
+  .portrait:hover .portrait__card :global(.portrait__img) {
+    transform: scale(1.03);
+  }
+
+  /* Funde a base da foto com o fundo escuro do site e abre espaço para a legenda. */
+  .portrait__fade {
+    position: absolute;
+    inset: 45% 0 0;
+    background: linear-gradient(180deg, transparent, rgba(6, 9, 14, 0.9));
     pointer-events: none;
   }
 
-  .fact:hover,
-  .pillar:hover {
-    border-color: color-mix(in srgb, var(--accent) 70%, var(--border));
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+  .portrait__caption {
+    position: absolute;
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: 0.85rem;
   }
 
-  .fact__eyebrow,
-  .pillar__index {
+  .portrait__mark {
+    flex: none;
+    display: block;
+  }
+
+  .portrait__who {
+    display: grid;
+    min-width: 0;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: var(--text-muted);
+  }
+
+  .portrait__who strong {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .portrait__place {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 0.85rem;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     letter-spacing: 0.08em;
+    color: var(--text-faint);
+  }
+
+  /* --- fichas --- */
+
+  .facts {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  @media (min-width: 36rem) {
+    .facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .fact {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding: var(--space-sm) 1.15rem 1.15rem;
+    border-radius: var(--radius);
+    transition:
+      opacity var(--dur-slow) var(--ease),
+      translate var(--dur-slow) var(--ease),
+      transform var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+
+  .fact:hover {
+    transform: translateY(-3px);
+    border-color: var(--line-strong);
+  }
+
+  .fact__label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--accent);
   }
 
-  .fact__title {
-    margin-top: var(--space-sm);
-    max-width: 14ch;
-    font-size: var(--step-3);
-  }
-
-  .fact__body {
-    margin-top: var(--space-xs);
-    max-width: 30ch;
-    color: var(--text-muted);
-  }
-
-  .pillar {
-    display: grid;
-    align-content: start;
-  }
-
-  .pillar__title {
-    margin-top: var(--space-sm);
+  .fact__value {
+    font-family: var(--font-display);
     font-size: var(--step-1);
+    font-weight: 600;
+    line-height: 1.2;
   }
 
-  .pillar__body {
-    margin-top: var(--space-xs);
-    font-size: var(--step--1);
+  .fact__note {
+    font-size: 0.88rem;
+    line-height: 1.5;
     color: var(--text-muted);
-  }
-
-  @media (min-width: 58rem) {
-    .bento {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-
-    .fact {
-      grid-column: span 5;
-      min-height: 15rem;
-    }
-
-    .fact[data-size='wide'] {
-      grid-column: span 7;
-    }
-
-    .pillar {
-      grid-column: span 4;
-      min-height: 15rem;
-    }
-  }
-
-  @media (max-width: 38rem) {
-    .bento {
-      grid-template-columns: 1fr;
-    }
-
-    .fact,
-    .pillar {
-      padding: var(--space-sm);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .fact:hover,
-    .pillar:hover {
-      transform: none;
-    }
   }
 </style>

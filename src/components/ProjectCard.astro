@@ -1,120 +1,280 @@
 ---
-import type { Project } from '../data/projects';
 import { asset } from '../lib/url';
+import { projectSignals, projectStack, type Project } from '../data/projects';
+import Icon from './Icon.astro';
+import Picture from './Picture.astro';
 
 interface Props {
   project: Project;
-  featured?: boolean;
-  order?: number;
 }
 
-const { project, featured = false, order } = Astro.props;
-const caseHref = asset(`projetos/${project.slug}/`);
+const { project } = Astro.props;
+const image = project.heroImage;
+if (!image) throw new Error(`O projeto em destaque "${project.slug}" precisa de heroImage.`);
+
+const stack = projectStack(project.slug).slice(0, 6);
+const signals = projectSignals(project.slug);
+const titleId = `card-${project.slug}`;
+const kindIcon = { mobile: 'phone', web: 'window', site: 'globe' } as const;
 ---
 
-<article class:list={['card', featured && 'card--featured']}>
-  {order && <p class="card__index" aria-hidden="true">Case / {String(order).padStart(2, '0')}</p>}
+<!--
+  Cartão 3D. O invólucro externo (`.card`) nunca gira — ele só fornece a
+  perspectiva e o retângulo estável para medir o cursor. O que gira é
+  `.card__tilt`, no máximo 4° em X e 6° em Y, e cada camada interna recebe
+  uma profundidade própria (translateZ) para o efeito de paralaxe:
 
-  <header class="card__head">
-    <p class="card__category">{project.category}</p>
-    <p class="card__flags">
-      {project.version && <span class="card__version">{project.version}</span>}
-      <span class="card__status" data-status={project.status}>
-        <span class="card__dot" aria-hidden="true"></span>
-        {project.status}
-      </span>
-    </p>
-  </header>
+    fundo 0 · brilho 5 · arte 15 (24 no hover) · rótulo 25 · título 30 · botões 35
 
-  <h3 class="card__title">
-    <a class="card__link" href={caseHref}>{project.name}</a>
-  </h3>
+  A arte fica em uma camada própria, com recorte específico por projeto
+  (`object-position`), zoom leve e um deslocamento interno em sentido oposto
+  ao cursor — a imagem parece estar dentro do cartão, não colada nele.
+-->
+<article
+  class="card"
+  data-tilt
+  aria-labelledby={titleId}
+  style={`--pos: ${image.position ?? '50% 50%'}`}
+>
+  <div class="card__tilt">
+    <div class="card__bg"></div>
+    <div class="card__glow"></div>
 
-  <p class="card__tagline">{project.tagline}</p>
+    <div class="card__art">
+      <Picture
+        dir="projects"
+        name={`${image.slug}-hero`}
+        widths={[640, 1024, 1672]}
+        fallback={`${image.slug}-hero-1024.webp`}
+        sizes="(min-width: 72rem) 24rem, (min-width: 48rem) 40rem, 92vw"
+        alt={image.alt}
+        width={1672}
+        height={941}
+        class="card__img"
+      />
+      <span class="card__shade" aria-hidden="true"></span>
+      <span class="card__caption">Imagem ilustrativa</span>
+    </div>
 
-  {
-    featured && (
-      <dl class="card__case">
-        <div>
-          <dt>Problema</dt>
-          <dd>{project.problem}</dd>
-        </div>
-        <div>
-          <dt>Resultado</dt>
-          <dd>{project.result}</dd>
-        </div>
-      </dl>
-    )
-  }
+    <div class="card__label">
+      <span class="card__kind"><Icon name={kindIcon[project.kind]} /> {project.category}</span>
+      <span class="badge" data-tone={project.tone}>{project.status}</span>
+    </div>
 
-  {
-    project.signals && (
-      <ul class="card__signals">
-        {project.signals.map((signal) => (
-          <li>{signal}</li>
-        ))}
+    <div class="card__content">
+      <h3 id={titleId} class="card__title">{project.name}</h3>
+      <p class="card__tagline">{project.tagline}</p>
+
+      <ul class="card__highlights">
+        {project.highlights.map((item) => <li>{item}</li>)}
       </ul>
-    )
-  }
 
-  <ul class="card__stack">
-    {project.stack.map((tech) => <li>{tech}</li>)}
-  </ul>
+      <ul class="card__stack" aria-label="Tecnologias">
+        {stack.map((tech) => <li class="chip">{tech}</li>)}
+      </ul>
 
-  <footer class="card__footer">
-    <a class="card__cta" href={caseHref}>
-      Ver o case
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m0 0-5-5m5 5-5 5" /></svg>
-    </a>
-    {
-      project.links.map((link) => (
-        <a class="card__secondary" href={link.href} rel="noopener">
-          {link.label}
-        </a>
-      ))
-    }
-  </footer>
+      {signals.length > 0 && <p class="card__signals">{signals.join(' · ')}</p>}
+
+      {project.disclosure && <p class="card__disclosure">Código e telas não públicos</p>}
+    </div>
+
+    <div class="card__actions">
+      {
+        project.caseStudy && (
+          <a class="btn btn--primary" href={asset(`projetos/${project.slug}`)}>
+            Case study <Icon name="arrow" />
+          </a>
+        )
+      }
+      {
+        project.links.slice(0, 1).map((link) => (
+          <a class="btn" href={link.href} rel="noopener">
+            {link.label} <Icon name="external" />
+          </a>
+        ))
+      }
+    </div>
+  </div>
 </article>
 
 <style>
   .card {
     position: relative;
-    min-width: 0;
-    overflow: hidden;
+    height: 100%;
+    perspective: 1100px;
+    --pos: 50% 50%;
+  }
+
+  .card__tilt {
+    position: relative;
     display: flex;
     flex-direction: column;
-    padding: var(--space-md);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: linear-gradient(
-        135deg,
-        color-mix(in srgb, var(--accent-subtle) 42%, transparent),
-        transparent 34%
-      ),
-      var(--bg-elevated);
-    transition: border-color var(--motion-normal) var(--ease-standard),
-      transform var(--motion-normal) var(--ease-emphasized),
-      box-shadow var(--motion-normal) var(--ease-standard);
+    gap: var(--space-sm);
+    height: 100%;
+    padding: 0.7rem 0.7rem 1.25rem;
+    border-radius: var(--radius-lg);
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 520ms var(--ease);
+    will-change: transform;
   }
 
-  .card:hover {
-    border-color: var(--accent);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+  .card[data-tilting='true'] .card__tilt {
+    transition: transform 90ms linear;
   }
 
-  .card::before {
+  /* z = 0: fundo de vidro escuro com borda de luz. */
+  .card__bg {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid var(--line);
+    background: var(--glass), linear-gradient(160deg, var(--surface-2), var(--surface));
+    box-shadow: var(--shadow-2);
+    transform: translateZ(0);
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .card[data-tilting='true'] .card__bg,
+  .card[data-lit='true'] .card__bg,
+  .card:focus-within .card__bg {
+    border-color: rgba(164, 214, 248, 0.32);
+  }
+
+  /* z = 5: brilho especular que segue o cursor. */
+  .card__glow {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      26rem circle at var(--mx, 50%) var(--my, 30%),
+      rgba(164, 214, 248, 0.16),
+      transparent 55%
+    );
+    transform: translateZ(5px);
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .card[data-tilting='true'] .card__glow,
+  .card[data-lit='true'] .card__glow,
+  .card:focus-within .card__glow {
+    opacity: 1;
+  }
+
+  .card__art,
+  .card__label,
+  .card__content,
+  .card__actions {
+    position: relative;
+  }
+
+  /* z = 15 (24 no hover): a arte do projeto, em camada própria. */
+  .card__art {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--bg-1);
+    box-shadow:
+      0 0 0 1px var(--line),
+      0 18px 36px -20px rgba(0, 0, 0, 0.95);
+    transform: translateZ(15px);
+    transition:
+      transform 520ms var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+
+  .card[data-tilting='true'] .card__art,
+  .card:focus-within .card__art {
+    transform: translateZ(24px);
+    box-shadow:
+      0 0 0 1px rgba(164, 214, 248, 0.22),
+      0 26px 46px -20px rgba(0, 0, 0, 1);
+  }
+
+  .card[data-tilting='true'] .card__art {
+    transition: transform 120ms linear, box-shadow var(--dur) var(--ease);
+  }
+
+  .card__art :global(.card__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos);
+    /* Zoom leve, com folga para o deslocamento interno não deixar borda vazia. */
+    transform: translate3d(calc(var(--tx, 0) * -6px), calc(var(--ty, 0) * -4px), 0) scale(1.035);
+    transition: transform 700ms var(--ease);
+  }
+
+  .card[data-tilting='true'] .card__art :global(.card__img),
+  .card:focus-within .card__art :global(.card__img) {
+    transform: translate3d(calc(var(--tx, 0) * -6px), calc(var(--ty, 0) * -4px), 0) scale(1.06);
+    transition: transform 140ms linear;
+  }
+
+  /* Véu muito sutil na base: dá leitura à legenda sem escurecer a arte. */
+  .card__shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(6, 9, 14, 0) 62%, rgba(6, 9, 14, 0.42));
+  }
+
+  /* Reflexo que acompanha o cursor; só existe durante o hover. */
+  .card__shade::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 4rem;
-    height: 2px;
-    background: var(--accent);
+    inset: 0;
+    opacity: 0;
+    background: radial-gradient(14rem circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.16), transparent 60%);
+    transition: opacity var(--dur) var(--ease);
   }
 
-  .card__index {
-    margin-bottom: var(--space-sm);
+  .card[data-tilting='true'] .card__shade::after {
+    opacity: 1;
+  }
+
+  .card__art::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  }
+
+  .card__caption {
+    position: absolute;
+    right: 0.55rem;
+    bottom: 0.5rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(6, 9, 14, 0.72);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* z = 25 */
+  .card__label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-inline: 0.5rem;
+    transform: translateZ(25px);
+  }
+
+  .card__kind {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     font-family: var(--font-mono);
     font-size: 0.72rem;
     letter-spacing: 0.1em;
@@ -122,146 +282,44 @@ const caseHref = asset(`projetos/${project.slug}/`);
     color: var(--accent);
   }
 
-  /* Toda a área do card leva ao case; os links do rodapé ficam acima dele. */
-  .card__link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-  }
-
-  .card__link {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .card:hover .card__link {
-    color: var(--accent);
-  }
-
-  .card__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem var(--space-sm);
-  }
-
-  .card__category {
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-  }
-
-  .card__flags {
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .card__version {
-    padding: 0.1rem 0.6rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--border));
-    border-radius: var(--radius-full);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    color: var(--accent);
-    white-space: nowrap;
-  }
-
-  .card__status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.1rem 0.6rem;
-    border-radius: var(--radius-full);
-    background: var(--bg-subtle);
-    font-size: var(--step--1);
-    color: var(--text-muted);
-    white-space: nowrap;
-  }
-
-  .card__dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--text-faint);
-  }
-
-  .card__status[data-status='implantado'] {
-    background: var(--accent-subtle);
-    color: var(--accent);
-  }
-
-  .card__status[data-status='implantado'] .card__dot {
-    background: currentColor;
+  /* z = 30 */
+  .card__content {
+    display: grid;
+    gap: 0.7rem;
+    flex: 1;
+    align-content: start;
+    padding-inline: 0.5rem;
+    transform: translateZ(30px);
   }
 
   .card__title {
-    overflow-wrap: break-word;
-    margin-top: var(--space-sm);
     font-size: var(--step-2);
   }
 
-  .card--featured .card__title {
-    font-size: var(--step-3);
-  }
-
   .card__tagline {
-    margin-top: var(--space-xs);
-    max-width: var(--measure);
+    font-size: 0.95rem;
     color: var(--text-muted);
   }
 
-  .card__case {
+  .card__highlights {
     display: grid;
-    gap: var(--space-sm);
-    margin-top: var(--space-md);
-    padding-top: var(--space-md);
-    border-top: 1px solid var(--border);
-  }
-
-  .card__case dt {
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-
-  .card__case dd {
-    margin: 0.25rem 0 0;
-    max-width: var(--measure);
-    font-size: var(--step--1);
+    gap: 0.3rem;
+    font-size: 0.88rem;
     color: var(--text-muted);
   }
 
-  /* Sinais técnicos: o que foi construído, não com o que foi construído.
-     Ficam acima da stack porque comunicam engenharia mais rápido. */
-  .card__signals {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 1rem;
-    margin-top: var(--space-md);
+  .card__highlights li {
+    position: relative;
+    padding-left: 1.1rem;
   }
 
-  .card__signals li {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-size: var(--step--1);
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .card__signals li::before {
+  .card__highlights li::before {
     content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
     width: 0.4rem;
-    height: 0.4rem;
-    border-radius: 50%;
+    height: 1px;
     background: var(--accent);
   }
 
@@ -269,88 +327,78 @@ const caseHref = asset(`projetos/${project.slug}/`);
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
-    margin-top: var(--space-sm);
   }
 
-  .card__stack li {
-    padding: 0.15rem 0.55rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+  .card__signals {
     font-family: var(--font-mono);
-    font-size: var(--step--1);
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
     color: var(--text-faint);
   }
 
-  .card__footer {
+  .card__disclosure {
+    font-size: 0.78rem;
+    color: var(--text-faint);
+  }
+
+  /* z = 35 */
+  .card__actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-sm);
-    margin-top: auto;
-    padding-top: var(--space-md);
+    gap: 0.6rem;
+    padding-inline: 0.5rem;
+    transform: translateZ(35px);
   }
 
-  .card__cta,
-  .card__secondary {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    /* Alvo de toque confortável sem caixa visível ao redor do link. */
-    min-height: 2.75rem;
-    font-size: var(--step--1);
-    font-weight: 550;
-    text-decoration: none;
-  }
-
-  .card__secondary {
-    color: var(--text-muted);
-  }
-
-  .card__secondary:hover {
-    color: var(--accent);
-  }
-
-  .card__cta svg {
-    width: 1rem;
-    height: 1rem;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: transform 0.25s var(--ease);
-  }
-
-  .card:hover .card__cta svg {
-    transform: translateX(3px);
-  }
-
-  @media (max-width: 26rem) {
-    .card {
-      padding: var(--space-sm);
-    }
-  }
-
-  @media (min-width: 56rem) {
-    .card--featured {
-      padding: var(--space-lg);
+  /* Toque: sem hover, o cartão no centro da tela sobe um pouco e ganha luz. */
+  @media (hover: none) {
+    .card__tilt {
+      transform: none;
+      transition: transform var(--dur) var(--ease);
     }
 
-    .card--featured .card__case {
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-md);
+    .card[data-lit='true'] .card__tilt {
+      transform: translateY(-3px);
+    }
+
+    .card__glow {
+      background: radial-gradient(26rem circle at 50% 0%, rgba(164, 214, 248, 0.14), transparent 60%);
+    }
+
+    .card__art :global(.card__img) {
+      transform: scale(1.02);
+    }
+
+    .card__tilt:active {
+      transform: scale(0.99);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .card:hover {
+    .card__tilt,
+    .card[data-lit='true'] .card__tilt {
       transform: none;
     }
 
-    .card:hover .card__cta svg {
+    .card__art,
+    .card__label,
+    .card__content,
+    .card__actions,
+    .card__glow,
+    .card__bg,
+    .card[data-tilting='true'] .card__art,
+    .card:focus-within .card__art {
       transform: none;
     }
+
+    .card__art :global(.card__img),
+    .card[data-tilting='true'] .card__art :global(.card__img),
+    .card:focus-within .card__art :global(.card__img) {
+      transform: none;
+    }
+  }
+
+  :global(html[data-perf='lite']) .card__tilt {
+    transform: none;
   }
 </style>

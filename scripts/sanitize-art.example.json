@@ -1,0 +1,15 @@
+{
+  "sourceDir": "..",
+  "jobs": [
+    {
+      "source": "nome-do-arquivo-original.png",
+      "name": "nome-publico-do-projeto",
+      "crop": { "left": 0, "top": 0, "width": 1586, "height": 892 },
+      "patches": [
+        { "type": "blur", "x": 0, "y": 0, "w": 100, "h": 40, "sigma": 8 },
+        { "type": "fill", "x": 0, "y": 0, "w": 100, "h": 40, "color": "auto" },
+        { "type": "svg", "svg": "<text x='10' y='30' fill='#fff' font-size='20'>Texto genérico</text>" }
+      ]
+    }
+  ]
+}

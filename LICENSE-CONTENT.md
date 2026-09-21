@@ -6,17 +6,21 @@ estilos, scripts e configuração.
 Os itens abaixo **não** estão sob a licença MIT e todos os direitos são
 reservados a Guilherme Pereira de Oliveira:
 
-- Fotografia pessoal (`public/perfil.jpg`)
-- Imagem de compartilhamento social (`public/og-image.png`)
+- A marca e o monograma **GPO** (`src/assets/brand/`, `public/brand/`, favicons,
+  ícones de aplicativo, `public/og-image.png` e o banner do perfil)
+- Fotografia pessoal (`src/assets/guilherme.png`)
 - Texto biográfico, descrições de projetos e conteúdo editorial em `src/data/`
 - Nome e identidade pessoal
 
 Você pode reutilizar a estrutura e o código deste portfólio livremente sob a
-MIT. Substitua o conteúdo e as imagens pelos seus.
+MIT. Substitua o conteúdo, a marca e as imagens pelos seus.
 
 ## Dependências de terceiros
 
 - [Astro](https://astro.build) — MIT
 - [Inter](https://fonts.google.com/specimen/Inter) e
-  [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) —
-  SIL Open Font License 1.1, carregadas via Google Fonts
+  [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) —
+  SIL Open Font License 1.1, servidas do próprio domínio (`src/assets/fonts`)
+- Ícones de GitHub e LinkedIn de [Bootstrap Icons](https://icons.getbootstrap.com) — MIT
+  (copyright dos autores do Bootstrap). As marcas GitHub e LinkedIn pertencem aos
+  respectivos titulares.

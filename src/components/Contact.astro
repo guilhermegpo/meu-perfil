@@ -1,140 +1,170 @@
 ---
-import SectionHeading from './SectionHeading.astro';
 import { profile } from '../data/profile';
 import { resumeAvailable, resumeHref } from '../lib/resume';
+import Icon from './Icon.astro';
+import Picture from './Picture.astro';
 
-const channels = [
-  {
-    label: 'LinkedIn',
-    handle: 'guilhermeoliveira-gpo',
-    href: profile.links.linkedin,
-    note: 'Melhor canal para oportunidades e conversas profissionais.',
-  },
-  {
-    label: 'E-mail',
-    handle: profile.email,
-    href: `mailto:${profile.email}`,
-    note: 'Para propostas, dúvidas ou envio de descrição de vaga.',
-  },
-  {
-    label: 'GitHub',
-    handle: '@guilhermegpo',
-    href: profile.links.github,
-    note: 'Código, histórico de commits e documentação dos projetos.',
-  },
-];
+const mailto = `mailto:${profile.email}?subject=${encodeURIComponent('Contato pelo portfólio')}`;
 ---
 
-<section class="section" id="contato">
+<section id="contato" class="section" aria-labelledby="contato-titulo">
   <div class="container">
-    <SectionHeading
-      eyebrow="Contato"
-      title="Vamos construir algo que funcione de verdade"
-      lead="Aberto a oportunidades como desenvolvedor Full Stack, Mobile ou Backend. Se o que você viu aqui conversa com o que seu time precisa, o caminho mais rápido é o LinkedIn."
-    />
+    <div class="cta glass" data-reveal>
+      <div class="cta__orb" aria-hidden="true"></div>
 
-    <ul class="channels">
-      {
-        channels.map((channel, index) => (
-          <li class="channel" data-reveal data-reveal-delay={index * 70}>
-            <a class="channel__link" href={channel.href} rel="noopener">
-              <span class="channel__label">{channel.label}</span>
-              <span class="channel__handle">{channel.handle}</span>
-            </a>
-            <p class="channel__note">{channel.note}</p>
-          </li>
-        ))
-      }
-    </ul>
-
-    {
-      resumeAvailable && (
-        <p class="resume" data-reveal>
-          <a class="button button--primary" href={resumeHref} download>
-            Baixar currículo
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" />
-            </svg>
-          </a>
+      <div class="cta__copy">
+        <p class="cta__who">
+          <Picture
+            dir="profile"
+            name="avatar"
+            widths={[96, 192]}
+            fallback="avatar-192.jpg"
+            sizes="44px"
+            alt=""
+            width={192}
+            height={192}
+          />
+          <span>
+            <strong>{profile.name}</strong>
+            <span>{profile.role} · {profile.location}</span>
+          </span>
         </p>
-      )
-    }
+        <p class="eyebrow">Contato</p>
+        <h2 id="contato-titulo" class="cta__title">Vamos construir algo?</h2>
+        <p class="cta__lead">
+          Estou aberto a oportunidades como desenvolvedor Full Stack. Se o problema é real, quero
+          entender o contexto antes de propor qualquer solução.
+        </p>
+      </div>
+
+      <div class="cta__actions">
+        <a class="btn btn--primary" href={mailto}>
+          <Icon name="mail" /> {profile.email}
+        </a>
+        <a class="btn" href={profile.links.linkedin} rel="noopener">
+          <Icon name="linkedin" /> LinkedIn
+        </a>
+        <a class="btn" href={profile.links.github} rel="noopener">
+          <Icon name="github" /> GitHub
+        </a>
+        {
+          resumeAvailable && (
+            <a class="btn" href={resumeHref} download>
+              <Icon name="download" /> Currículo
+            </a>
+          )
+        }
+      </div>
+    </div>
   </div>
 </section>
 
 <style>
-  .channels {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    gap: var(--space-sm);
-    margin: 0;
-  }
-
-  .channel {
+  .cta {
     position: relative;
-    padding: var(--space-md);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--bg-elevated);
-    transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+    display: grid;
+    gap: var(--space-md);
+    padding: clamp(1.75rem, 5vw, 3.5rem);
+    border-radius: calc(var(--radius-lg) + 0.5rem);
+    overflow: hidden;
+    box-shadow: var(--shadow-2);
+    isolation: isolate;
   }
 
-  .channel:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-
-  .channel__link {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    text-decoration: none;
-  }
-
-  .channel__link::after {
-    content: '';
+  /* Halo giratório muito lento atrás do painel: profundidade sem distração. */
+  .cta__orb {
     position: absolute;
-    inset: 0;
-    border-radius: inherit;
+    top: -55%;
+    right: -25%;
+    z-index: -1;
+    width: 90%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      radial-gradient(closest-side at 72% 28%, rgba(120, 189, 242, 0.24), transparent 70%),
+      radial-gradient(closest-side at 26% 72%, rgba(164, 214, 248, 0.13), transparent 70%);
+    -webkit-mask-image: radial-gradient(closest-side, #000 30%, transparent 78%);
+    mask-image: radial-gradient(closest-side, #000 30%, transparent 78%);
+    animation: spin 60s linear infinite;
   }
 
-  .channel__label {
-    font-family: var(--font-display);
-    font-size: var(--step-1);
-    font-weight: 600;
-    color: var(--text);
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 
-  .channel__handle {
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    color: var(--accent);
-    overflow-wrap: anywhere;
+  :global(html[data-perf='lite']) .cta__orb {
+    animation: none;
   }
 
-  .channel__note {
-    margin-top: var(--space-xs);
-    font-size: var(--step--1);
+  @media (min-width: 60rem) {
+    .cta {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      align-items: center;
+    }
+  }
+
+  .cta__copy,
+  .cta__actions {
+    position: relative;
+  }
+
+  .cta__who {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: var(--space-md);
+    font-size: 0.8rem;
     color: var(--text-muted);
   }
 
-  .resume {
-    margin-top: var(--space-md);
+  .cta__who :global(img) {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.8);
   }
 
-  .resume svg {
-    width: 1.05rem;
-    height: 1.05rem;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+  .cta__who span {
+    display: grid;
+    line-height: 1.35;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .channel:hover {
-      transform: none;
+  .cta__who strong {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    color: var(--text);
+  }
+
+  .cta__title {
+    margin-top: var(--space-xs);
+    font-size: var(--step-4);
+  }
+
+  .cta__lead {
+    max-width: 48ch;
+    margin-top: var(--space-sm);
+    color: var(--text-muted);
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 60rem) {
+    .cta__actions {
+      flex-direction: column;
+      align-items: stretch;
     }
+  }
+
+  .cta__actions .btn {
+    justify-content: flex-start;
+    overflow-wrap: anywhere;
   }
 </style>

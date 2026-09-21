@@ -35,14 +35,14 @@ export const experience: readonly ExperienceEntry[] = [
       'Desenvolvi e implantei uma aplicação web interna para apoiar o planejamento, a coordenação e o gerenciamento de cursos, atuando no levantamento de requisitos, no mapeamento de fluxos, no desenvolvimento, na documentação e no suporte aos usuários.',
     achievements: [
       'Levantamento de requisitos e mapeamento de fluxos junto aos usuários da área',
-      'Desenvolvimento da aplicação web com React, TypeScript e TanStack Router',
+      'Construção e evolução da aplicação web com React, TypeScript e TanStack Router',
       'Uso de Supabase e PostgreSQL para persistência e consulta das informações',
       'Implantação da aplicação e suporte aos usuários após a entrega',
       'Documentação do sistema e dos processos para continuidade da operação',
       'Padronização de registros e melhoria dos processos de consulta e rastreabilidade',
     ],
     stack: ['React', 'TypeScript', 'TanStack Router', 'Supabase', 'PostgreSQL'],
-    caseStudy: 'sistema-ila-fab',
+    caseStudy: 'sistema-gestao-cursos',
   },
   {
     organization: 'Torre Contabilidade LTDA',

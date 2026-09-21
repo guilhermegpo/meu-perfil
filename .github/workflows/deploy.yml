@@ -34,8 +34,14 @@ jobs:
       - name: Checagem de tipos
         run: npm run check
 
+      - name: Lint
+        run: npm run lint
+
       - name: Build
         run: npm run build
+
+      - name: Testes de conteúdo e segurança
+        run: npm test
 
       - name: Verificar acessibilidade, metadados e links
         run: npm run verify
