@@ -118,14 +118,14 @@ JSON-LD (`Person` e `WebSite` em todas as páginas), `sitemap-index.xml` (integr
 | `npm test` | Testes de conteúdo e segurança (segredos, nomes privados, consistência da evidência, home reflete a evidência) |
 | `npm run verify` | Contraste WCAG lido do CSS, metadados, um h1, `alt`, JSON-LD, ausência de terceiros, âncoras, links, sitemap e OG |
 
-### Medições (2026-09-20, build local servido em `astro preview`, Chrome headless)
+### Medições (2026-09-21, build local servido em `astro preview`, Chrome headless)
 
 | | Performance | Accessibility | Best Practices | SEO |
 | --- | --- | --- | --- | --- |
 | Desktop | 100 | 100 | 100 | 100 |
-| Mobile | 97 | 100 | 100 | 100 |
+| Mobile | 96–97 | 100 | 100 | 100 |
 
-Desktop: LCP 0,5 s, TBT 0 ms, CLS 0,001. Mobile: LCP 2,5 s, TBT 0 ms, CLS 0. São medições
+Desktop: LCP 0,5 s, TBT 0 ms, CLS 0,001. Mobile: LCP 2,6 s, TBT 0 ms, CLS 0 (desempenho varia entre 96 e 97 de uma execução para outra). São medições
 locais; refaça no site publicado após o deploy.
 
 ## Segurança do conteúdo

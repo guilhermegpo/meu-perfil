@@ -31,7 +31,7 @@ suítes de teste e registra o resultado. Data do levantamento: campo `generatedA
 
 | Exibição | Como é obtida | Valor atual |
 | --- | --- | --- |
-| Testes automatizados | Soma do total reportado por `flutter test` e `vitest run` | 419 (300 + 119) |
+| Testes automatizados | Soma do total reportado por `flutter test` e `vitest run`, executados em 21/09/2026 | 427 (300 + 127) |
 | Projetos com testes | Projetos com ao menos um teste | 2 |
 | Projetos analisados | Projetos em `PROJECTS` no coletor | 5 |
 | Aplicações mobile | Projetos com plataforma mobile | 2 |
@@ -81,7 +81,7 @@ foi recortada para 16:9. Os originais e as coordenadas das máscaras ficam fora 
 | Seção | Origem |
 | --- | --- |
 | Hero (status, cargo, frentes, descrição) | Informado pelo autor. Frentes Web, Mobile e Backend validadas na auditoria: Web (sistemas React e este site), Mobile (Flutter e Capacitor/Android), Backend (Supabase: SQL, RLS, funções transacionais, Edge Functions) |
-| Painéis do hero | "domínio": modelo do Meu Chamado (Workspace, Membership, Role). "no banco": práticas do Controle de Chaves e dos sistemas web. "419 testes": evidência |
+| Painéis do hero | "domínio": modelo do Meu Chamado (Workspace, Membership, Role). "no banco": práticas do Controle de Chaves e dos sistemas web. "427 testes": evidência |
 | Sobre | Síntese das práticas verificadas nos projetos; formação informada pelo autor. |
 | Experiência e formação | **Informadas pelo autor** (`experience.ts`, `education.ts`). Não são verificáveis pelo código; o único vínculo comprovável é o sistema de gestão de cursos existir e ter sido implantado |
 | Cartões e cases | `projects.ts`, redigido a partir da documentação de cada projeto (tabela abaixo) |
@@ -169,12 +169,12 @@ conta própria. Para atualizá-lo, rode `npm run evidence` aqui e reconfira a ta
 | Informação no README | Origem | Como reconferir |
 | --- | --- | --- |
 | Versão do Meu Chamado (`0.2.0-alpha.4`) | Campo `version` do `pubspec.yaml`, em `evidence.generated.json` | `npm run evidence` |
-| 300 e 119 testes, total 419 | Saída de `flutter test` e `vitest run`, executados em 20/09/2026 | `npm run evidence` |
+| 300 e 127 testes, total 427 | Saída de `flutter test` (Meu Chamado, 41 arquivos) e `vitest run` (Controle de Chaves, 10 arquivos, `package.json` 1.5.1, `main` em `90c8432`), executados em 21/09/2026 | `npm run evidence` |
 | 17 ADRs | Arquivos numerados em `docs/adr` do Meu Chamado | `npm run evidence` |
 | 24 tecnologias em 5 projetos | Regras de detecção do coletor (dependências, manifestos, migrações, workflows) | `npm run evidence` |
 | Stack de cada projeto | Tecnologias detectadas naquele projeto (`evidence.generated.json`) | `npm run evidence` |
 | Stack principal | União das tecnologias detectadas; Git é uso comum a todos os repositórios | Página Stack do portfólio |
-| Lighthouse do portfólio (100/97, 100, 100, 100) | Medição local do build de 20/09/2026, Chrome headless | Rodar o Lighthouse no build atual |
+| Lighthouse do portfólio (desempenho 100 no desktop e 96–97 no mobile; 100 nos demais) | Medição local do build de 21/09/2026, Chrome headless, três execuções no mobile | Rodar o Lighthouse no build atual |
 | Características de cada projeto | Cases do portfólio, escritos a partir da documentação e do código de cada repositório | `docs/CONTENT_SOURCE.md`, seção do case |
 | Status "em desenvolvimento" (Meu Financeiro e Meu Treino) | Informado pelo autor; não há repositório auditável | Atualizar quando houver repositório |
 | "Produtos pessoais voltados a organização, rotina e autonomia" | Redação sugerida pelo autor para a família Apps Meu | — |
