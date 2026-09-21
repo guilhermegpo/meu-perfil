@@ -15,7 +15,6 @@
     "evidence": "node scripts/collect-evidence.mjs",
     "brand": "node scripts/generate-brand.mjs",
     "fonts": "node scripts/fetch-fonts.mjs",
-    "banner": "node scripts/generate-banner.mjs",
     "assets": "node scripts/generate-assets.mjs",
     "sanitize": "node scripts/sanitize-art.mjs"
   },

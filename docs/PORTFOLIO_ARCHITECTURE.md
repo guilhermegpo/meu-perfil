@@ -34,7 +34,7 @@ src/
 ├── scripts/        env, nav, reveal, motion, main
 └── styles/         global.css (tokens) e fonts.css
 
-scripts/            collect-evidence, generate-brand, generate-assets, sanitize-art, generate-banner, verify, fetch-fonts
+scripts/            collect-evidence, generate-brand, generate-assets, sanitize-art, verify, fetch-fonts
 tests/              content.test.mjs (conteúdo e segurança)
 public/             favicon, ícones, og-image, manifesto, robots, assets/ (marca, foto, projetos)
 docs/               Esta documentação

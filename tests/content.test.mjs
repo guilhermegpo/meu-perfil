@@ -148,7 +148,11 @@ test('todo case de projeto gera uma página e consta no sitemap', async () => {
   const cases = await readdir(path.join(root, 'dist', 'projetos'));
   const sitemap = await readFile(path.join(root, 'dist', 'sitemap-0.xml'), 'utf8');
   assert.ok(cases.length >= 3, 'esperado ao menos os três cases em destaque');
-  for (const slug of cases) assert.ok(sitemap.includes(`/projetos/${slug}`), `sitemap sem ${slug}`);
+  for (const slug of cases) {
+    const html = await readFile(path.join(root, 'dist', 'projetos', slug, 'index.html'), 'utf8');
+    if (html.includes('http-equiv="refresh"')) continue; // redirecionamento de endereço antigo
+    assert.ok(sitemap.includes(`/projetos/${slug}`), `sitemap sem ${slug}`);
+  }
 });
 
 test('a página inicial mostra os números vindos da evidência', async () => {

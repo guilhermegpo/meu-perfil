@@ -32,7 +32,7 @@
       "commits": 90,
       "version": "0.2.0-alpha.4"
     },
-    "sistema-ila-fab": {
+    "sistema-gestao-cursos": {
       "migrations": 106,
       "sqlFunctions": 95,
       "policies": 140,
@@ -62,7 +62,7 @@
       "testCases": 0,
       "testFiles": 0,
       "tags": 0,
-      "commits": 43,
+      "commits": 51,
       "version": null
     }
   },
@@ -71,7 +71,7 @@
       "category": "Frontend",
       "name": "React",
       "projects": [
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico"
       ],
       "count": 2
@@ -80,7 +80,7 @@
       "category": "Frontend",
       "name": "TypeScript",
       "projects": [
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico",
         "meu-perfil"
       ],
@@ -98,7 +98,7 @@
       "category": "Frontend",
       "name": "TanStack Router",
       "projects": [
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico"
       ],
       "count": 2
@@ -107,7 +107,7 @@
       "category": "Frontend",
       "name": "Tailwind CSS",
       "projects": [
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico"
       ],
       "count": 2
@@ -125,7 +125,7 @@
       "name": "Vite",
       "projects": [
         "controle-de-chaves",
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico"
       ],
       "count": 3
@@ -135,7 +135,7 @@
       "name": "PWA",
       "projects": [
         "controle-de-chaves",
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico"
       ],
       "count": 3
@@ -186,7 +186,7 @@
       "name": "Supabase",
       "projects": [
         "controle-de-chaves",
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico"
       ],
       "count": 3
@@ -204,7 +204,7 @@
       "name": "PostgreSQL",
       "projects": [
         "controle-de-chaves",
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico"
       ],
       "count": 3
@@ -214,7 +214,7 @@
       "name": "Row Level Security",
       "projects": [
         "controle-de-chaves",
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico"
       ],
       "count": 3
@@ -242,7 +242,7 @@
       "name": "Cloudflare Workers",
       "projects": [
         "controle-de-chaves",
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico"
       ],
       "count": 3
@@ -267,7 +267,7 @@
       "category": "Ferramentas",
       "name": "ESLint",
       "projects": [
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico",
         "meu-perfil"
       ],
@@ -277,7 +277,7 @@
       "category": "Ferramentas",
       "name": "Prettier",
       "projects": [
-        "sistema-ila-fab",
+        "sistema-gestao-cursos",
         "sistema-escalas-servico"
       ],
       "count": 2

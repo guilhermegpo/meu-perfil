@@ -137,6 +137,10 @@ const REQUIRED_META = [
 async function checkPage(file) {
   const rel = path.relative(DIST, file).replace(/\\/g, '/');
   const html = await readFile(file, 'utf8');
+  if (html.includes('http-equiv="refresh"')) {
+    pass(`${rel} — redirecionamento (sem metadados próprios)`);
+    return;
+  }
 
   const missing = REQUIRED_META.filter(([, re]) => !re.test(html)).map(([name]) => name);
   check(
@@ -239,7 +243,9 @@ async function checkCrawlers(pages) {
   check(/Sitemap:\s*https:\/\//.test(robots), 'robots.txt aponta para o sitemap', 'robots.txt sem Sitemap');
 
   const sitemap = await readFile(path.join(DIST, 'sitemap-0.xml'), 'utf8').catch(() => '');
-  const indexable = pages.filter((f) => !f.endsWith('404.html'));
+  const redirects = new Set();
+  for (const f of pages) if ((await readFile(f, 'utf8')).includes('http-equiv="refresh"')) redirects.add(f);
+  const indexable = pages.filter((f) => !f.endsWith('404.html') && !redirects.has(f));
   const missing = indexable
     .map((f) => path.relative(DIST, f).replace(/\\/g, '/').replace(/index\.html$/, '').replace(/\.html$/, ''))
     .filter((route) => !sitemap.includes(`${BASE}/${route}`));

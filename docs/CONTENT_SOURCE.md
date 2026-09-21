@@ -12,7 +12,7 @@ Nomes de pastas de repositórios privados ficam fora deste arquivo (e do Git): e
 | --- | --- | --- | --- |
 | `controle-de-chaves` | Controle de Chaves | Privado, em uso por uma equipe real | Genérico: sem organização, sem telas, sem dados, sem link de código |
 | `meu-chamado` | Meu Chamado | Público | Completo, com link para o repositório |
-| `sistema-ila-fab` | Sistema de gestão de cursos | Privado, uso institucional | Genérico e com aviso de divulgação restrita |
+| `sistema-gestao-cursos` | Sistema de gestão de cursos | Privado, uso institucional | Genérico e com aviso de divulgação restrita |
 | `sistema-escalas-servico` | Sistema de escalas de serviço | Privado, projeto interno | Case sanitizado em `/projetos/sistema-escalas-servico/`, sem instituição |
 | `meu-perfil` | Este portfólio | Público | Completo |
 | `meu-financeiro` | Meu Financeiro | Sem repositório publicado; status "Em desenvolvimento" | Página enxuta da família Apps Meu: só o que o material do produto afirma; sem stack, testes ou métricas |
@@ -160,6 +160,39 @@ Fonte: este repositório, `docs/PORTFOLIO_ARCHITECTURE.md` e as medições de Li
 | Documentação | Documentos citados acima; regra "README desatualizado é defeito" no README técnico do sistema de cursos |
 | UX e acessibilidade | `scripts/verify.mjs` deste site |
 | Performance | Medições deste site; script de profiling do Controle de Chaves |
+
+## README do perfil do GitHub
+
+O README do repositório de perfil reaproveita os mesmos dados do portfólio; nada é digitado por
+conta própria. Para atualizá-lo, rode `npm run evidence` aqui e reconfira a tabela abaixo.
+
+| Informação no README | Origem | Como reconferir |
+| --- | --- | --- |
+| Versão do Meu Chamado (`0.2.0-alpha.4`) | Campo `version` do `pubspec.yaml`, em `evidence.generated.json` | `npm run evidence` |
+| 300 e 119 testes, total 419 | Saída de `flutter test` e `vitest run`, executados em 20/09/2026 | `npm run evidence` |
+| 17 ADRs | Arquivos numerados em `docs/adr` do Meu Chamado | `npm run evidence` |
+| 24 tecnologias em 5 projetos | Regras de detecção do coletor (dependências, manifestos, migrações, workflows) | `npm run evidence` |
+| Stack de cada projeto | Tecnologias detectadas naquele projeto (`evidence.generated.json`) | `npm run evidence` |
+| Stack principal | União das tecnologias detectadas; Git é uso comum a todos os repositórios | Página Stack do portfólio |
+| Lighthouse do portfólio (100/97, 100, 100, 100) | Medição local do build de 20/09/2026, Chrome headless | Rodar o Lighthouse no build atual |
+| Características de cada projeto | Cases do portfólio, escritos a partir da documentação e do código de cada repositório | `docs/CONTENT_SOURCE.md`, seção do case |
+| Status "em desenvolvimento" (Meu Financeiro e Meu Treino) | Informado pelo autor; não há repositório auditável | Atualizar quando houver repositório |
+| "Produtos pessoais voltados a organização, rotina e autonomia" | Redação sugerida pelo autor para a família Apps Meu | — |
+| "Aberto a oportunidades" | Hero do portfólio, informado pelo autor | Manter igual ao portfólio |
+| Experiência prática | Descrição genérica da experiência informada pelo autor; sem nomes internos | — |
+| Formação | Somente curso e instituição, sem data ou situação: nenhuma fonte confiável confirma a conclusão | Confirmar com o autor |
+| E-mail | `guilhermegpo.dev@gmail.com`: `src/data/profile.ts`, e-mail público do perfil do GitHub e commits | — |
+| LinkedIn | `src/data/profile.ts` | — |
+| Banner | `banner-perfil.png`, fornecido pelo autor. É identidade visual, **não evidência técnica**: o que aparece nele (ferramentas, código, ícones) não entra na stack | — |
+
+Links de case do README apontam para o portfólio; o endereço do case do sistema de gestão de
+cursos é neutro (`sistema-gestao-cursos`), e o endereço antigo redireciona para ele.
+
+## Arte sanitizada: rótulos neutros
+
+Na versão pública da arte do sistema de escalas, três termos internos foram trocados por neutros
+(só na imagem publicada): "Quadrinhos" por "Quadros", "Quem Concorre" por "Elegibilidade" e
+"Dependências" por "Configurações".
 
 ## Ferramentas de desenvolvimento
 

@@ -9,6 +9,11 @@ export default defineConfig({
   base: '/meu-perfil',
   trailingSlash: 'ignore',
   integrations: [sitemap()],
+  // O case do sistema de gestão de cursos ganhou um endereço neutro; o antigo continua
+  // respondendo, para não quebrar links já publicados.
+  redirects: {
+    '/projetos/sistema-ila-fab': '/meu-perfil/projetos/sistema-gestao-cursos',
+  },
   build: {
     inlineStylesheets: 'always',
   },

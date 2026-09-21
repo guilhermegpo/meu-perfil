@@ -42,7 +42,7 @@ export const experience: readonly ExperienceEntry[] = [
       'Padronização de registros e melhoria dos processos de consulta e rastreabilidade',
     ],
     stack: ['React', 'TypeScript', 'TanStack Router', 'Supabase', 'PostgreSQL'],
-    caseStudy: 'sistema-ila-fab',
+    caseStudy: 'sistema-gestao-cursos',
   },
   {
     organization: 'Torre Contabilidade LTDA',

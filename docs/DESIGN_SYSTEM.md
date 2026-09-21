@@ -25,7 +25,7 @@ Uma cópia byte a byte está em `src/assets/brand/gpo-master.png` e nunca é edi
 | `public/assets/brand/favicon.png` | Favicon 48 × 48. |
 | `public/assets/brand/apple-touch-icon.png` e `public/apple-touch-icon.png` | Ícone iOS 180 × 180 (a cópia na raiz atende o Safari). |
 | `public/og-image.png` | Cartão Open Graph 1200 × 630. |
-| `../guilhermegpo/assets/banner.png` | Banner do perfil do GitHub (`npm run banner`). |
+| `banner-perfil.png` (repositório do perfil) | Banner oficial do perfil do GitHub, fornecido pelo autor. Não é gerado por script e não é alterado. |
 
 **Pendência:** não existe versão vetorial. Quando houver `gpo-mark.svg` (e `gpo-logo-dark.svg`),
 ela substitui o PNG na navbar e nos ícones sem alterar o resto. Não vetorizar por

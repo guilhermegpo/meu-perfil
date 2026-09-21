@@ -382,7 +382,7 @@ export const projects: readonly Project[] = [
     },
   },
   {
-    slug: 'sistema-ila-fab',
+    slug: 'sistema-gestao-cursos',
     name: 'Sistema de gestão de cursos',
     category: 'Aplicação web interna',
     kind: 'web',
@@ -469,7 +469,7 @@ export const projects: readonly Project[] = [
       results: [
         'Sistema implantado e utilizado pela equipe.',
         'Centralização das informações, padronização dos registros e melhoria na consulta e na rastreabilidade.',
-        `Modelo de dados com ${projectEvidence('sistema-ila-fab').policies} políticas RLS e ${projectEvidence('sistema-ila-fab').sqlFunctions} funções SQL declaradas nas migrações.`,
+        `Modelo de dados com ${projectEvidence('sistema-gestao-cursos').policies} políticas RLS e ${projectEvidence('sistema-gestao-cursos').sqlFunctions} funções SQL declaradas nas migrações.`,
       ],
       learnings: [
         'Levantar requisitos com quem usa o sistema muda o desenho mais do que qualquer escolha de framework.',
@@ -508,10 +508,10 @@ export const projects: readonly Project[] = [
       objective:
         'Reunir geração, ajustes, solicitações e publicação da escala em um só sistema, com regras configuráveis em vez de fixas no código e com histórico e auditoria.',
       responsibility: [
-        'Fluxos e regras de negócio da escala',
-        'Modelo de dados e regras de acesso no banco',
+        'Desenvolvimento e estruturação da aplicação',
+        'Modelagem das regras de negócio e do fluxo de geração de escalas',
+        'Permissões, aprovações e auditoria',
         'Interface: painel, calendário, solicitações e gestão',
-        'Geração e exportação da escala em PDF, planilha e CSV',
       ],
       architecture: {
         summary:
@@ -643,7 +643,7 @@ export const projects: readonly Project[] = [
       identity:
         'Identidade própria em azul e verde-água, com o "M" da família Apps Meu acompanhado de um gráfico de crescimento. Visual claro, limpo e estratégico.',
       status:
-        'Produto em desenvolvimento. O repositório ainda não foi publicado, por isso esta página traz só o que o produto já define: proposta e identidade visual. O case técnico — arquitetura, decisões e testes — entra aqui quando o projeto estiver disponível. A imagem é ilustrativa e os valores exibidos nela são fictícios.',
+        'Projeto em desenvolvimento. Os detalhes técnicos serão documentados conforme a implementação evoluir; por enquanto, esta página traz a proposta e a identidade visual do produto. A imagem é ilustrativa e os valores exibidos nela são fictícios.',
     },
   },
   {
@@ -680,7 +680,7 @@ export const projects: readonly Project[] = [
       identity:
         'Identidade própria em modo escuro, com azul-petróleo e turquesa e o "M" da família Apps Meu ao lado de um halter. Visual atlético, energético e tecnológico.',
       status:
-        'Produto em desenvolvimento. O repositório ainda não foi publicado, por isso esta página traz só o que o produto já define: proposta e identidade visual. O case técnico — arquitetura, decisões e testes — entra aqui quando o projeto estiver disponível. A imagem é ilustrativa.',
+        'Projeto em desenvolvimento. Os detalhes técnicos serão documentados conforme a implementação evoluir; por enquanto, esta página traz a proposta e a identidade visual do produto. A imagem é ilustrativa.',
     },
   },
   {

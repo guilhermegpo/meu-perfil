@@ -36,7 +36,8 @@ const description = `${project.name} — ${project.tagline}`;
 const home = new URL(asset(''), Astro.site).href;
 const url = new URL(asset(`projetos/${project.slug}`), Astro.site).href;
 const stackAll = projectStack(project.slug, { all: true });
-const signals = projectSignals(project.slug);
+// Testes e ADRs vão ao topo; políticas RLS e funções SQL ficam dentro do case, como evidência.
+const signals = projectSignals(project.slug).filter((item) => !/RLS/.test(item));
 
 const structuredData = [
   project.repository
@@ -129,7 +130,7 @@ const kindLabel = { mobile: 'Mobile', web: 'Web', site: 'Site' }[project.kind];
           }
           {project.links.length === 0 && (
             <span class="head__private">
-              {study ? 'Código-fonte privado' : 'Repositório ainda não publicado'}
+              {study ? 'Código-fonte privado' : 'Projeto em desenvolvimento'}
             </span>
           )}
         </div>
