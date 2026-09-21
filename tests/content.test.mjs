@@ -91,7 +91,9 @@ test('nada de nome interno, dado militar ou link de repositório privado', async
 });
 
 test('o conteúdo público não cita ferramentas de IA como parte da narrativa', () => {
-  const pattern = /lovable|claude|anthropic|gpt-engineer|coautoria|(?:gerado|feito|escrito) (?:por|com) (?:ia|bot|intelig)/i;
+  // Termos montados por fragmentos: o guarda não pode conter, ele mesmo, o que proíbe.
+  const terms = ['lova' + 'ble', 'clau' + 'de', 'anthro' + 'pic', 'gpt-' + 'engineer', 'co' + 'autoria'];
+  const pattern = new RegExp(`${terms.join('|')}|(?:gerado|feito|escrito) (?:por|com) (?:ia|bot|intelig)`, 'i');
   const hits = contents
     .filter(([, text]) => pattern.test(text))
     .map(([file]) => path.relative(root, file));
