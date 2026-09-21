@@ -180,7 +180,7 @@ conta própria. Para atualizá-lo, rode `npm run evidence` aqui e reconfira a ta
 | "Produtos pessoais voltados a organização, rotina e autonomia" | Redação sugerida pelo autor para a família Apps Meu | — |
 | "Aberto a oportunidades" | Hero do portfólio, informado pelo autor | Manter igual ao portfólio |
 | Experiência prática | Descrição genérica da experiência informada pelo autor; sem nomes internos | — |
-| Formação | Somente curso e instituição, sem data ou situação: nenhuma fonte confiável confirma a conclusão | Confirmar com o autor |
+| Formação | Tecnólogo em Análise e Desenvolvimento de Sistemas, Universidade Cruzeiro do Sul, conclusão em 2026: confirmado pelo autor em 21/09/2026. Nenhum dado do diploma (documento, registro, código de validação, QR Code) é publicado | — |
 | E-mail | `guilhermegpo.dev@gmail.com`: `src/data/profile.ts`, e-mail público do perfil do GitHub e commits | — |
 | LinkedIn | `src/data/profile.ts` | — |
 | Banner | `banner-perfil.png`, fornecido pelo autor. É identidade visual, **não evidência técnica**: o que aparece nele (ferramentas, código, ícones) não entra na stack | — |
@@ -192,7 +192,7 @@ cursos é neutro (`sistema-gestao-cursos`), e o endereço antigo redireciona par
 
 Na versão pública da arte do sistema de escalas, três termos internos foram trocados por neutros
 (só na imagem publicada): "Quadrinhos" por "Quadros", "Quem Concorre" por "Elegibilidade" e
-"Dependências" por "Configurações".
+"Dependências" por "Vínculos" (assim o menu não tem dois itens chamados "Configurações").
 
 ## Ferramentas de desenvolvimento
 

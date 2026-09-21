@@ -57,15 +57,20 @@ repositórios locais ──npm run evidence──▶ evidence.generated.json ─
 ## Assets
 
 ```text
-public/assets/
-├── brand/      logo oficial recortada (png, webp), ícones 192/512, favicon, apple-touch
-├── profile/    foto-oficial.png (original) + foto-{480,960}.{avif,webp,jpg} + avatar-{96,192}.*
-└── projects/   {app}-hero.png (original) + {app}-hero-{640,1024,1672}.{avif,webp}
+public/assets/          só o que o site carrega
+├── brand/      ícones 192/512 e favicon (a marca recortada, que o Astro otimiza, fica em src/assets/brand/)
+├── profile/    foto-{480,960}.{avif,webp}, foto-960.jpg (og:image), avatar-{96,192}.{avif,webp}, avatar-192.jpg (fallback)
+└── projects/   {app}-hero-{640,1024,1672}.{avif,webp}
+
+assets-source/          masters, fora de public/ (não são publicados)
+├── profile/    foto-oficial.png
+└── projects/   {app}-hero.png (Meu Chamado, Meu Financeiro, Meu Treino)
 ```
 
 `npm run assets` lê a foto e as imagens ilustrativas da pasta acima do repositório e gera as
-versões otimizadas; os originais são preservados (a foto vem como JPEG com extensão .png e é
-regravada como PNG sem perda). O componente `Picture.astro` monta o `<picture>` com AVIF, WebP e
+versões otimizadas; os originais são preservados em `assets-source/` (a foto vem como JPEG com
+extensão .png e é regravada como PNG sem perda). Um teste falha se um PNG master voltar para
+`public/assets/`. O componente `Picture.astro` monta o `<picture>` com AVIF, WebP e
 reserva, `srcset`, `sizes` e dimensões intrínsecas. Nenhuma imagem é redesenhada ou recolorida.
 
 ### Artes de projetos privados

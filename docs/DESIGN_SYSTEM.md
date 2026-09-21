@@ -20,10 +20,9 @@ Uma cópia byte a byte está em `src/assets/brand/gpo-master.png` e nunca é edi
 | Arquivo | Uso |
 | --- | --- |
 | `src/assets/brand/gpo-logo.png` | Marca recortada, resolução original. Entrada do pipeline de imagens do Astro (navbar, hero, rodapé). |
-| `public/assets/brand/gpo-logo.png` / `.webp` | Mesma marca para uso externo. |
 | `public/assets/brand/gpo-logo-512.png`, `gpo-logo-192.png` | Ícones quadrados (marca sobre ladrilho escuro) para manifesto e apps. |
 | `public/assets/brand/favicon.png` | Favicon 48 × 48. |
-| `public/assets/brand/apple-touch-icon.png` e `public/apple-touch-icon.png` | Ícone iOS 180 × 180 (a cópia na raiz atende o Safari). |
+| `public/apple-touch-icon.png` | Ícone iOS 180 × 180, na raiz porque o Safari o procura ali sem ler o `<head>`. |
 | `public/og-image.png` | Cartão Open Graph 1200 × 630. |
 | `banner-perfil.png` (repositório do perfil) | Banner oficial do perfil do GitHub, fornecido pelo autor. Não é gerado por script e não é alterado. |
 

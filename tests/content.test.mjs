@@ -111,6 +111,14 @@ test('projetos privados só publicam a arte sanitizada, nunca o PNG original', a
   assert.equal(files.filter((f) => /\s/.test(f)).length, 0, 'nome de arquivo com espaço sugere arquivo original copiado');
 });
 
+test('public/assets serve só formatos de runtime: masters PNG ficam em assets-source', async () => {
+  for (const dir of ['profile', 'projects']) {
+    const files = await readdir(path.join(root, 'public', 'assets', dir));
+    const png = files.filter((f) => f.endsWith('.png'));
+    assert.deepEqual(png, [], `PNG master em public/assets/${dir}: mova para assets-source/`);
+  }
+});
+
 test('nenhum projeto usa texto de pendência na listagem', async () => {
   const html = await readFile(path.join(root, 'dist', 'index.html'), 'utf8');
   for (const phrase of ['Sem página pública', 'Detalhes técnicos em breve', 'Em breve']) {
